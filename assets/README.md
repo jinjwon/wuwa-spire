@@ -6,7 +6,7 @@
 
 1. `<id>_idle.png`: 도트 스프라이트 시트(대기 동작, 반복 재생)
 2. `<id>.png`: 정지 이미지(초상화나 전신 일러스트)
-3. 위키 프로필 이미지(공명자만, 인터넷 연결 필요)
+3. 위키 프로필·잔상 아이콘(인터넷 연결 필요)
 4. 기본 실루엣
 
 `<id>_attack.png`를 넣으면 공격할 때 한 번 재생되고, 다시 대기 동작으로 돌아가요.
@@ -18,9 +18,18 @@
 | 방랑자 | `rov` | `rov_idle.png`, `rov_attack.png` |
 | 에이메스 | `aem` | `aem_idle.png`, `aem_attack.png` |
 | 파수인 | `sk` | `sk_idle.png`, `sk_attack.png` |
-| 적 | `enemy_<id>` | `enemy_levia_idle.png`, `enemy_axion.png` |
+| 린네 | `lyn` | `lyn_idle.png` |
+| 모니에 | `mor` | `mor_idle.png` |
+| 치사 | `chi` | `chi_idle.png` |
+| 카멜리아 | `cam` | `cam_idle.png` |
+| 적 | `enemy_<id>` | `enemy_levia_idle.png`, `enemy_aleph.png` |
 
-적 id: `jelly` 해파리, `statue` 석상병, `bat` 박쥐, `flame` 불꽃 도마뱀, `wolf` 늑대, `crab` 갑각 수호자, `mech` 기계 잔상, `storm` 폭풍 날개, `golem` 공명 거신, `lion` 사자, `hunter` 심연 사냥꾼, `levia` 레비아탄, `axion` 더 엑시온
+적 id
+- 경파급: `snip` 칵찰찰, `zig` 아즈즈, `tick` 우글글, `gulp` 꾹꾹복어, `chirp` 쮸쮸복어, `vjun` 선봉 암괴, `fjun` 분열 암괴, `cruise` 순회나비, `fdread` 갈기늑대·불꽃, `hoar` 서릿땅거북
+- 거랑급: `cheron` 초록색 왜가리, `vheron` 보라색 왜가리, `hdread` 갈기늑대·암흑, `spear` 화살곰, `saur` 그린멜팅카멜레온, `tamb` 초혼의 악사, `scout` 경전차 로봇
+- 노도급(정예): `crown` 크라운리스, `mephis` 천둥의 비늘, `aix` 애곡하는 아익스, `explorer` 이름없는 탐색자, `rider` 지옥불 기사, `gorilla` 폭주의 고릴라
+- 해일급(정예): `dreamless` 무망자, `turtle` 타종 거북이, `hecate` 헤카테
+- 명식(보스): `levia` 레비아탄, `aleph` 알레프-원의 창조물
 
 ## 스프라이트 시트 규칙
 
