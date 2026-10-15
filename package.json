@@ -1,0 +1,64 @@
+{
+  "name": "wuwa-spire",
+  "version": "0.1.0",
+  "description": "명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 (개인용)",
+  "main": "main.js",
+  "author": "jinjwon",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "icon": "electron build/make-icon.js",
+    "dist:mac": "electron-builder --mac --publish never",
+    "dist:win": "electron-builder --win --publish never"
+  },
+  "devDependencies": {
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8"
+  },
+  "build": {
+    "appId": "com.jinjwon.wuwaspire",
+    "productName": "Spire of Echoes",
+    "artifactName": "SpireOfEchoes-${version}-${os}-${arch}.${ext}",
+    "files": [
+      "main.js",
+      "index.html",
+      "assets/**/*",
+      "!assets/README.md"
+    ],
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64", "x64"]
+        }
+      ],
+      "category": "public.app-category.games",
+      "icon": "build/icon.png"
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "SpireOfEchoes-${version}-win-setup.${ext}"
+    },
+    "portable": {
+      "artifactName": "SpireOfEchoes-${version}-win-portable.${ext}"
+    }
+  }
+}

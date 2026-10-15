@@ -4,9 +4,40 @@
 
 > 개인 학습·플레이용 비공개 프로토타입입니다. 명조와 관련 캐릭터의 권리는 Kuro Games에 있습니다.
 
-## 실행
+## 설치해서 플레이하기 (윈도우 · 맥)
 
-`index.html`을 브라우저로 열면 바로 실행돼요. 설치나 빌드는 필요 없어요.
+저장소의 **Releases**에서 최신 버전 파일을 받으세요.
+
+| OS | 파일 | 설명 |
+|---|---|---|
+| 윈도우 | `SpireOfEchoes-x.y.z-win-setup.exe` | 설치형 |
+| 윈도우 | `SpireOfEchoes-x.y.z-win-portable.exe` | 설치 없이 바로 실행 |
+| 맥 (Apple 실리콘, M1 이후) | `SpireOfEchoes-x.y.z-mac-arm64.dmg` | |
+| 맥 (인텔) | `SpireOfEchoes-x.y.z-mac-x64.dmg` | |
+
+개인용 빌드라 코드 서명이 없어서, 처음 실행할 때 보안 경고가 떠요.
+
+- **윈도우**: "Windows의 PC 보호" 창이 뜨면 **추가 정보 → 실행**을 누르세요.
+- **맥**: dmg를 열고 앱을 응용 프로그램 폴더로 옮긴 뒤, 터미널에서 아래 명령을 한 번 실행하세요. 그다음부터는 그냥 열면 돼요.
+  ```bash
+  xattr -cr "/Applications/Spire of Echoes.app"
+  ```
+
+캐릭터와 잔상 이미지는 위키에서 불러오기 때문에 **인터넷 연결이 필요해요**. 진행 상황은 지도에 있을 때마다 자동 저장돼요.
+
+## 브라우저로 플레이하기
+
+`index.html`을 브라우저로 열어도 똑같이 플레이할 수 있어요.
+
+## 새 버전 배포하기
+
+`package.json`의 `version`을 올린 뒤 같은 번호로 태그를 올리면, GitHub Actions가 윈도우·맥 설치 파일을 빌드해서 Releases에 올려요.
+
+```bash
+git tag v0.1.1 && git push origin v0.1.1
+```
+
+로컬에서 실행하거나 빌드하려면 `npm install` 후 `npm start`(실행), `npm run dist:mac` 또는 `npm run dist:win`(빌드)을 쓰세요.
 
 ## 구성
 
