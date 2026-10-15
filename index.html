@@ -33,7 +33,11 @@ h1,h2,h3{margin:0}
 /* title */
 .title{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:18px;padding:30px 0}
 .title h1{font-size:40px;letter-spacing:2px;background:linear-gradient(90deg,var(--sk),var(--gold),var(--aem));-webkit-background-clip:text;background-clip:text;color:transparent}
-.party-intro{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.party-intro{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1000px}
+.pi.sel{cursor:pointer;transition:.15s;display:flex;flex-direction:column}
+.pi.sel:hover{border-color:var(--c);transform:translateY(-4px);box-shadow:0 10px 26px -8px var(--c)}
+.pi .kit{font-size:11px;color:var(--dim);padding-left:15px;margin:8px 0 0;line-height:1.5;flex:1}
+.pi .pick{margin-top:10px;text-align:center;font-weight:800;color:var(--c);border:1px solid var(--c);border-radius:9px;padding:6px}
 .pi{width:220px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left}
 .pi .av{width:84px;height:84px;border:2px solid #fff3;border-radius:14px;display:grid;place-items:center;font-size:24px;font-weight:800;color:#111;margin-bottom:8px}
 .pi p{margin:6px 0 0;font-size:12px;line-height:1.5;color:var(--dim)}
@@ -90,6 +94,9 @@ h1,h2,h3{margin:0}
   box-shadow:0 0 26px -6px var(--c),inset 0 -30px 40px -20px rgba(0,0,0,.8);position:relative}
 .stand img{width:118%;margin-left:-9%;margin-top:4%;display:block}
 .stand i{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,color-mix(in srgb,var(--c) 35%,transparent));pointer-events:none}
+.eimg{width:100%;aspect-ratio:1;position:relative}
+.eimg::before{content:'';position:absolute;inset:12%;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 45%,transparent),transparent 70%);z-index:-1}
+.eimg img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--c) 70%,transparent)) drop-shadow(0 8px 6px rgba(0,0,0,.55))}
 .sprite{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
 .sprite img{display:block;height:100%;image-rendering:pixelated;animation-name:spr;animation-iteration-count:infinite}
 @keyframes spr{to{transform:translateX(-100%)}}
@@ -244,13 +251,14 @@ body.dragging .hand .card{pointer-events:none}
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const sleep=ms=>new Promise(r=>setTimeout(r,window.FAST?0:ms));
+const sleep=ms=>window.FAST?Promise.resolve():new Promise(r=>setTimeout(r,ms));
 let UID=1;
 const mk=(id,up=false)=>({uid:UID++,id,up});
 
 /* ============ 공명자 ============ */
-const EL={용융:'#ff7a45',회절:'#ffd75e',응결:'#7fd8ff',전도:'#b48cff',기류:'#6fe3b0',인멸:'#e0558a'};
-const ORDER=['rov','aem','sk'];
+const EL={용융:'#ff7a45',회절:'#ffd75e',응결:'#7fd8ff',전도:'#b48cff',기류:'#6fe3b0',인멸:'#e0558a',물리:'#cfc3a6'};
+const ALL=['rov','aem','sk','lyn','mor','chi','cam'];
+const T_=()=>S?S.team:ALL;
 const CH={
   rov:{name:'방랑자',el:'회절',color:'#f3d36b',maxHp:64,ini:'방',tag:'주인공',
     desc:'회절 잔향을 쌓고 터뜨리는 균형형 공명자. 잔향이 쌓인 적은 매 턴 피해를 입습니다.',
@@ -267,6 +275,30 @@ const CH={
     intro:'변주: 보호막 8',
     outro:'협주: 다음 공명자 체력 6 회복, 이번 턴 증폭',
     lib:'공명 해방 「끝없는 은하」: 모두 10 회복, 보호막 12, 별의 영역 +2턴'},
+  lyn:{name:'린네',el:'회절',color:'#5fe0c8',maxHp:68,ini:'린',tag:'라하이로이 · 스타토치 아카데미',
+    desc:'쌍권총으로 색을 흩뿌리는 자유로운 영혼. 전투를 색채 3으로 시작하며, 색채 2마다 린네의 공격 피해가 1 오르고, 모은 색채를 프리즘 오버블라스트로 한 번에 터뜨립니다.',
+    intro:'변주 「물들일 시간이야!」: 색채 +2, 무작위 적에게 4×2 피해',
+    outro:'협주 「출발하자!」: 에너지 +1, 카드 1장 뽑기',
+    lib:'공명 해방 「프리즘 오버블라스트」: 모든 적에게 8 + 색채×3 피해 (색채 소모)',
+    join:'"오, 재밌어 보이는데? 나도 끼워 줘!"'},
+  mor:{name:'모니에',el:'용융',color:'#ffb347',maxHp:66,ini:'모',tag:'라하이로이 · 우주 탐사 연구회',
+    desc:'계산으로 싸우는 엑소스트라이더 공학 교수. 보호막을 쌓고, 그 보호막을 그대로 파괴력으로 바꿉니다.',
+    intro:'변주 「수렴」: 보호막 6',
+    outro:'협주 「재귀」: 보호막 4, 이번 턴 증폭',
+    lib:'공명 해방 「임계 프로토콜」: 보호막 15, 이후 보호막만큼 적 하나에게 피해',
+    join:'"이 탑의 구조, 흥미롭네요. 관측 데이터는 제가 정리할게요."'},
+  chi:{name:'치사',el:'인멸',color:'#7d8cff',maxHp:54,ini:'치',tag:'라하이로이 · 스타토치 아카데미',
+    desc:'모든 것을 분해하고 분석하는 냉정한 서포터. 적에게 해체를 새겨 받는 피해를 늘리고, 동료를 치유합니다.',
+    intro:'변주 「반향: 회귀」: 무작위 적에게 6 피해, 해체 2',
+    outro:'협주 「해체: 제로 법칙」: 모든 적 해체 2, 다음 공명자 체력 4 회복',
+    lib:'공명 해방 「허무의 순간」: 모든 적에게 10 피해 + 해체 3, 모든 공명자 5 회복',
+    join:'"분석 완료. 당신과 함께 가는 게 가장 합리적인 선택이에요."'},
+  cam:{name:'카멜리아',el:'인멸',color:'#e0405e',maxHp:68,ini:'카',tag:'검은해안 · 블룸 베어러',
+    desc:'싸움 그 자체를 즐기는 검은해안의 블룸 베어러. 체력을 깎아 개화를 피우고, 개화만큼 공격이 강해집니다.',
+    intro:'변주 「영원한 개화」: 무작위 적에게 9 피해',
+    outro:'협주 「휘감기」: 모든 적 약화 1, 이번 턴 증폭',
+    lib:'공명 해방 「만개하는 열정」: 적 하나에게 26 피해, 개화 +3',
+    join:'"후후, 싸울 상대가 잔뜩이네? 좋아, 따라가 줄게."'},
 };
 
 /* ============ 카드 ============
@@ -303,7 +335,47 @@ const CD={
   sk_veil:{n:'결정의 장막',o:'sk',c:1,t:'스킬',v:{b:[6,8],w:[1,2]},tx:V=>`보호막 ${V.b}. 모든 적 약화 ${V.w}.`,p:V=>{gainBlock(V.b);alive().forEach(e=>{e.weak+=V.w})}},
   sk_chaos:{n:'혼돈 이론',o:'sk',c:1,t:'스킬',v:{k:[2,3]},tx:V=>`카드 ${V.k}장 뽑기.`,p:V=>draw(V.k)},
   sk_orbit:{n:'무한한 별의 궤도',o:'sk',c:1,t:'파워',pw:1,v:{b:[3,5]},tx:V=>`파워: 매 턴 시작 시 보호막 ${V.b}, 출전 공명자 협주 에너지 +1.`,p:V=>{S.c.orbit+=V.b}},
-  sk_care:{n:'종말의 보살핌',o:'sk',c:1,t:'스킬',ex:1,r:1,v:{h:[6,9]},tx:V=>`모든 공명자 체력 ${V.h} 회복. 소멸.`,p:V=>ORDER.forEach(id=>heal(id,V.h))},
+  sk_care:{n:'종말의 보살핌',o:'sk',c:1,t:'스킬',ex:1,r:1,v:{h:[6,9]},tx:V=>`모든 공명자 체력 ${V.h} 회복. 소멸.`,p:V=>T_().forEach(id=>heal(id,V.h))},
+  // 린네
+  lyn_a:{n:'크로마 드리프트',o:'lyn',c:1,t:'공격',tg:1,v:{d:[4,5]},tx:V=>`피해 ${V.d}×2.`,p:(V,T)=>{hit(T,V.d);hit(T,V.d)},start:1},
+  lyn_b:{n:'회피',o:'lyn',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
+  lyn_s:{n:'린네식 팔레트',o:'lyn',c:1,t:'스킬',v:{k:[2,3]},tx:V=>`색채 +${V.k}. 카드 1장 뽑기.`,p:V=>{paint(V.k);draw(1)},start:1},
+  lyn_spray:{n:'색 번짐',o:'lyn',c:1,t:'공격',v:{d:[4,6]},tx:V=>`모든 적에게 피해 ${V.d}. 색채를 1 써서 모든 적 취약 1.`,p:V=>{alive().forEach(e=>hit(e,V.d));if(S.c.paint>0){S.c.paint--;alive().forEach(e=>vuln(e,1))}}},
+  lyn_rapid:{n:'프리즘 연사',o:'lyn',c:2,t:'공격',tg:1,v:{d:[3,4]},tx:V=>`색채를 모두 써서 피해 ${V.d}×(색채+2).`,p:(V,T)=>{const n=S.c.paint+2;S.c.paint=0;for(let i=0;i<n;i++)hit(T,V.d)}},
+  lyn_free:{n:'자유로운 붓질',o:'lyn',c:[1,0],t:'파워',pw:1,tx:()=>`파워: 공격 카드를 쓸 때마다 색채 +1.`,p:()=>{S.c.freeBrush++}},
+  lyn_merc:{n:'용병의 감각',o:'lyn',c:1,t:'스킬',v:{b:[6,9]},tx:V=>`보호막 ${V.b}. 색채 +1.`,p:V=>{gainBlock(V.b);paint(1)}},
+  lyn_quick:{n:'난사',o:'lyn',c:0,t:'공격',tg:1,v:{d:[3,5]},tx:V=>`피해 ${V.d}. 색채 +1.`,p:(V,T)=>{hit(T,V.d);paint(1)}},
+  lyn_canvas:{n:'거리의 캔버스',o:'lyn',c:[1,0],t:'스킬',r:1,tx:()=>`색채를 2배로. 카드 1장 뽑기.`,p:()=>{paint(S.c.paint);draw(1)}},
+  // 모니에
+  mor_a:{n:'기저 상태 보정',o:'mor',c:1,t:'공격',tg:1,v:{d:[7,10]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d),start:1},
+  mor_b:{n:'회피',o:'mor',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
+  mor_s:{n:'해석',o:'mor',c:1,t:'스킬',v:{b:[6,9],k:[4,6]},tx:V=>`보호막 ${V.b}. 다음 공격 카드 피해 +${V.k}.`,p:V=>{gainBlock(V.b);S.c.calc+=V.k},start:1},
+  mor_mass:{n:'질량-에너지 등가',o:'mor',c:[2,1],t:'공격',tg:1,tx:()=>`현재 보호막만큼 피해. 보호막은 유지.`,p:(V,T)=>hit(T,S.c.block,{raw:1})},
+  mor_conv:{n:'수렴 궤도',o:'mor',c:1,t:'공격',v:{b:[5,7],d:[4,6]},tx:V=>`보호막 ${V.b}. 모든 적에게 피해 ${V.d}.`,p:V=>{gainBlock(V.b);alive().forEach(e=>hit(e,V.d))}},
+  mor_crit:{n:'임계 충전',o:'mor',c:1,t:'스킬',v:{b:[8,11]},tx:V=>`보호막 ${V.b}. 다음 턴 에너지 +1.`,p:V=>{gainBlock(V.b);S.c.nextE++}},
+  mor_hyp:{n:'가설 검증',o:'mor',c:1,t:'파워',pw:1,v:{d:[2,3]},tx:V=>`파워: 보호막을 얻을 때마다 무작위 적에게 피해 ${V.d}.`,p:V=>{S.c.hyp+=V.d}},
+  mor_probe:{n:'탐사선 발사',o:'mor',c:3,t:'공격',tg:1,r:1,v:{d:[30,38]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d)},
+  mor_lecture:{n:'공학 강의',o:'mor',c:1,t:'스킬',v:{k:[2,3]},tx:V=>`카드 ${V.k}장 뽑기. 보호막 3.`,p:V=>{draw(V.k);gainBlock(3)}},
+  // 치사
+  chi_a:{n:'침묵의 군림',o:'chi',c:1,t:'공격',tg:1,v:{d:[6,9]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d),start:1},
+  chi_b:{n:'회피',o:'chi',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
+  chi_s:{n:'파열된 구성',o:'chi',c:1,t:'스킬',tg:1,v:{u:[1,2],h:[2,3]},tx:V=>`대상 해체 ${V.u}. 출전 공명자 체력 ${V.h} 회복.`,p:(V,T)=>{unravel(T,V.u);heal(S.c.active,V.h)},start:1},
+  chi_null:{n:'공백의 순간',o:'chi',c:1,t:'스킬',v:{u:[1,2]},tx:V=>`모든 적 해체 ${V.u}.`,p:V=>alive().forEach(e=>unravel(e,V.u))},
+  chi_sever:{n:'실 끊기',o:'chi',c:1,t:'공격',tg:1,v:{d:[3,4]},tx:V=>`대상 해체 1. 피해 ${V.d}×2.`,p:(V,T)=>{unravel(T,1);hit(T,V.d);hit(T,V.d)}},
+  chi_echo:{n:'회귀의 울림',o:'chi',c:1,t:'스킬',ex:1,v:{h:[5,8]},tx:V=>`모든 공명자 체력 ${V.h} 회복. 소멸.`,p:V=>T_().forEach(id=>heal(id,V.h))},
+  chi_law:{n:'제로 법칙',o:'chi',c:2,t:'스킬',tg:1,r:1,v:{s:[3,5]},tx:V=>`대상의 힘 -${V.s}, 해체 3.`,p:(V,T)=>{if(T&&!T.dead){T.str-=V.s;pop(T,`힘 -${V.s}`,'info')}unravel(T,3)}},
+  chi_bond:{n:'끊어지지 않는 인연',o:'chi',c:1,t:'파워',pw:1,v:{h:[3,4]},tx:V=>`파워: 매 턴 시작 시 출전 공명자 체력 ${V.h} 회복.`,p:V=>{S.c.bond+=V.h}},
+  chi_blade:{n:'해체의 시선',o:'chi',c:2,t:'공격',tg:1,v:{d:[10,14]},tx:V=>`피해 ${V.d}. 대상의 해체 수치 ×2 만큼 추가 피해.`,p:(V,T)=>hit(T,V.d+(T.ur||0)*2)},
+  // 카멜리아
+  cam_a:{n:'일반 공격',o:'cam',c:1,t:'공격',tg:1,v:{d:[7,10]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d),start:1},
+  cam_b:{n:'회피',o:'cam',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
+  cam_s:{n:'피고 지는 왈츠',o:'cam',c:1,t:'공격',tg:1,v:{d:[5,7]},tx:V=>`피해 ${V.d}. 개화 +2. 카멜리아 체력 -1.`,p:(V,T)=>{hit(T,V.d);bloom(2);selfHurt('cam',1)},start:1},
+  cam_pistil:{n:'진홍 꽃술',o:'cam',c:2,t:'공격',tg:1,v:{d:[8,10]},tx:V=>`피해 ${V.d}×2.`,p:(V,T)=>{hit(T,V.d);hit(T,V.d)}},
+  cam_vine:{n:'덩굴 휘감기',o:'cam',c:1,t:'공격',tg:1,v:{d:[6,8],w:[1,2]},tx:V=>`피해 ${V.d}. 약화 ${V.w}.`,p:(V,T)=>{hit(T,V.d);if(T&&!T.dead)T.weak+=V.w}},
+  cam_thirst:{n:'피의 갈증',o:'cam',c:0,t:'스킬',v:{h:[4,3]},tx:V=>`카멜리아 체력 -${V.h}. 에너지 +2.`,p:V=>{selfHurt('cam',V.h);S.c.energy+=2}},
+  cam_bloom:{n:'만개',o:'cam',c:1,t:'공격',v:{d:[6,9]},tx:V=>`모든 적에게 피해 ${V.d}.`,p:V=>alive().forEach(e=>hit(e,V.d))},
+  cam_fervor:{n:'흐드러진 열정',o:'cam',c:2,t:'공격',tg:1,r:1,v:{m:[5,7]},tx:V=>`개화를 모두 써서 개화×${V.m} 피해.`,p:(V,T)=>{const b=S.c.bloom;S.c.bloom=0;hit(T,b*V.m,{raw:1})}},
+  cam_uni:{n:'식물 우주',o:'cam',c:[1,0],t:'파워',pw:1,tx:()=>`파워: 카멜리아가 체력을 잃을 때마다 개화 +1.`,p:()=>{S.c.camUni++}},
   // 공용
   any_tune:{n:'공명 조율',o:'any',c:0,t:'스킬',v:{k:[1,2]},tx:V=>`카드 ${V.k}장 뽑기.`,p:V=>draw(V.k)},
   any_shell:{n:'조개 화폐 던지기',o:'any',c:0,t:'공격',tg:1,ex:1,v:{d:[8,12]},tx:V=>`피해 ${V.d}. 소멸.`,p:(V,T)=>hit(T,V.d)},
@@ -316,69 +388,101 @@ const cardText=card=>CD[card.id].tx(vals(card));
 /* ============ 적 ============
  d:피해 h:타수 b:방어 s:힘 w:약화(파티) */
 const EN={
-  jelly:{n:'떠도는 소리 해파리',g:'경파급',el:'전도',sym:'≋',hp:[20,24],m:[{n:'전기 촉수',d:6},{n:'전류 장막',d:3,b:6}]},
-  statue:{n:'부서진 석상병',g:'경파급',el:'응결',sym:'▲',hp:[28,32],m:[{n:'내려치기',d:8},{n:'단단해지기',b:8,s:1},{n:'내려치기',d:8}]},
-  bat:{n:'공명 박쥐',g:'경파급',el:'기류',sym:'∨',hp:[13,16],m:[{n:'급강하',d:5},{n:'초음파',d:3,w:1}]},
-  flame:{n:'불꽃 도마뱀 잔상',g:'경파급',el:'용융',sym:'♨',hp:[26,30],m:[{n:'달아오름',s:2},{n:'화염 숨결',d:9}]},
-  wolf:{n:'울부짖는 늑대 잔상',g:'거랑급',el:'인멸',sym:'✶',hp:[36,40],m:[{n:'포효',s:2},{n:'물어뜯기',d:5,h:2},{n:'할퀴기',d:10}]},
-  crab:{n:'갑각 수호자',g:'거랑급',el:'응결',sym:'◆',hp:[50,56],m:[{n:'집게 강타',d:11},{n:'껍질 강화',b:14},{n:'압쇄',d:7,h:2}]},
-  mech:{n:'폭주하는 기계 잔상',g:'거랑급',el:'전도',sym:'⚙',hp:[44,48],m:[{n:'과부하',d:4,h:3},{n:'방전',d:9,w:1},{n:'재가동',s:3,b:6}]},
-  storm:{n:'폭풍 날개 잔상',g:'노도급',el:'기류',sym:'❖',hp:[72,76],elite:1,m:[{n:'폭풍 소환',s:2,w:2},{n:'돌풍',d:7,h:2},{n:'날개 장막',b:12,d:6}]},
-  golem:{n:'공명 거신',g:'노도급',el:'응결',sym:'■',hp:[86,90],elite:1,m:[{n:'대지 분쇄',d:16},{n:'결정화',b:16,s:1},{n:'연속 타격',d:6,h:3}]},
-  lion:{n:'뿔 달린 사자 잔상',g:'해일급',el:'용융',sym:'♛',hp:[120,128],elite:1,m:[{n:'포효',s:3,w:1},{n:'화염 돌진',d:18},{n:'연속 할퀴기',d:6,h:4},{n:'열기 방벽',b:18}]},
-  hunter:{n:'심연 사냥꾼',g:'해일급',el:'인멸',sym:'☾',hp:[110,116],elite:1,m:[{n:'그림자 찌르기',d:12,w:1},{n:'사냥 준비',s:3,b:10},{n:'처형',d:24}]},
-  levia:{n:'레비아탄',g:'명식 · 심해의 명식',el:'인멸',sym:'🜄',hp:[210,210],boss:1,m:[{n:'심해의 압력',d:10,w:2},{n:'해일 덮치기',d:24},{n:'비늘 재생',b:20,s:2},{n:'심연의 포효',d:6,h:3}]},
-  axion:{n:'더 엑시온',g:'명식 · 전쟁의 명식',el:'전도',sym:'⚔',hp:[380,380],boss:1,m:[{n:'전쟁의 선포',s:3,b:15},{n:'섬멸 포격',d:9,h:3},{n:'파쇄의 창',d:32},{n:'전장 장악',d:10,w:2},{n:'무한 진군',d:5,h:5}]},
+  // 경파급
+  snip:{n:'칵찰찰',g:'경파급',el:'용융',sym:'♨',hp:[20,24],m:[{n:'집게 찌르기',d:6},{n:'불티 껍질',d:3,b:5}]},
+  zig:{n:'아즈즈',g:'경파급',el:'회절',sym:'✧',hp:[18,22],m:[{n:'빛 튀기기',d:4,h:2},{n:'반짝임',b:6}]},
+  tick:{n:'우글글',g:'경파급',el:'인멸',sym:'✶',hp:[22,26],m:[{n:'물어뜯기',d:7},{n:'으르렁',s:1,d:3}]},
+  gulp:{n:'꾹꾹복어',g:'경파급',el:'응결',sym:'◉',hp:[24,28],m:[{n:'부풀기',b:8},{n:'얼음 가시',d:8}]},
+  chirp:{n:'쮸쮸복어',g:'경파급',el:'기류',sym:'◌',hp:[13,16],m:[{n:'바람 뱉기',d:5},{n:'날갯짓',d:2,w:1}]},
+  vjun:{n:'선봉 암괴',g:'경파급',el:'물리',sym:'▲',hp:[28,32],m:[{n:'바위 내려치기',d:8},{n:'단단해지기',b:8,s:1}]},
+  fjun:{n:'분열 암괴',g:'경파급',el:'물리',sym:'△',hp:[18,21],m:[{n:'파편 투척',d:3,h:2},{n:'구르기',d:6}]},
+  cruise:{n:'순회나비',g:'경파급',el:'회절',sym:'❦',hp:[15,18],m:[{n:'빛가루',d:4,w:1},{n:'날개 베기',d:6}]},
+  fdread:{n:'갈기늑대 · 불꽃',g:'경파급',el:'용융',sym:'✹',hp:[30,34],m:[{n:'포효',s:2},{n:'불꽃 물기',d:5,h:2},{n:'할퀴기',d:10}]},
+  hoar:{n:'서릿땅거북',g:'경파급',el:'응결',sym:'⬢',hp:[34,38],m:[{n:'등껍질 방어',b:12},{n:'박치기',d:9},{n:'서리 숨결',d:5,w:1}]},
+  // 거랑급
+  cheron:{n:'초록색 왜가리',g:'거랑급',el:'기류',sym:'⟰',hp:[44,48],m:[{n:'깃털 소나기',d:4,h:3},{n:'날아오르기',b:10},{n:'급강하',d:12}]},
+  vheron:{n:'보라색 왜가리',g:'거랑급',el:'전도',sym:'⟰',hp:[44,48],m:[{n:'번개 깃',d:9,w:1},{n:'충전',s:3},{n:'뇌격 쪼기',d:6,h:2}]},
+  hdread:{n:'갈기늑대 · 암흑',g:'거랑급',el:'인멸',sym:'✹',hp:[46,50],m:[{n:'암흑 포효',s:2,w:1},{n:'연속 물기',d:5,h:3},{n:'덮치기',d:13}]},
+  spear:{n:'화살곰',g:'거랑급',el:'물리',sym:'⇶',hp:[54,58],m:[{n:'가시 발사',d:4,h:3},{n:'웅크리기',b:14},{n:'몸통 박치기',d:14}]},
+  saur:{n:'그린멜팅카멜레온',g:'거랑급',el:'용융',sym:'♨',hp:[48,52],m:[{n:'화염 혀',d:10},{n:'위장',b:10,s:2},{n:'용암 침',d:6,w:1}]},
+  tamb:{n:'초혼의 악사',g:'거랑급',el:'인멸',sym:'♫',hp:[42,46],m:[{n:'초혼의 북',s:2,b:8},{n:'원혼 소환',d:5,h:2},{n:'진혼',d:11,w:1}]},
+  scout:{n:'경전차 로봇',g:'거랑급',el:'응결',sym:'⚙',hp:[50,54],m:[{n:'냉각 포격',d:5,h:3},{n:'장갑 전개',b:15},{n:'돌진',d:12}]},
+  // 노도급 (정예)
+  crown:{n:'크라운리스',g:'노도급',el:'인멸',sym:'♛',hp:[82,86],elite:1,m:[{n:'왕관 없는 자의 칼날',d:7,h:2},{n:'불길한 기운',s:2,w:2},{n:'처단',d:18}]},
+  mephis:{n:'천둥의 비늘',g:'노도급',el:'전도',sym:'ϟ',hp:[78,82],elite:1,m:[{n:'낙뢰',d:16},{n:'번개 장막',b:14,s:1},{n:'연쇄 번개',d:5,h:3}]},
+  aix:{n:'애곡하는 아익스',g:'노도급',el:'회절',sym:'❖',hp:[80,84],elite:1,m:[{n:'애곡',d:6,w:2},{n:'회절 광선',d:14},{n:'날개 방벽',b:15}]},
+  explorer:{n:'이름없는 탐색자',g:'노도급',el:'기류',sym:'⌖',hp:[86,90],elite:1,m:[{n:'탐색 기동',b:12,s:2},{n:'질풍 사격',d:5,h:3},{n:'관통',d:17}]},
+  rider:{n:'지옥불 기사',g:'노도급',el:'용융',sym:'♞',hp:[100,106],elite:1,m:[{n:'돌격',d:16},{n:'화염 갑주',b:16,s:2},{n:'연속 베기',d:6,h:3}]},
+  gorilla:{n:'폭주의 고릴라',g:'노도급',el:'기류',sym:'✊',hp:[104,110],elite:1,m:[{n:'포효',s:3},{n:'회오리 주먹',d:8,h:2},{n:'내려찍기',d:21}]},
+  // 해일급 (정예)
+  dreamless:{n:'무망자',g:'해일급',el:'인멸',sym:'☾',hp:[126,132],elite:1,m:[{n:'꿈 없는 잠',s:2,w:2},{n:'혼돈의 칼날',d:7,h:3},{n:'허무 붕괴',d:24},{n:'그림자 장막',b:18}]},
+  turtle:{n:'타종 거북이',g:'해일급',el:'응결',sym:'⍾',hp:[138,144],elite:1,m:[{n:'종소리 방벽',b:24},{n:'종 내려치기',d:20},{n:'공명 진동',d:6,h:3,w:1}]},
+  hecate:{n:'헤카테',g:'해일급',el:'인멸',sym:'☽',hp:[120,126],elite:1,m:[{n:'세 갈래 저주',d:8,w:2},{n:'월광 낫',d:7,h:3},{n:'명계의 문',s:3,b:12}]},
+  // 명식 (보스)
+  levia:{n:'레비아탄',g:'명식',el:'인멸',sym:'🜄',hp:[210,210],boss:1,m:[{n:'심해의 압력',d:10,w:2},{n:'해일 덮치기',d:24},{n:'비늘 재생',b:20,s:2},{n:'심연의 포효',d:6,h:3}]},
+  aleph:{n:'알레프-원의 창조물',g:'명식',el:'인멸',sym:'✺',hp:[380,380],boss:1,m:[{n:'허무의 선고',s:3,b:15},{n:'공허 포격',d:9,h:3},{n:'붕괴의 창',d:32},{n:'존재 소거',d:10,w:2},{n:'끝없는 공허',d:5,h:5}]},
 };
+const ENEMY_ART={snip:'d/d6/Snip_Snap_Icon.png',zig:'4/4b/Zig_Zag_Icon.png',tick:'0/02/Tick_Tack_Icon.png',gulp:'a/a0/Gulpuff_Icon.png',chirp:'9/96/Chirpuff_Icon.png',vjun:'c/c1/Vanguard_Junrock_Icon.png',fjun:'4/4c/Fission_Junrock_Icon.png',cruise:'3/3d/Cruisewing_Icon.png',fdread:'4/40/Fusion_Dreadmane_Icon.png',hoar:'6/62/Hoartoise_Icon.png',
+  cheron:'8/84/Cyan-Feathered_Heron_Icon.png',vheron:'0/05/Violet-Feathered_Heron_Icon.png',hdread:'e/ed/Havoc_Dreadmane_Icon.png',spear:'b/ba/Spearback_Icon.png',saur:'f/f8/Viridblaze_Saurian_Icon.png',tamb:'6/65/Tambourinist_Icon.png',scout:'4/4e/Autopuppet_Scout_Icon.png',
+  crown:'7/70/Crownless_Icon.png',mephis:'1/1e/Tempest_Mephis_Icon.png',aix:'2/25/Mourning_Aix_Icon.png',explorer:'0/08/Nameless_Explorer_Icon.png',rider:'5/55/Inferno_Rider_Icon.png',gorilla:'5/53/Feilian_Beringal_Icon.png',
+  dreamless:'9/91/Dreamless_Icon.png',turtle:'4/45/Bell-Borne_Geochelone_Icon.png',hecate:'b/b2/Hecate_Icon.png',
+  levia:'b/b7/Reminiscence_Threnodian_-_Leviathan_Icon.png',aleph:'3/38/Reminiscence_Threnodian_-_Voidborne_Construct_Icon.png'};
 
-/* ============ 에코(유물) ============ */
+/* ============ 에코(유물) — 쓰러뜨린 잔상의 힘 ============ */
 const ECHO={
-  jelly:{n:'해파리 에코',i:'≋',tx:'전투 시작 시 선두 공명자의 협주 에너지가 가득 찹니다.'},
-  statue:{n:'석상병 에코',i:'▲',tx:'매 턴 첫 교체 시 보호막 5.'},
-  bat:{n:'박쥐 에코',i:'∨',tx:'적을 처치할 때 출전 공명자 체력 3 회복.'},
-  flame:{n:'불꽃 도마뱀 에코',i:'♨',tx:'에이메스의 공격 피해 +2.'},
-  wolf:{n:'늑대 잔상 에코',i:'✶',tx:'모든 공격 피해 +1.'},
-  crab:{n:'갑각 수호자 에코',i:'◆',tx:'전투 시작 시 보호막 10.'},
-  mech:{n:'기계 잔상 에코',i:'⚙',tx:'매 턴 첫 교체 시 카드 1장 뽑기.'},
-  storm:{n:'폭풍 날개 에코',i:'❖',tx:'전투 첫 턴에 카드 2장을 추가로 뽑습니다.'},
-  golem:{n:'공명 거신 에코',i:'■',tx:'턴 종료 시 보호막이 없으면 보호막 6.'},
-  lion:{n:'사자 잔상 에코',i:'♛',tx:'공명 해방 사용 시 에너지 +1, 카드 1장 뽑기.'},
-  hunter:{n:'심연 사냥꾼 에코',i:'☾',tx:'적에게 취약을 부여할 때 1 더 부여.'},
+  gulp:{n:'꾹꾹복어 에코',i:'◉',tx:'전투 시작 시 선두 공명자의 협주 에너지가 가득 찹니다.'},
+  vjun:{n:'선봉 암괴 에코',i:'▲',tx:'매 턴 첫 교체 시 보호막 5.'},
+  chirp:{n:'쮸쮸복어 에코',i:'◌',tx:'적을 처치할 때 출전 공명자 체력 3 회복.'},
+  snip:{n:'칵찰찰 에코',i:'♨',tx:'용융 공명자(에이메스·모니에)의 공격 피해 +2.'},
+  fdread:{n:'갈기늑대 · 불꽃 에코',i:'✹',tx:'모든 공격 피해 +1.'},
+  hoar:{n:'서릿땅거북 에코',i:'⬢',tx:'전투 시작 시 보호막 10.'},
+  zig:{n:'아즈즈 에코',i:'✧',tx:'매 턴 첫 교체 시 카드 1장 뽑기.'},
+  crown:{n:'크라운리스 에코',i:'♛',tx:'전투 첫 턴에 카드 2장을 추가로 뽑습니다.'},
+  mephis:{n:'천둥의 비늘 에코',i:'ϟ',tx:'턴 종료 시 보호막이 없으면 보호막 6.'},
+  aix:{n:'애곡하는 아익스 에코',i:'❖',tx:'공명 해방 사용 시 에너지 +1, 카드 1장 뽑기.'},
+  explorer:{n:'이름없는 탐색자 에코',i:'⌖',tx:'적에게 취약을 부여할 때 1 더 부여.'},
+  rider:{n:'지옥불 기사 에코',i:'♞',tx:'전투 시작 시 모든 공명자의 공명 해방 게이지 +3.'},
+  gorilla:{n:'폭주의 고릴라 에코',i:'✊',tx:'획득 시 파티 전원 최대 체력 +8.',get:()=>T_().forEach(id=>{S.party[id].maxHp+=8;S.party[id].hp+=8})},
+  dreamless:{n:'무망자 에코',i:'☾',tx:'모든 공격 피해 +2.'},
+  turtle:{n:'타종 거북이 에코',i:'⍾',tx:'매 턴 시작 시 보호막 4.'},
+  hecate:{n:'헤카테 에코',i:'☽',tx:'적을 처치할 때 에너지 +1.'},
   levia:{n:'레비아탄 에코',i:'🜄',tx:'매 턴 에너지 +1.'},
   tuner:{n:'공명 조율기',i:'◎',tx:'전투 시작 시 모든 공명자의 공명 해방 게이지 +2.'},
-  pendant:{n:'별조각 펜던트',i:'✧',tx:'획득 시 모든 공명자 최대 체력 +6.',get:()=>ORDER.forEach(id=>{S.party[id].maxHp+=6;S.party[id].hp+=6})},
+  pendant:{n:'별조각 펜던트',i:'✧',tx:'획득 시 파티 전원 최대 체력 +6.',get:()=>T_().forEach(id=>{S.party[id].maxHp+=6;S.party[id].hp+=6})},
   charm:{n:'조개 부적',i:'⌘',tx:'전투 보상 조개 화폐 +50%.'},
 };
-const TREASURE_ECHO=['tuner','pendant','charm','jelly','statue','wolf','crab','mech'];
+const TREASURE_ECHO=['tuner','pendant','charm','gulp','vjun','fdread','hoar','zig'];
 const has=id=>S.echoes.includes(id);
 function gainEcho(id){if(!id||has(id))return;S.echoes.push(id);ECHO[id].get&&ECHO[id].get();}
 
 /* ============ 구역 ============ */
 const ACTS=[
-  {name:'1구역 · 잠긴 해안의 탑',easy:[['jelly'],['statue'],['bat','bat']],
-   normal:[['wolf'],['jelly','bat'],['statue','jelly'],['flame','bat'],['bat','bat','bat'],['flame']],
-   elite:[['storm'],['golem']],boss:'levia'},
-  {name:'2구역 · 별빛 첨탑',easy:[['crab'],['mech'],['wolf','bat']],
-   normal:[['crab','bat'],['mech','jelly'],['wolf','wolf'],['flame','flame','bat'],['crab','mech'],['statue','statue','jelly']],
-   elite:[['lion'],['hunter'],['storm','wolf']],boss:'axion'},
+  {name:'1구역 · 잠긴 해안의 탑',easy:[['snip'],['tick'],['chirp','chirp'],['zig']],
+   normal:[['tick','chirp'],['vjun'],['gulp','chirp'],['fjun','fjun'],['fdread'],['hoar'],['cruise','snip'],['zig','tick']],
+   elite:[['crown'],['mephis'],['aix'],['explorer']],boss:'levia'},
+  {name:'2구역 · 별빛 첨탑',easy:[['cheron'],['vheron'],['scout']],
+   normal:[['hdread'],['spear'],['saur'],['tamb','chirp'],['cheron','cruise'],['vjun','vjun','fjun'],['scout','zig'],['fdread','tick']],
+   elite:[['dreamless'],['turtle'],['hecate'],['rider'],['gorilla']],boss:'aleph'},
 ];
 
 /* ============ 상태 ============ */
 let S;
-function newGame(){
-  S={screen:'map',act:0,floor:0,gold:99,echoes:[],deck:[],party:{},pos:null,map:null,fights:0,modal:null,stats:{kills:0}};
-  ORDER.forEach(id=>S.party[id]={hp:CH[id].maxHp,maxHp:CH[id].maxHp,down:false});
-  ['rov_a','rov_b','rov_s','aem_a','aem_b','aem_s','sk_a','sk_b','sk_s','rov_a','aem_a','sk_b'].forEach(id=>S.deck.push(mk(id)));
+function newGame(start){
+  start=start||'aem';
+  S={screen:'map',act:0,floor:0,gold:99,echoes:[],deck:[],party:{},team:[start],pos:null,map:null,fights:0,modal:null,stats:{kills:0}};
+  const hp=CH[start].maxHp+14;S.party[start]={hp,maxHp:hp,down:false};
+  ['_a','_a','_a','_a','_b','_b','_b','_b','_s','_s'].forEach(x=>S.deck.push(mk(start+x)));
   S.map=genMap();
   render();
 }
 
 /* ============ 지도 ============ */
 const NODE={battle:{l:'전투',s:'⚔',c:'#c9d2ff'},elite:{l:'정예',s:'☠',c:'#ff8a8a'},event:{l:'사건',s:'?',c:'#9fe8c8'},
-  rest:{l:'휴식',s:'☾',c:'#ffd75e'},shop:{l:'상점',s:'$',c:'#ffb36b'},treasure:{l:'보급',s:'◈',c:'#8ab4ff'},boss:{l:'명식',s:'✹',c:'#ff5d6c'}};
+  rest:{l:'휴식',s:'☾',c:'#ffd75e'},shop:{l:'상점',s:'$',c:'#ffb36b'},treasure:{l:'보급',s:'◈',c:'#8ab4ff'},recruit:{l:'영입',s:'✚',c:'#7cf0c0'},boss:{l:'명식',s:'✹',c:'#ff5d6c'}};
 const ROWS=12;
 function nodeType(r){
   if(r===0)return'battle';if(r===ROWS-1)return'rest';if(r===6)return'treasure';
+  if((S.act===0&&r===4)||(S.act===1&&r===1))return'recruit';
   const x=Math.random();
   if(r<3)return x<.55?'battle':x<.88?'event':'shop';
   return x<.4?'battle':x<.64?'event':x<.8?'elite':x<.9?'rest':'shop';
@@ -415,6 +519,7 @@ function enterNode(key){
   else if(t==='event')startEvent();
   else if(t==='rest'){S.screen='rest';S.restDone=false;render()}
   else if(t==='shop')openShop();
+  else if(t==='recruit')openRecruit();
   else if(t==='treasure'){const pool=TREASURE_ECHO.filter(e=>!has(e));const e=pool.length?pick(pool):null;const g=rnd(30,50);S.gold+=g;gainEcho(e);
     S.screen='msg';S.msg={title:'보급 상자',body:`낡은 보급 상자를 열었습니다.<br>조개 화폐 <b>+${g}</b>${e?`<br>에코 <b>${ECHO[e].n}</b> 획득 — ${ECHO[e].tx}`:''}`};render()}
 }
@@ -422,19 +527,21 @@ function enterNode(key){
 /* ============ 전투 ============ */
 const alive=()=>S.c.enemies.filter(e=>!e.dead);
 function spawn(id){
-  const d=EN[id];const k=d.boss?1:S.act===1?(['lion','hunter'].includes(id)?1.1:1.35):1.1;
+  const d=EN[id];const k=d.boss||d.elite?1:S.act===1?1.2:1.1;
   const hp=Math.round(rnd(d.hp[0],d.hp[1])*k);
-  return{uid:UID++,id,hp,maxHp:hp,block:0,str:0,weak:0,vuln:0,fz:0,dead:false,mi:d.boss?0:rnd(0,d.m.length-1),bonus:d.boss?0:(S.act===1?3:1)};
+  return{uid:UID++,id,hp,maxHp:hp,block:0,str:0,weak:0,vuln:0,fz:0,ur:0,dead:false,mi:d.boss?0:rnd(0,d.m.length-1),bonus:d.boss?0:(S.act===1?3:1)};
 }
 function startCombat(ids,kind){
-  const lead=ORDER.find(id=>!S.party[id].down);
+  const lead=T_().find(id=>!S.party[id].down);
   S.c={kind,enemies:ids.map(spawn),draw:shuffle(S.deck.map(c=>({...c}))),discard:[],hand:[],exhaust:[],energy:0,block:0,amp:0,weak:0,
-    field:{t:0,b:0},orbit:0,melody:0,ghost:0,mecha:false,active:lead,conc:{rov:0,aem:0,sk:0},lib:{rov:0,aem:0,sk:0},
+    field:{t:0,b:0},orbit:0,melody:0,ghost:0,mecha:false,active:lead,conc:Object.fromEntries(T_().map(id=>[id,0])),lib:Object.fromEntries(T_().map(id=>[id,0])),paint:0,bloom:0,calc:0,calcNow:0,nextE:0,hyp:0,bond:0,freeBrush:0,camUni:0,
     switched:0,turn:0,tgt:null,log:[],busy:false,cur:lead,id:UID++};
   S.c.enemies.forEach(setIntent);
-  if(has('jelly'))S.c.conc[lead]=3;
-  if(has('tuner'))ORDER.forEach(id=>S.c.lib[id]=2);
-  if(has('crab'))S.c.block+=10;
+  if(has('gulp'))S.c.conc[lead]=3;
+  if(S.team.includes('lyn'))S.c.paint=3;
+  if(has('tuner'))T_().forEach(id=>S.c.lib[id]+=2);
+  if(has('rider'))T_().forEach(id=>S.c.lib[id]=Math.min(5,S.c.lib[id]+3));
+  if(has('hoar'))S.c.block+=10;
   S.screen='combat';
   log(kind==='boss'?`명식 「${EN[ids[0]].n}」 출현!`:kind==='elite'?'강력한 잔상이 앞을 가로막습니다.':'잔상과 조우했습니다.');
   startTurn();
@@ -444,12 +551,14 @@ function setIntent(e){const m=EN[e.id].m;e.move=m[e.mi%m.length];e.mi++}
 function log(t){S.c.log.push(t);if(S.c.log.length>4)S.c.log.shift()}
 function startTurn(){
   const c=S.c;c.turn++;c.block=0;c.switched=0;
-  c.energy=3+(has('levia')?1:0);
-  if(has('crab')&&c.turn===1)c.block=10;
+  c.energy=3+(has('levia')?1:0)+c.nextE;c.nextE=0;
+  if(c.bond)heal(c.active,c.bond);
+  if(has('turtle'))gainBlock(4);
+  if(has('hoar')&&c.turn===1)c.block=10;
   if(c.field.t>0){gainBlock(c.field.b);heal(c.active,2);c.field.t--}
   if(c.orbit){gainBlock(c.orbit);gainConc(c.active,1)}
   if(c.melody)alive().forEach(e=>fz(e,c.melody));
-  draw(5+(c.turn===1&&has('storm')?2:0));
+  draw(5+(c.turn===1&&has('crown')?2:0));
   render();
 }
 function draw(n){
@@ -487,7 +596,9 @@ function playCard(uid,T){
   c.energy-=costOf(card);c.hand.splice(idx,1);
   const owner=d.o==='any'?c.active:d.o;c.cur=owner;
   const atk=d.t==='공격';anim('u-'+owner,atk?'atk':'cast');FXDELAY=atk?170:60;
-  d.p(vals(card),T,card);FXDELAY=0;
+  if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
+  d.p(vals(card),T,card);FXDELAY=0;c.calcNow=0;
+  if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
   gainConc(owner,1);gainLib(owner,1);
   if(d.pw){}else if(d.ex)c.exhaust.push(card);else c.discard.push(card);
   log(`${CH[owner].name} — ${d.n}${card.up?'+':''}`);
@@ -498,24 +609,29 @@ function afterAction(){
 }
 function maybeWin(){
   const c=S.c;if(!c||alive().length||c.ending)return false;
-  c.ending=true;c.busy=true;c.tgt=null;setTimeout(winCombat,window.FAST?0:750);return true;
+  c.ending=true;c.busy=true;c.tgt=null;window.FAST?queueMicrotask(winCombat):setTimeout(winCombat,750);return true;
 }
 function gainConc(id,n){S.c.conc[id]=Math.min(3,S.c.conc[id]+n)}
 function gainLib(id,n){S.c.lib[id]=Math.min(5,S.c.lib[id]+n)}
 function hit(T,base,o={}){
   if(!T||T.dead)return;const c=S.c;let d=base;
-  if(!o.raw)d+=(c.cur==='aem'&&c.mecha?3:0)+(has('wolf')?1:0)+(c.cur==='aem'&&has('flame')?2:0);
+  if(!o.raw)d+=(c.cur==='aem'&&c.mecha?3:0)+(has('fdread')?1:0)+(has('dreamless')?2:0)+((c.cur==='aem'||c.cur==='mor')&&has('snip')?2:0)+(c.cur==='cam'?c.bloom:0)+(c.cur==='lyn'?Math.floor(c.paint/2):0)+c.calcNow;
+  d+=T.ur||0;
   let m=1;if(c.amp>0)m*=1.3;if(c.weak>0)m*=.75;if(T.vuln>0)m*=1.5;
   dmgEnemy(T,Math.max(0,Math.floor(d*m)));
 }
 function dmgEnemy(T,d,pierce){
   let left=d;if(!pierce){const ab=Math.min(T.block,left);T.block-=ab;left-=ab}
   T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',FXDELAY);
-  if(T.hp<=0){T.hp=0;T.dead=true;S.stats.kills++;log(`${EN[T.id].n} 처치!`);if(has('bat'))heal(S.c.active,3)}
+  if(T.hp<=0){T.hp=0;T.dead=true;S.stats.kills++;log(`${EN[T.id].n} 처치!`);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++}
 }
 const fz=(T,n)=>{if(T&&!T.dead){T.fz+=n;pop(T,`잔향 +${n}`,'info')}};
-const vuln=(T,n)=>{if(T&&!T.dead)T.vuln+=n+(has('hunter')?1:0)};
-function gainBlock(n){S.c.block+=n;pop('party',`+${n} 보호막`,'blk')}
+const vuln=(T,n)=>{if(T&&!T.dead)T.vuln+=n+(has('explorer')?1:0)};
+function gainBlock(n){const c=S.c;c.block+=n;pop('party',`+${n} 보호막`,'blk');if(c.hyp&&n>0&&alive().length)dmgEnemy(pick(alive()),c.hyp)}
+function paint(n){const c=S.c;c.paint=Math.min(12,c.paint+n);if(n>0)pop('p-lyn',`색채 +${n}`,'info')}
+function bloom(n){const c=S.c;c.bloom=Math.min(10,c.bloom+n);if(n>0)pop('p-cam',`개화 +${n}`,'info')}
+function unravel(T,n){if(T&&!T.dead){T.ur+=n;pop(T,`해체 +${n}`,'info')}}
+function selfHurt(id,n){const p=S.party[id];if(!p||p.down)return;const lost=Math.min(n,p.hp-1);if(lost<=0)return;p.hp-=lost;pop('p-'+id,`-${lost}`,'dmg');if(id==='cam'&&S.c.camUni)bloom(S.c.camUni)}
 function heal(id,n){const p=S.party[id];if(p.down)return;const before=p.hp;p.hp=Math.min(p.maxHp,p.hp+n);if(S.c&&S.screen==='combat'&&p.hp>before)pop('p-'+id,`+${p.hp-before}`,'heal')}
 function setField(n,b){const f=S.c.field;f.t=Math.max(f.t,n);f.b=Math.max(f.b,b);pop('party','별의 영역','info')}
 function toggleMecha(b){const c=S.c;if(c.mecha){c.mecha=false;gainBlock(b);pop('p-aem','일반 형태','info')}else{c.mecha=true;pop('p-aem','메카스카우트!','info')}}
@@ -528,7 +644,7 @@ function doSwitch(id){
   c.energy-=cost;const out=c.active;const full=c.conc[out]>=3;
   if(full){c.cur=out;outro(out,id);c.conc[out]=0}
   c.active=id;c.cur=id;
-  if(!c.switched){if(has('statue'))gainBlock(5);if(has('mech'))draw(1)}
+  if(!c.switched){if(has('vjun'))gainBlock(5);if(has('zig'))draw(1)}
   c.switched++;
   anim('u-'+id,'cast');
   if(full){FXDELAY=200;intro(id);FXDELAY=0;log(`협주 → 변주! ${CH[out].name} → ${CH[id].name}`);banner(`${CH[out].name} 협주 → ${CH[id].name} 변주`)}
@@ -541,16 +657,25 @@ function outro(id,inc){
   if(id==='rov')alive().forEach(e=>fz(e,2));
   if(id==='aem')c.amp=Math.max(c.amp,2);
   if(id==='sk'){heal(inc,6);c.amp=Math.max(c.amp,1)}
+  if(id==='lyn'){c.energy+=1;draw(1)}
+  if(id==='mor'){gainBlock(4);c.amp=Math.max(c.amp,1)}
+  if(id==='chi'){alive().forEach(e=>unravel(e,2));heal(inc,4)}
+  if(id==='cam'){alive().forEach(e=>{e.weak+=1});c.amp=Math.max(c.amp,1)}
 }
 function intro(id){
-  const c=S.c;
+  const c=S.c;if(!alive().length)return;
   if(id==='rov'){const T=pick(alive());hit(T,5);fz(T,2)}
   if(id==='aem'){hit(pick(alive()),8);c.amp=Math.max(c.amp,1)}
   if(id==='sk')gainBlock(8);
+  if(id==='lyn'){paint(2);const T=pick(alive());hit(T,4);hit(T,4)}
+  if(id==='mor')gainBlock(6);
+  if(id==='chi'){const T=pick(alive());hit(T,6);unravel(T,2)}
+  if(id==='cam')hit(pick(alive()),9);
 }
+const LIB_TG={rov:1,aem:1,mor:1,cam:1};
 function clickLib(){
   const c=S.c;const id=c.active;if(c.busy||c.lib[id]<5)return;
-  if(id!=='sk'&&alive().length>1){c.tgt={kind:'lib'};return render()}
+  if(LIB_TG[id]&&alive().length>1){c.tgt={kind:'lib'};return render()}
   doLib(alive()[0]);
 }
 function doLib(T){
@@ -558,9 +683,13 @@ function doLib(T){
   anim('u-'+id,id==='sk'?'cast':'ult');FXDELAY=id==='sk'?100:380;
   if(id==='rov'){hit(T,22);fz(T,6)}
   if(id==='aem'){c.mecha=true;hit(T,28)}
-  if(id==='sk'){ORDER.forEach(x=>heal(x,10));gainBlock(12);c.field.t+=2;c.field.b=Math.max(c.field.b,4)}
+  if(id==='sk'){T_().forEach(x=>heal(x,10));gainBlock(12);c.field.t+=2;c.field.b=Math.max(c.field.b,4)}
+  if(id==='lyn'){const k=c.paint;c.paint=0;alive().forEach(e=>hit(e,8+k*3))}
+  if(id==='mor'){gainBlock(15);hit(T,c.block,{raw:1})}
+  if(id==='chi'){alive().forEach(e=>{hit(e,10);unravel(e,3)});T_().forEach(x=>heal(x,5))}
+  if(id==='cam'){hit(T,26);bloom(3)}
   FXDELAY=0;gainConc(id,1);
-  if(has('lion')){c.energy++;draw(1)}
+  if(has('aix')){c.energy++;draw(1)}
   banner(CH[id].lib.split(':')[0]);log(`${CH[id].name} — ${CH[id].lib.split(':')[0]}`);
   afterAction();
 }
@@ -570,7 +699,7 @@ async function endTurn(){
   const c=S.c;if(c.busy)return;c.busy=true;c.tgt=null;
   c.discard.push(...c.hand.filter(x=>!CD[x.id].ex||true));c.hand=[];
   c.amp=Math.max(0,c.amp-1);c.weak=Math.max(0,c.weak-1);
-  if(has('golem')&&c.block===0)gainBlock(6);
+  if(has('mephis')&&c.block===0)gainBlock(6);
   render();await sleep(350);
   for(const e of c.enemies){
     if(e.dead)continue;
@@ -585,16 +714,16 @@ async function endTurn(){
       for(let h=0;h<(m.h||1);h++){if(h)anim('e'+e.uid,'jab');hurtParty(enemyDmg(e,m));render();await sleep(h<(m.h||1)-1?200:330);if(wiped()){render();await sleep(700);return lose()}}}
     else{anim('e'+e.uid,'cast');render();await sleep(380)}
   }
-  c.enemies.forEach(e=>{if(!e.dead){e.vuln=Math.max(0,e.vuln-1);e.weak=Math.max(0,e.weak-1);setIntent(e)}});
+  c.enemies.forEach(e=>{if(!e.dead){e.vuln=Math.max(0,e.vuln-1);e.weak=Math.max(0,e.weak-1);e.ur=Math.max(0,e.ur-1);setIntent(e)}});
   c.busy=false;startTurn();
 }
 const enemyDmg=(e,m)=>{let d=m.d+e.str+e.bonus;if(e.weak>0)d=Math.floor(d*.75);return d};
-const wiped=()=>ORDER.every(id=>S.party[id].down);
+const wiped=()=>T_().every(id=>S.party[id].down);
 function hurtParty(d){
   const c=S.c;const ab=Math.min(c.block,d);c.block-=ab;const rest=d-ab;
   const p=S.party[c.active];
-  if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit')}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
-  if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=ORDER.find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
+  if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
+  if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
 function lose(){S.c.busy=false;S.screen='over';render()}
 function winCombat(){
@@ -609,7 +738,7 @@ function winCombat(){
   render();
 }
 function rollCards(n,better){
-  const out=[];const pool=[...REWARD_POOL];
+  const out=[];const pool=REWARD_POOL.filter(k=>S.team.includes(CD[k].o));
   while(out.length<n&&pool.length){
     let id=pick(pool);if(CD[id].r&&Math.random()>(better?.55:.3))continue;
     pool.splice(pool.indexOf(id),1);out.push(mk(id,Math.random()<(better?.25:.08)));
@@ -620,7 +749,7 @@ function takeReward(uid){const c=S.reward.cards.find(x=>x.uid===uid);if(c)S.deck
 function afterReward(){
   if(S.pos&&S.pos.r===ROWS){
     if(S.act===0){S.act=1;S.pos=null;S.map=genMap();S.fights=0;
-      ORDER.forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*.5))});
+      T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*.5))});
       S.screen='msg';S.msg={title:'2구역 · 별빛 첨탑',body:'레비아탄의 잔향이 잦아들자 탑 위로 이어지는 계단이 열립니다.<br>잠시 숨을 고르며 모든 공명자가 <b>최대 체력의 50%</b>를 회복했습니다.'};
     }else S.screen='win';
   }else S.screen='map';
@@ -629,37 +758,51 @@ function afterReward(){
 
 /* ============ 사건 ============ */
 const EVENTS=[
-  {t:'스타토치 아카데미의 빈 교실',s:'✎',b:'먼지 쌓인 책상 위에 누군가 그려 둔 비행 설계도가 남아 있다. 에이메스가 잠시 말없이 그 그림을 바라본다.',
+  {req:()=>S.team.includes('aem'),t:'스타토치 아카데미의 빈 교실',s:'✎',b:'먼지 쌓인 책상 위에 누군가 그려 둔 비행 설계도가 남아 있다. 에이메스가 잠시 말없이 그 그림을 바라본다.',
    c:[{l:'설계도를 함께 들여다본다',d:'에이메스 카드 1장 강화',ok:()=>S.deck.some(x=>CD[x.id].o==='aem'&&!x.up),f:()=>chooseCard(x=>CD[x.id].o==='aem'&&!x.up,'강화할 에이메스 카드',x=>{x.up=true;done(`「${CD[x.id].n}」이(가) 강화되었습니다.`)})},
       {l:'창가에 앉아 쉬어 간다',d:'에이메스 체력 전부 회복',ok:()=>!S.party.aem.down,f:()=>{const p=S.party.aem;p.hp=p.maxHp;done('창밖의 별빛이 따뜻하다. 에이메스가 기운을 되찾았습니다.')}},
       {l:'조용히 문을 닫는다',d:'아무 일도 일어나지 않음',f:()=>done('추억은 그대로 두기로 했습니다.')}]},
-  {t:'검은해안의 관측소',s:'⌬',b:'파수인이 오래된 관측 단말을 깨운다. "기록 중 일부는 정리해도 괜찮아요. 대신, 남은 기록이 당신을 조금 아프게 할 수도 있어요."',
+  {req:()=>S.team.includes('sk'),t:'검은해안의 관측소',s:'⌬',b:'파수인이 오래된 관측 단말을 깨운다. "기록 중 일부는 정리해도 괜찮아요. 대신, 남은 기록이 당신을 조금 아프게 할 수도 있어요."',
    c:[{l:'불필요한 데이터를 정리한다',d:'카드 1장 제거',ok:()=>S.deck.length>5,f:()=>chooseCard(()=>true,'제거할 카드',x=>{S.deck=S.deck.filter(y=>y.uid!==x.uid);done(`「${CD[x.id].n}」을(를) 덱에서 제거했습니다.`)})},
       {l:'봉인된 관측 기록을 연다',d:'무작위 에코 획득, 파수인 최대 체력 -6',ok:()=>TREASURE_ECHO.some(e=>!has(e)),f:()=>{const e=pick(TREASURE_ECHO.filter(e=>!has(e)));gainEcho(e);const p=S.party.sk;p.maxHp-=6;p.hp=Math.min(p.hp,p.maxHp);done(`에코 「${ECHO[e].n}」 획득. ${ECHO[e].tx}<br>파수인의 최대 체력이 6 감소했습니다.`)}},
       {l:'관측소를 떠난다',d:'',f:()=>done('단말의 불빛이 천천히 꺼집니다.')}]},
-  {t:'디지털 유령의 속삭임',s:'◌',b:'아무도 없는 복도에서 방랑자에게만 들리는 목소리가 흘러나온다. 낯익은 듯한, 아주 먼 곳의 신호.',
-   c:[{l:'목소리를 따라간다',d:'50%: 희귀 카드 / 50%: 잔향 노이즈 + 방랑자 체력 -8',f:()=>{if(Math.random()<.5){const id=pick(REWARD_POOL.filter(k=>CD[k].r));S.deck.push(mk(id));done(`신호의 끝에서 「${CD[id].n}」을(를) 얻었습니다.`)}else{S.deck.push(mk('noise'));const p=S.party.rov;if(!p.down)p.hp=Math.max(1,p.hp-8);done('신호가 일그러지며 귀를 찢는다. <b>잔향 노이즈</b>가 덱에 들어왔고 방랑자가 8 피해를 입었습니다.')}}},
+  {req:()=>S.team.includes('rov'),t:'디지털 유령의 속삭임',s:'◌',b:'아무도 없는 복도에서 방랑자에게만 들리는 목소리가 흘러나온다. 낯익은 듯한, 아주 먼 곳의 신호.',
+   c:[{l:'목소리를 따라간다',d:'50%: 희귀 카드 / 50%: 잔향 노이즈 + 방랑자 체력 -8',f:()=>{if(Math.random()<.5){const id=pick(REWARD_POOL.filter(k=>CD[k].r&&S.team.includes(CD[k].o)));S.deck.push(mk(id));done(`신호의 끝에서 「${CD[id].n}」을(를) 얻었습니다.`)}else{S.deck.push(mk('noise'));const p=S.party.rov;if(!p.down)p.hp=Math.max(1,p.hp-8);done('신호가 일그러지며 귀를 찢는다. <b>잔향 노이즈</b>가 덱에 들어왔고 방랑자가 8 피해를 입었습니다.')}}},
       {l:'지금은 지나친다',d:'',f:()=>done('목소리는 다음에 다시 들릴 것만 같습니다.')}]},
   {t:'버려진 무음 지대',s:'▧',b:'소리가 사라진 구역. 잔상의 흔적과 함께 누군가 흘린 조개 화폐가 반짝인다.',
-   c:[{l:'흔적을 조사한다',d:'조개 화폐 +60, 모든 공명자 체력 -5',f:()=>{S.gold+=60;ORDER.forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.max(1,p.hp-5)});done('잔류 진동에 휩쓸렸지만 화폐 주머니를 챙겼습니다.')}},
+   c:[{l:'흔적을 조사한다',d:'조개 화폐 +60, 모든 공명자 체력 -5',f:()=>{S.gold+=60;T_().forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.max(1,p.hp-5)});done('잔류 진동에 휩쓸렸지만 화폐 주머니를 챙겼습니다.')}},
       {l:'잔상의 메아리를 흡수한다',d:'무작위 공용 카드 「조개 화폐 던지기」 획득',f:()=>{S.deck.push(mk('any_shell'));done('「조개 화폐 던지기」를 얻었습니다.')}},
       {l:'돌아간다',d:'',f:()=>done('무음은 여전히 무겁습니다.')}]},
   {t:'라하이로이 노점',s:'⛺',b:'탑 중턱에서 장사를 하는 이상한 상인. "공명 보정 장치 있어요! 효과는… 아마 있을 거예요."',
-   c:[{l:'보정 장치를 산다 (50 화폐)',d:'모든 공명자 최대 체력 +5',ok:()=>S.gold>=50,f:()=>{S.gold-=50;ORDER.forEach(id=>{S.party[id].maxHp+=5;if(!S.party[id].down)S.party[id].hp+=5});done('의외로 효과가 있었습니다!')}},
-      {l:'따뜻한 차를 얻어 마신다',d:'모든 공명자 체력 12 회복',f:()=>{ORDER.forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.min(p.maxHp,p.hp+12)});done('잠깐의 휴식이 반갑습니다.')}}]},
-  {t:'방랑자의 기억 조각',s:'❂',b:'공명하는 파편이 떠 있다. 손을 뻗자 잊고 있던 장면이 스친다.',
+   c:[{l:'보정 장치를 산다 (50 화폐)',d:'모든 공명자 최대 체력 +5',ok:()=>S.gold>=50,f:()=>{S.gold-=50;T_().forEach(id=>{S.party[id].maxHp+=5;if(!S.party[id].down)S.party[id].hp+=5});done('의외로 효과가 있었습니다!')}},
+      {l:'따뜻한 차를 얻어 마신다',d:'모든 공명자 체력 12 회복',f:()=>{T_().forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.min(p.maxHp,p.hp+12)});done('잠깐의 휴식이 반갑습니다.')}}]},
+  {req:()=>S.team.includes('rov'),t:'방랑자의 기억 조각',s:'❂',b:'공명하는 파편이 떠 있다. 손을 뻗자 잊고 있던 장면이 스친다.',
    c:[{l:'기억을 붙잡는다',d:'방랑자 카드 1장 강화',ok:()=>S.deck.some(x=>CD[x.id].o==='rov'&&!x.up),f:()=>chooseCard(x=>CD[x.id].o==='rov'&&!x.up,'강화할 방랑자 카드',x=>{x.up=true;done(`「${CD[x.id].n}」이(가) 강화되었습니다.`)})},
-      {l:'기억을 놓아준다',d:'기절한 공명자 부활(체력 30%), 없으면 모두 8 회복',f:()=>{let rev=false;ORDER.forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=Math.round(p.maxHp*.3);rev=true}else p.hp=Math.min(p.maxHp,p.hp+8)});done(rev?'쓰러졌던 동료가 다시 일어섰습니다.':'마음이 가벼워졌습니다.')}}]},
-  {t:'공명 동기화 실험',s:'⚗',b:'검은해안의 실험 장치가 아직 작동한다. 파수인: "출력이 불안정하지만, 성공하면 꽤 의미 있는 결과가 나올 거예요."',
-   c:[{l:'실험에 참여한다',d:'무작위 카드 2장 강화, 무작위 공명자 체력 -10',ok:()=>S.deck.some(x=>!x.up&&!CD[x.id].unplay),f:()=>{const ups=shuffle(S.deck.filter(x=>!x.up&&!CD[x.id].unplay)).slice(0,2);ups.forEach(x=>x.up=true);const v=pick(ORDER.filter(id=>!S.party[id].down));if(v)S.party[v].hp=Math.max(1,S.party[v].hp-10);done(`${ups.map(x=>`「${CD[x.id].n}」`).join(', ')} 강화!${v?`<br>${CH[v].name}이(가) 10 피해를 입었습니다.`:''}`)}},
+      {l:'기억을 놓아준다',d:'기절한 공명자 부활(체력 30%), 없으면 모두 8 회복',f:()=>{let rev=false;T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=Math.round(p.maxHp*.3);rev=true}else p.hp=Math.min(p.maxHp,p.hp+8)});done(rev?'쓰러졌던 동료가 다시 일어섰습니다.':'마음이 가벼워졌습니다.')}}]},
+  {req:()=>S.team.includes('sk'),t:'공명 동기화 실험',s:'⚗',b:'검은해안의 실험 장치가 아직 작동한다. 파수인: "출력이 불안정하지만, 성공하면 꽤 의미 있는 결과가 나올 거예요."',
+   c:[{l:'실험에 참여한다',d:'무작위 카드 2장 강화, 무작위 공명자 체력 -10',ok:()=>S.deck.some(x=>!x.up&&!CD[x.id].unplay),f:()=>{const ups=shuffle(S.deck.filter(x=>!x.up&&!CD[x.id].unplay)).slice(0,2);ups.forEach(x=>x.up=true);const v=pick(T_().filter(id=>!S.party[id].down));if(v)S.party[v].hp=Math.max(1,S.party[v].hp-10);done(`${ups.map(x=>`「${CD[x.id].n}」`).join(', ')} 강화!${v?`<br>${CH[v].name}이(가) 10 피해를 입었습니다.`:''}`)}},
       {l:'장치를 끈다',d:'',f:()=>done('"현명한 선택이에요." 파수인이 미소 짓습니다.')}]},
   {t:'무음 지대의 잔상',s:'☠',b:'짙은 무음 속에 강력한 잔상이 웅크리고 있다. 지금이라면 먼저 덮칠 수 있다.',
    c:[{l:'기습한다',d:'정예 전투 (에코 보상)',f:()=>{S.screen='map';startCombat(pick(ACTS[S.act].elite),'elite')}},
       {l:'우회한다',d:'',f:()=>done('숨을 죽인 채 지나갔습니다.')}]},
+  {req:()=>S.team.length<3&&ALL.some(id=>!S.team.includes(id)),t:'갈림길의 공명자',s:'✚',b:'탑의 갈림길에서 홀로 잔상을 상대하던 공명자와 마주쳤다. 잔상을 함께 물리치자, 상대가 당신을 가만히 바라본다.',
+   c:[{l:'동료로 맞이한다',d:'공명자 영입',f:()=>openRecruit()},{l:'각자의 길을 간다',d:'',f:()=>done('서로 짧게 고개를 끄덕이고 헤어졌습니다.')}]},
+  {req:()=>S.team.includes('lyn'),t:'색이 바랜 벽화',s:'✐',b:'탑 벽면에 빛바랜 벽화가 남아 있다. 린네가 눈을 반짝인다. "이거, 좀 더 화려하게 만들어도 되지?"',
+   c:[{l:'마음껏 덧칠하게 둔다',d:'린네 카드 1장 강화',ok:()=>S.deck.some(x=>CD[x.id].o==='lyn'&&!x.up),f:()=>chooseCard(x=>CD[x.id].o==='lyn'&&!x.up,'강화할 린네 카드',x=>{x.up=true;done(`「${CD[x.id].n}」이(가) 강화되었습니다.`)})},
+      {l:'완성된 그림을 감상한다',d:'모든 공명자 체력 8 회복',f:()=>{T_().forEach(id=>heal(id,8));done('벽화가 형형색색으로 빛납니다. 마음이 조금 가벼워졌어요.')}}]},
+  {req:()=>S.team.includes('mor'),t:'버려진 탐사 연구실',s:'⌖',b:'모니에가 먼지 쌓인 단말을 살핀다. "이 데이터, 아직 복원할 수 있어요. 조금만 시간을 주세요."',
+   c:[{l:'데이터를 복원한다',d:'무작위 카드 1장 강화, 모니에 최대 체력 +4',f:()=>{const u=shuffle(S.deck.filter(x=>!x.up&&!CD[x.id].unplay))[0];if(u)u.up=true;const p=S.party.mor;p.maxHp+=4;if(!p.down)p.hp+=4;done(`${u?`「${CD[u.id].n}」 강화. `:''}모니에의 최대 체력이 4 증가했습니다.`)}},
+      {l:'쓸 만한 부품만 챙긴다',d:'조개 화폐 +45',f:()=>{S.gold+=45;done('부품을 팔면 꽤 쏠쏠하겠네요.')}}]},
+  {req:()=>S.team.includes('chi'),t:'끊어진 공명의 실',s:'⌇',b:'허공에 공명의 실이 늘어져 있다. 치사가 조용히 말한다. "끊을지, 이을지. 선택은 당신 몫이에요."',
+   c:[{l:'실을 끊는다',d:'카드 1장 제거',ok:()=>S.deck.length>5,f:()=>chooseCard(()=>true,'제거할 카드',x=>{S.deck=S.deck.filter(y=>y.uid!==x.uid);done(`「${CD[x.id].n}」을(를) 덱에서 제거했습니다.`)})},
+      {l:'실을 잇는다',d:'모든 공명자 최대 체력 +3',f:()=>{T_().forEach(id=>{S.party[id].maxHp+=3;if(!S.party[id].down)S.party[id].hp+=3});done('끊어질 듯하던 실이 단단해졌습니다.')}}]},
+  {req:()=>S.team.includes('cam'),t:'블룸 베어러의 발아 시험',s:'❀',b:'카멜리아가 검을 뽑으며 웃는다. "시험이야. 통과하면 상을 줄게. 물론, 다치는 건 각오해야겠지?"',
+   c:[{l:'시험에 응한다',d:'정예 전투 (에코 보상)',f:()=>{S.screen='map';startCombat(pick(ACTS[S.act].elite),'elite')}},
+      {l:'꽃잎만 받아 간다',d:'카멜리아 체력 -8, 카멜리아 희귀 카드 획득',ok:()=>!S.party.cam.down,f:()=>{const p=S.party.cam;p.hp=Math.max(1,p.hp-8);const id=pick(REWARD_POOL.filter(k=>CD[k].o==='cam'&&CD[k].r));S.deck.push(mk(id));done(`「${CD[id].n}」을(를) 얻었습니다. "다음엔 진짜로 싸워 줘야 해?"`)}}]},
 ];
 function startEvent(){
-  const pool=EVENTS.filter((e,i)=>!(S.seenEv||[]).includes(i));
-  const ev=pool.length?pick(pool):pick(EVENTS);S.seenEv=[...(S.seenEv||[]),EVENTS.indexOf(ev)];
+  const ok=EVENTS.filter(e=>!e.req||e.req());const pool=ok.filter(e=>!(S.seenEv||[]).includes(EVENTS.indexOf(e)));
+  const ev=pool.length?pick(pool):pick(ok);S.seenEv=[...(S.seenEv||[]),EVENTS.indexOf(ev)];
   S.ev=ev;S.evResult=null;S.screen='event';render();
 }
 function evChoose(i){const ch=S.ev.c[i];if(ch.ok&&!ch.ok())return;ch.f()}
@@ -672,8 +815,12 @@ const REST_LINES=[
   ['rov','모닥불 너머로 잔향이 잔잔하게 울린다.'],
   ['aem','"메카스카우트 정비 완료! 다음 층도 함께 가요."'],
   ['sk','"당신이 걸어온 길은 전부 기록해 두고 있어요."'],
+  ['lyn','"쉬는 시간이다! 다음 층 벽은 무슨 색으로 칠할까?"'],
+  ['mor','"휴식도 계산에 넣어야 효율이 나와요. 자, 앉으세요."'],
+  ['chi','"상처 부위, 보여 주세요. 금방 정리할게요."'],
+  ['cam','"벌써 쉬어? …뭐, 꽃도 물은 마셔야지."'],
 ];
-function restHeal(){ORDER.forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*.3))});S.restDone='모든 공명자가 최대 체력의 30%를 회복했습니다.';render()}
+function restHeal(){T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*.3))});S.restDone='모든 공명자가 최대 체력의 30%를 회복했습니다.';render()}
 function restUp(){chooseCard(x=>!x.up&&!CD[x.id].unplay,'강화할 카드',x=>{x.up=true;S.restDone=`「${CD[x.id].n}」 강화 완료.`;S.modal=null;render()})}
 function openShop(){
   const cards=rollCards(5,true).map(c=>({c,price:CD[c.id].r?rnd(110,140):rnd(45,75),sold:false}));
@@ -684,7 +831,7 @@ function openShop(){
 function buyCard(i){const it=S.shop.cards[i];if(it.sold||S.gold<it.price)return;S.gold-=it.price;it.sold=true;S.deck.push(it.c);render()}
 function buyEcho(i){const it=S.shop.ech[i];if(it.sold||S.gold<it.price)return;S.gold-=it.price;it.sold=true;gainEcho(it.e);render()}
 function buyRemove(){if(S.shop.removed||S.gold<75)return;chooseCard(()=>true,'제거할 카드 (75 화폐)',x=>{S.gold-=75;S.shop.removed=true;S.deck=S.deck.filter(y=>y.uid!==x.uid);S.modal=null;render()})}
-function buyKit(){if(S.shop.kit||S.gold<40)return;S.gold-=40;S.shop.kit=true;ORDER.forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.min(p.maxHp,p.hp+15)});render()}
+function buyKit(){if(S.shop.kit||S.gold<40)return;S.gold-=40;S.shop.kit=true;T_().forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.min(p.maxHp,p.hp+15)});render()}
 
 /* ============ 모달 ============ */
 function chooseCard(filter,title,cb){S.modal={kind:'choose',title,list:S.deck.filter(filter),cb};render()}
@@ -696,17 +843,18 @@ function closeModal(){if(S.modal&&S.modal.kind==='choose'&&S.screen==='event'&&!
  우선순위: assets/<id>_idle.png(가로 스프라이트 시트) → assets/<id>.png(초상) → 위키 프로필 → 기본 실루엣
  적은 파일명 앞에 enemy_ 를 붙입니다. 예) assets/enemy_levia_idle.png */
 const WIKI='https://static.wikia.nocookie.net/wutheringwaves/images/';
-const WEB_ART={rov:WIKI+'4/47/Resonator_Rover.png/revision/latest',aem:WIKI+'e/e8/Resonator_Aemeath.png/revision/latest',sk:WIKI+'d/da/Resonator_Shorekeeper.png/revision/latest'};
+const WEB_ART={lyn:WIKI+'3/34/Resonator_Lynae.png/revision/latest',mor:WIKI+'2/25/Resonator_Mornye.png/revision/latest',chi:WIKI+'d/d7/Resonator_Chisa.png/revision/latest',cam:WIKI+'9/9f/Resonator_Camellya.png/revision/latest',rov:WIKI+'4/47/Resonator_Rover.png/revision/latest',aem:WIKI+'e/e8/Resonator_Aemeath.png/revision/latest',sk:WIKI+'d/da/Resonator_Shorekeeper.png/revision/latest'};
 const ARTS={};
 function loadImg(src){return new Promise(r=>{const i=new Image();i.referrerPolicy='no-referrer';const t=setTimeout(()=>r(null),6000);
   i.onload=()=>{clearTimeout(t);r(i)};i.onerror=()=>{clearTimeout(t);r(null)};i.src=src})}
 const stripOf=i=>i?{src:i.src,frames:Math.max(1,Math.round(i.naturalWidth/i.naturalHeight))}:null;
 async function loadArt(){
-  await Promise.all([...ORDER,...Object.keys(EN)].map(async id=>{
+  await Promise.all([...ALL,...Object.keys(EN)].map(async id=>{
     const pre=CH[id]?'':'enemy_';
     const [idle,atk,local]=await Promise.all([loadImg(`assets/${pre}${id}_idle.png`),loadImg(`assets/${pre}${id}_attack.png`),loadImg(`assets/${pre}${id}.png`)]);
     let portrait=local?local.src:null;
-    if(!portrait&&WEB_ART[id]){const w=await loadImg(WEB_ART[id]);if(w)portrait=w.src}
+    const web=WEB_ART[id]||(ENEMY_ART[id]&&WIKI+ENEMY_ART[id]+'/revision/latest');
+    if(!portrait&&web){const w=await loadImg(web);if(w)portrait=w.src}
     ARTS[id]={idle:stripOf(idle),attack:stripOf(atk),portrait};
   }));
 }
@@ -732,6 +880,7 @@ function enemySVG(id,uid){
 function figHTML(id,uid){
   const a=ARTS[id]||{};
   if(a.idle)return `<div class="sprite">${spriteImg(a.idle)}</div>`;
+  if(a.portrait&&uid)return `<div class="eimg"><img src="${a.portrait}" referrerpolicy="no-referrer" alt=""></div>`;
   if(a.portrait)return `<div class="stand"><img src="${a.portrait}" referrerpolicy="no-referrer" alt=""><i></i></div>`;
   return uid?enemySVG(id,uid):partySVG(id);
 }
@@ -809,7 +958,7 @@ function cardHTML(card,o={}){
 function topBar(){
   return `<div class="top">
     <b>${ACTS[S.act].name}</b><span class="chip">층 ${S.floor}</span>
-    ${ORDER.map(id=>{const p=S.party[id];return `<span class="chip"><span class="dot" style="background:${CH[id].color}"></span>${CH[id].name} ${p.down?'<span style="color:var(--red)">기절</span>':`${p.hp}/${p.maxHp}`}</span>`}).join('')}
+    ${T_().map(id=>{const p=S.party[id];return `<span class="chip"><span class="dot" style="background:${CH[id].color}"></span>${CH[id].name} ${p.down?'<span style="color:var(--red)">기절</span>':`${p.hp}/${p.maxHp}`}</span>`}).join('')}
     <span class="chip" style="color:var(--gold)">◎ ${S.gold}</span>
     <span class="grow"></span>
     ${S.echoes.map(e=>`<span class="chip echo" title="${ECHO[e].n}: ${ECHO[e].tx}">${ECHO[e].i} ${ECHO[e].n}</span>`).join('')}
@@ -823,29 +972,58 @@ function render(){
   const scr=$('#screen');
   if(!S)scr.innerHTML=titleHTML();
   else if(S.screen==='combat'){const cur=scr.querySelector('.combat');if(!cur||cur.dataset.cid!=S.c.id)scr.innerHTML=buildCombat();updateCombat()}
-  else scr.innerHTML={map:mapHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
+  else scr.innerHTML={map:mapHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
   if(S&&S.screen==='map'){const cur=document.querySelector('.node.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
   requestAnimationFrame(flushFx);
+}
+function charCardHTML(id,click,label){
+  const C=CH[id];const art=ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle);
+  return `<div class="pi sel" style="--c:${C.color}" onclick="${click}">
+    <div class="av" style="background:${C.color};${artStyle(id)}">${art?'':C.ini}</div>
+    <div><b>${C.name}</b> <span class="tag" style="border-color:${EL[C.el]};color:${EL[C.el]}">${C.el}</span></div>
+    <div class="dim" style="font-size:12px;margin-top:3px">${C.tag}</div><p>${C.desc}</p>
+    <ul class="kit"><li>${C.intro}</li><li>${C.outro}</li><li>${C.lib}</li></ul>
+    <div class="pick">${label}</div></div>`;
 }
 function titleHTML(){
   return `<div class="title">
     <div class="dim">명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 · 개인용 프로토타입</div>
     <h1>첨탑의 메아리</h1>
-    <div class="party-intro">${ORDER.map(id=>`<div class="pi"><div class="av" style="background:${CH[id].color};${artStyle(id)}">${ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle)?'':CH[id].ini}</div>
-      <b>${CH[id].name}</b> <span class="tag" style="border-color:${EL[CH[id].el]};color:${EL[CH[id].el]}">${CH[id].el}</span>
-      <div class="dim" style="font-size:12px;margin-top:3px">${CH[id].tag}</div><p>${CH[id].desc}</p></div>`).join('')}</div>
+    <div style="font-weight:700">함께 탑에 오를 첫 번째 공명자를 선택하세요</div>
+    <div class="party-intro">${ALL.map(id=>charCardHTML(id,`newGame('${id}')`,'이 공명자로 시작')).join('')}</div>
     <div class="howto">
       <b>플레이 방법</b><br>
-      · 매 턴 에너지 3으로 카드를 냅니다. <b>출전 중이 아닌 공명자의 카드는 비용 +1</b>.<br>
-      · 카드를 쓰면 그 공명자의 <b>협주 에너지</b>(3칸)와 <b>공명 해방 게이지</b>(5칸)가 찹니다.<br>
-      · 교체는 턴당 1회 무료(이후 에너지 1). 협주 에너지가 가득 찬 채 교체하면 <b>협주 → 변주</b> 스킬이 연달아 발동합니다.<br>
-      · 공명 해방 게이지가 차면 출전 공명자의 필살기를 쓸 수 있습니다.<br>
-      · 적의 공격은 출전 중인 공명자가 받습니다. 기절한 공명자의 카드는 쓸 수 없어요.<br>
-      · 정예·명식을 쓰러뜨리면 <b>에코</b>를 흡수합니다. 2구역 꼭대기의 명식을 쓰러뜨리면 승리!
+      · 처음에는 <b>공명자 한 명</b>으로 시작합니다. 탑을 오르며 <b>✚ 영입</b> 지점과 사건에서 동료를 만나 최대 3명까지 파티를 꾸려요.<br>
+      · 카드를 <b>끌어서</b> 사용합니다. 공격 카드는 적에게, 스킬 카드는 무대 위로 끌어다 놓으세요.<br>
+      · 매 턴 에너지 3. <b>출전 중이 아닌 공명자의 카드는 비용 +1</b>. 카드 보상은 파티에 있는 공명자의 카드만 나와요.<br>
+      · 카드를 쓰면 <b>협주 에너지</b>(3칸)와 <b>공명 해방 게이지</b>(5칸)가 찹니다. 협주 에너지가 가득 찬 채 교체하면 <b>협주 → 변주</b>가 발동해요.<br>
+      · 적의 공격은 출전 중인 공명자가 받습니다. 정예·명식을 쓰러뜨리면 <b>에코</b>를 흡수하고, 2구역 꼭대기의 명식을 쓰러뜨리면 승리!
     </div>
-    <button class="btn gold" style="font-size:17px;padding:12px 34px" onclick="newGame()">탑에 오르기</button>
   </div>`;
+}
+/* ============ 영입 ============ */
+const JOIN={rov:'"…같이 가자. 이 탑의 끝까지."',aem:'"저도 함께할게요! 이번엔 꼭 당신 곁에서요."',sk:'"당신이 가는 길이라면, 끝까지 지켜볼게요."'};
+function openRecruit(){
+  const pool=shuffle(ALL.filter(id=>!S.team.includes(id))).slice(0,3);
+  S.modal=null;
+  if(S.team.length>=3||!pool.length){S.reward={gold:0,cards:rollCards(3,true),echo:null,title:'동료들의 응원'};S.screen='reward';return render()}
+  S.recruitOpts=pool;S.screen='recruit';render();
+}
+function recruit(id){
+  if(S.team.includes(id)||S.team.length>=3)return;
+  S.team.push(id);S.party[id]={hp:CH[id].maxHp,maxHp:CH[id].maxHp,down:false};
+  ['_a','_b','_s'].forEach(x=>S.deck.push(mk(id+x)));
+  const art=ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle);
+  S.screen='msg';S.msg={title:`${CH[id].name} 합류!`,body:`<div class="av" style="width:96px;height:96px;border-radius:18px;margin:6px auto 10px;background:${CH[id].color};${artStyle(id)}">${art?'':CH[id].ini}</div>
+    <b style="color:${CH[id].color}">${CH[id].name}</b> — ${CH[id].join||JOIN[id]}<br><span class="dim">${CH[id].name}의 카드 3장이 덱에 추가되었습니다.${S.team.length===2?' 이제 전투에서 교체와 협주·변주를 쓸 수 있어요.':''} (파티 ${S.team.length}/3)</span>`};
+  render();
+}
+function recruitHTML(){
+  return `<div class="screen"><div class="box" style="max-width:1000px;text-align:center"><div style="font-size:34px;color:#7cf0c0">✚</div><h2>공명자 조우</h2>
+    <p class="dim">탑을 오르던 공명자들과 마주쳤습니다. 한 명을 동료로 맞이하세요. (파티 ${S.team.length}/3)</p>
+    <div class="party-intro">${S.recruitOpts.map(id=>charCardHTML(id,`recruit('${id}')`,'동료로 맞이하기')).join('')}</div>
+    <button class="btn" style="margin-top:16px" onclick="S.screen='map';render()">지나치기</button></div></div>`;
 }
 function mapHTML(){
   const H=(ROWS+1)*78+70;const av=availNodes();
@@ -916,7 +1094,7 @@ function buildCombat(){
   return `<div class="combat" data-cid="${c.id}">
     <div class="stage" id="stage">${bgSVG(S.act)}${motes}
       <div class="stlog" id="stlog"></div><div class="tgthint" id="tgthint"></div>
-      ${ORDER.map((id,i)=>`<div class="unit party" id="u-${id}" style="--c:${CH[id].color};--dl:${i*.45}s" onclick="clickUnit('${id}')">
+      ${T_().map((id,i)=>`<div class="unit party" id="u-${id}" style="--c:${CH[id].color};--dl:${i*.45}s" onclick="clickUnit('${id}')">
         <div class="swaptag"></div><div class="libwrap"></div>
         <div class="body" data-fx="p-${id}"><div class="fig">${figHTML(id)}</div><div class="shadow"></div></div>
         <div class="uhud">${hudSkel()}</div></div>`).join('')}
@@ -939,9 +1117,9 @@ function setHP(root,hp,max,block){
   const hb=root.querySelector('.hpb');hb.classList.toggle('blocked',block>0);hb.querySelector('.blk').textContent=block;
 }
 function updateCombat(){
-  const c=S.c;const order=[c.active,...ORDER.filter(x=>x!==c.active)];
+  const c=S.c;const order=[c.active,...T_().filter(x=>x!==c.active)];
   const maxE=3+(has('levia')?1:0);
-  ORDER.forEach(id=>{
+  T_().forEach(id=>{
     const el=$('#u-'+id);const p=S.party[id];const slot=order.indexOf(id);const front=slot===0;
     el.className=`unit party s${slot} ${p.down?'down':''} ${!front&&!p.down&&!c.busy&&!c.tgt?'swappable':''}`;
     const sw=el.querySelector('.swaptag');const ready=c.conc[c.active]>=3;
@@ -953,6 +1131,12 @@ function updateCombat(){
     el.querySelector('.gauges').innerHTML=[0,1,2].map(k=>`<i class="gp ${c.conc[id]>k?'on':''}"></i>`).join('')+'<i class="gsep"></i>'+[0,1,2,3,4].map(k=>`<i class="gp l ${c.lib[id]>k?'on':''}"></i>`).join('');
     const st=[];
     if(id==='aem'&&c.mecha)st.push(`<span class="st" style="color:var(--aem)">메카스카우트</span>`);
+    if(id==='lyn'&&c.paint)st.push(`<span class="st" style="color:#5fe0c8">색채 ${c.paint}</span>`);
+    if(id==='cam'&&c.bloom)st.push(`<span class="st" style="color:#ff7a95">개화 ${c.bloom}</span>`);
+    if(id==='mor'&&c.calc)st.push(`<span class="st" style="color:#ffb347">계산 +${c.calc}</span>`);
+    if(front&&c.nextE)st.push(`<span class="st">다음 턴 에너지 +${c.nextE}</span>`);
+    if(front&&c.hyp)st.push(`<span class="st">가설 ${c.hyp}</span>`);
+    if(front&&c.bond)st.push(`<span class="st">인연 ${c.bond}</span>`);
     if(front){
       if(c.amp)st.push(`<span class="st" style="color:var(--gold)">증폭 ${c.amp}</span>`);
       if(c.weak)st.push(`<span class="st" style="color:var(--red)">약화 ${c.weak}</span>`);
@@ -970,7 +1154,7 @@ function updateCombat(){
     const inf=el.querySelector('.intentf');inf.innerHTML=e.dead||c.ending?'':intentHTML(e);el.title=e.dead?'':intentTitle(e);
     el.querySelector('.nametag').innerHTML=`<b>${d.n}</b> · ${d.g}`;
     const s=[];if(e.str)s.push(`<span class="st" style="color:var(--gold)">힘 ${e.str}</span>`);if(e.vuln)s.push(`<span class="st" style="color:#ffb36b">취약 ${e.vuln}</span>`);
-    if(e.weak)s.push(`<span class="st">약화 ${e.weak}</span>`);if(e.fz)s.push(`<span class="st" style="color:${EL.회절}">회절 잔향 ${e.fz}</span>`);
+    if(e.weak)s.push(`<span class="st">약화 ${e.weak}</span>`);if(e.fz)s.push(`<span class="st" style="color:${EL.회절}">회절 잔향 ${e.fz}</span>`);if(e.ur)s.push(`<span class="st" style="color:#9aa8ff">해체 ${e.ur}</span>`);
     el.querySelector('.sts').innerHTML=s.join('');
   });
   const en=$('#energy');en.textContent=`${c.energy}/${maxE}`;en.classList.toggle('zero',c.energy===0);
@@ -1101,13 +1285,13 @@ function flyClone(cl,T){
 }
 function libDown(ev){
   ev.stopPropagation();const c=S.c;if(!c||c.busy)return;
-  if(c.active==='sk'){clickLib();return}
+  if(!LIB_TG[c.active]){clickLib();return}
   dragStart(ev,'lib');
 }
 addEventListener('resize',()=>{if(S&&S.screen==='combat'&&$('#hand')&&!DRAG)renderHand()});
 function rewardHTML(){
   const r=S.reward;
-  return `<div class="screen"><div class="box" style="text-align:center"><h2>전투 승리</h2>
+  return `<div class="screen"><div class="box" style="text-align:center"><h2>${r.title||'전투 승리'}</h2>
     <p>조개 화폐 <b style="color:var(--gold)">+${r.gold}</b></p>
     ${r.echo?`<div class="echoicon">${ECHO[r.echo].i}</div><p><b>에코 흡수: ${ECHO[r.echo].n}</b><br><span class="dim">${ECHO[r.echo].tx}</span></p>`:''}
     ${r.cards.length?`<p class="dim">카드를 1장 골라 덱에 추가하세요</p><div class="cards">${r.cards.map(c=>cardHTML(c,{click:`takeReward(${c.uid})`})).join('')}</div>`:''}
@@ -1122,7 +1306,7 @@ function eventHTML(){
   </div></div>`;
 }
 function restHTML(){
-  const [who,line]=REST_LINES[S.floor%REST_LINES.length];
+  const RL=REST_LINES.filter(l=>S.team.includes(l[0]));const [who,line]=RL.length?RL[S.floor%RL.length]:['rov','모닥불이 조용히 타오른다.'];
   return `<div class="screen"><div class="box" style="text-align:center"><div style="font-size:40px">☾</div><h2>휴식처</h2>
     <p><span style="color:${CH[who].color}">${CH[who].name}</span> — ${line}</p>
     ${S.restDone?`<p style="color:var(--gold)">${S.restDone}</p><button class="btn primary" onclick="S.screen='map';render()">계속</button>`
@@ -1147,13 +1331,13 @@ function overHTML(){return `<div class="screen"><div class="box" style="text-ali
   <p>${ACTS[S.act].name} · 층 ${S.floor} · 처치한 잔상 ${S.stats.kills}</p><p class="dim">잔향은 사라지지 않습니다. 다시 탑에 오르세요.</p>
   <button class="btn gold" onclick="newGame()">다시 도전</button> <button class="btn" onclick="S=null;render()">타이틀</button></div></div>`}
 function winHTML(){return `<div class="screen"><div class="box" style="text-align:center"><div style="font-size:46px">✹</div><h2 style="color:var(--gold)">첨탑 정복!</h2>
-  <p>더 엑시온의 잔향이 흩어지고, 탑 꼭대기에 고요한 별빛이 내려앉습니다.</p>
+  <p>알레프-원의 창조물이 무너지고, 탑 꼭대기에 고요한 별빛이 내려앉습니다.</p>
   <p>층 ${S.floor} · 처치한 잔상 ${S.stats.kills} · 에코 ${S.echoes.length}개 · 덱 ${S.deck.length}장</p>
   <button class="btn gold" onclick="newGame()">다시 오르기</button> <button class="btn" onclick="S=null;render()">타이틀</button></div></div>`}
 function modalHTML(){
   const m=S.modal;
   if(m.kind==='deck'){
-    const sorted=[...S.deck].sort((a,b)=>ORDER.indexOf(CD[a.id].o)-ORDER.indexOf(CD[b.id].o));
+    const sorted=[...S.deck].sort((a,b)=>ALL.indexOf(CD[a.id].o)-ALL.indexOf(CD[b.id].o));
     return `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box"><h2>덱 (${S.deck.length}장)</h2>
       <div class="cards" style="margin-top:14px">${sorted.map(c=>cardHTML(c)).join('')}</div>
       <div style="text-align:center;margin-top:16px"><button class="btn" onclick="closeModal()">닫기</button></div></div></div>`;
