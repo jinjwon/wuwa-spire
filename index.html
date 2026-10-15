@@ -43,6 +43,20 @@ h1,h2,h3{margin:0}
 .pi p{margin:6px 0 0;font-size:12px;line-height:1.5;color:var(--dim)}
 .howto{max-width:640px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 18px;font-size:13px;line-height:1.7;color:var(--dim)}
 .howto b{color:var(--text)}
+.titlescr{position:relative;flex:1;min-height:calc(100vh - 24px);border-radius:20px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;isolation:isolate;text-align:center;padding:40px 16px 56px}
+.t-logo h1{font-size:clamp(46px,8vw,96px);letter-spacing:8px;margin:8px 0 4px;background:linear-gradient(90deg,#c9b8ff,#ffe9a8 50%,#ff9a7a);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 26px rgba(255,215,140,.4));animation:tglow 4s ease-in-out infinite}
+@keyframes tglow{50%{filter:drop-shadow(0 4px 40px rgba(200,180,255,.6))}}
+.t-sub{letter-spacing:6px;font-size:12px;color:var(--dim)}
+.t-en{font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:4px;color:#cfd6ff;opacity:.85}
+.t-party{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.t-party .tp{width:clamp(46px,6.5vw,72px);aspect-ratio:1;border-radius:50%;border:2px solid var(--c);background-color:#0c1126;box-shadow:0 0 20px -4px var(--c);animation:idle 3.2s ease-in-out infinite;display:grid;place-items:center;font-weight:800}
+.t-menu{display:flex;flex-direction:column;gap:10px;width:min(330px,100%)}
+.t-menu button{padding:13px 18px;border-radius:12px;font-size:17px;font-weight:800;background:rgba(22,29,58,.78);border:1px solid #4a5aa8;backdrop-filter:blur(4px);transition:.15s}
+.t-menu button:hover{border-color:var(--gold);transform:translateX(4px);box-shadow:0 0 22px -6px var(--gold)}
+.t-menu button.main{background:linear-gradient(180deg,#8a6a1c,#5e4612);border-color:var(--gold)}
+.t-menu small{display:block;font-size:11px;font-weight:400;color:#e8dcb8;margin-top:3px}
+.t-foot{position:absolute;bottom:14px;left:16px;right:16px;font-size:11px;color:var(--dim)}
+.backbtn{align-self:flex-start}
 /* map */
 .mapwrap{position:relative;margin:0 auto;width:min(560px,100%);}
 .map{position:relative}
@@ -725,7 +739,7 @@ function hurtParty(d){
   if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
   if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
-function lose(){S.c.busy=false;S.screen='over';render()}
+function lose(){S.c.busy=false;S.screen='over';clearSave();render()}
 function winCombat(){
   const c=S.c;const kind=c.kind;
   let gold=kind==='boss'?rnd(90,110):kind==='elite'?rnd(32,42):rnd(14,22);if(has('charm'))gold=Math.round(gold*1.5);
@@ -751,7 +765,7 @@ function afterReward(){
     if(S.act===0){S.act=1;S.pos=null;S.map=genMap();S.fights=0;
       T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*.5))});
       S.screen='msg';S.msg={title:'2구역 · 별빛 첨탑',body:'레비아탄의 잔향이 잦아들자 탑 위로 이어지는 계단이 열립니다.<br>잠시 숨을 고르며 모든 공명자가 <b>최대 체력의 50%</b>를 회복했습니다.'};
-    }else S.screen='win';
+    }else{S.screen='win';clearSave()}
   }else S.screen='map';
   render();
 }
@@ -963,6 +977,7 @@ function topBar(){
     <span class="grow"></span>
     ${S.echoes.map(e=>`<span class="chip echo" title="${ECHO[e].n}: ${ECHO[e].tx}">${ECHO[e].i} ${ECHO[e].n}</span>`).join('')}
     <button class="btn" style="padding:5px 12px" onclick="showDeck()">덱 ${S.deck.length}</button>
+    <button class="btn" style="padding:5px 12px" title="타이틀로 (지도에서는 자동 저장돼요)" onclick="toTitle()">☰</button>
   </div>`;
 }
 function render(){
@@ -970,10 +985,11 @@ function render(){
   if(!$('#screen'))app.innerHTML='<div id="topbar"></div><div id="screen"></div><div id="modal"></div>';
   $('#topbar').innerHTML=S?topBar():'';
   const scr=$('#screen');
-  if(!S)scr.innerHTML=titleHTML();
+  if(!S)scr.innerHTML=MENU==='select'?selectHTML():MENU==='help'?helpHTML():titleHTML();
   else if(S.screen==='combat'){const cur=scr.querySelector('.combat');if(!cur||cur.dataset.cid!=S.c.id)scr.innerHTML=buildCombat();updateCombat()}
   else scr.innerHTML={map:mapHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
+  if(S&&S.screen==='map')saveRun();
   if(S&&S.screen==='map'){const cur=document.querySelector('.node.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
   requestAnimationFrame(flushFx);
 }
@@ -986,19 +1002,63 @@ function charCardHTML(id,click,label){
     <ul class="kit"><li>${C.intro}</li><li>${C.outro}</li><li>${C.lib}</li></ul>
     <div class="pick">${label}</div></div>`;
 }
+/* ============ 타이틀 · 저장 ============ */
+let MENU='title';
+const SAVE_KEY='wuwa-spire-save-v1';
+function saveRun(){try{const o={...S,c:null,ev:null,modal:null,reward:null,shop:null,screen:'map'};localStorage.setItem(SAVE_KEY,JSON.stringify(o))}catch(e){}}
+function loadSave(){try{const t=localStorage.getItem(SAVE_KEY);return t?JSON.parse(t):null}catch(e){return null}}
+function clearSave(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
+function continueRun(){const o=loadSave();if(!o)return;S=o;S.screen='map';S._scrolled=false;UID=Math.max(UID,...S.deck.map(c=>c.uid))+1;render()}
+function goMenu(m){S=null;MENU=m;render();window.scrollTo(0,0)}
+function toTitle(){
+  if(S&&S.screen!=='map'&&!confirm('지금 화면의 진행(전투·사건 등)은 저장되지 않아요. 마지막으로 저장된 지도 위치에서 이어할 수 있어요. 타이틀로 갈까요?'))return;
+  goMenu('title');
+}
+function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
 function titleHTML(){
+  const sv=loadSave();
+  const motes=Array.from({length:22},(_,i)=>`<i class="mote" style="left:${(i*47)%100}%;bottom:${(i*17)%60}%;animation-delay:${(i*.41)%7}s;background:${i%3?'#bfe6ff':'#ffe9a8'}"></i>`).join('');
+  return `<div class="titlescr">${bgSVG(0)}${motes}
+    <div class="t-party">${ALL.map((id,i)=>`<div class="tp" style="--c:${CH[id].color};animation-delay:${i*.35}s;${artStyle(id)}" title="${CH[id].name}">${ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle)?'':CH[id].ini}</div>`).join('')}</div>
+    <div class="t-logo"><div class="t-sub">WUTHERING WAVES · FAN-MADE DECKBUILDER</div><h1>첨탑의 메아리</h1><div class="t-en">Echoes of the Spire</div></div>
+    <div class="t-menu">
+      ${sv?`<button class="main" onclick="continueRun()">이어하기<small>${ACTS[sv.act].name} · ${sv.floor}층 · ${sv.team.map(id=>CH[id].name).join(', ')}</small></button>`:''}
+      <button class="${sv?'':'main'}" onclick="${sv?`if(confirm('새 게임을 시작하면 저장된 진행이 사라져요. 계속할까요?')){clearSave();goMenu('select')}`:`goMenu('select')`}">새 게임</button>
+      <button onclick="goMenu('help')">플레이 방법</button>
+      <button onclick="toggleFS()">전체 화면</button>
+    </div>
+    <div class="t-foot">개인용 팬메이드 프로토타입 · 명조: 워더링 웨이브와 모든 캐릭터의 권리는 Kuro Games에 있습니다</div>
+  </div>`;
+}
+function charCardHTML(id,click,label){
+  const C=CH[id];const art=ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle);
+  return `<div class="pi sel" style="--c:${C.color}" onclick="${click}">
+    <div class="av" style="background:${C.color};${artStyle(id)}">${art?'':C.ini}</div>
+    <div><b>${C.name}</b> <span class="tag" style="border-color:${EL[C.el]};color:${EL[C.el]}">${C.el}</span></div>
+    <div class="dim" style="font-size:12px;margin-top:3px">${C.tag}</div><p>${C.desc}</p>
+    <ul class="kit"><li>${C.intro}</li><li>${C.outro}</li><li>${C.lib}</li></ul>
+    <div class="pick">${label}</div></div>`;
+}
+function selectHTML(){
   return `<div class="title">
-    <div class="dim">명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 · 개인용 프로토타입</div>
-    <h1>첨탑의 메아리</h1>
-    <div style="font-weight:700">함께 탑에 오를 첫 번째 공명자를 선택하세요</div>
+    <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
+    <h2>함께 탑에 오를 첫 번째 공명자를 선택하세요</h2>
+    <div class="dim">나머지 동료는 탑을 오르며 ✚ 영입 지점과 사건에서 만나요 (최대 3명)</div>
     <div class="party-intro">${ALL.map(id=>charCardHTML(id,`newGame('${id}')`,'이 공명자로 시작')).join('')}</div>
+  </div>`;
+}
+function helpHTML(){
+  return `<div class="title">
+    <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
+    <h2>플레이 방법</h2>
     <div class="howto">
-      <b>플레이 방법</b><br>
       · 처음에는 <b>공명자 한 명</b>으로 시작합니다. 탑을 오르며 <b>✚ 영입</b> 지점과 사건에서 동료를 만나 최대 3명까지 파티를 꾸려요.<br>
-      · 카드를 <b>끌어서</b> 사용합니다. 공격 카드는 적에게, 스킬 카드는 무대 위로 끌어다 놓으세요.<br>
+      · 카드를 <b>끌어서</b> 사용합니다. 공격 카드는 적에게, 스킬 카드는 무대 위로 끌어다 놓으세요. 우클릭이나 ESC로 취소할 수 있어요.<br>
       · 매 턴 에너지 3. <b>출전 중이 아닌 공명자의 카드는 비용 +1</b>. 카드 보상은 파티에 있는 공명자의 카드만 나와요.<br>
-      · 카드를 쓰면 <b>협주 에너지</b>(3칸)와 <b>공명 해방 게이지</b>(5칸)가 찹니다. 협주 에너지가 가득 찬 채 교체하면 <b>협주 → 변주</b>가 발동해요.<br>
-      · 적의 공격은 출전 중인 공명자가 받습니다. 정예·명식을 쓰러뜨리면 <b>에코</b>를 흡수하고, 2구역 꼭대기의 명식을 쓰러뜨리면 승리!
+      · 카드를 쓰면 <b>협주 에너지</b>(3칸)와 <b>공명 해방 게이지</b>(5칸)가 찹니다. 협주 에너지가 가득 찬 채 대기 중인 공명자를 클릭해 교체하면 <b>협주 → 변주</b>가 발동해요.<br>
+      · 적의 공격은 출전 중인 공명자가 받습니다. 적 머리 위의 아이콘으로 다음 행동을 미리 볼 수 있어요.<br>
+      · 일반 전투에는 <b>잔상</b>, 정예에는 강력한 잔상, 각 구역 꼭대기에는 <b>명식</b>이 기다립니다. 정예·명식을 쓰러뜨리면 <b>에코</b>를 흡수해요.<br>
+      · 지도에 있을 때마다 <b>자동 저장</b>되어 타이틀의 <b>이어하기</b>로 계속할 수 있어요.
     </div>
   </div>`;
 }
@@ -1329,11 +1389,11 @@ function shopHTML(){
 function msgHTML(){return `<div class="screen"><div class="box" style="text-align:center"><h2>${S.msg.title}</h2><p>${S.msg.body}</p><button class="btn primary" onclick="S.screen='map';render()">계속</button></div></div>`}
 function overHTML(){return `<div class="screen"><div class="box" style="text-align:center"><h2 style="color:var(--red)">모든 공명자가 쓰러졌습니다</h2>
   <p>${ACTS[S.act].name} · 층 ${S.floor} · 처치한 잔상 ${S.stats.kills}</p><p class="dim">잔향은 사라지지 않습니다. 다시 탑에 오르세요.</p>
-  <button class="btn gold" onclick="newGame()">다시 도전</button> <button class="btn" onclick="S=null;render()">타이틀</button></div></div>`}
+  <button class="btn gold" onclick="goMenu('select')">다시 도전</button> <button class="btn" onclick="goMenu('title')">타이틀</button></div></div>`}
 function winHTML(){return `<div class="screen"><div class="box" style="text-align:center"><div style="font-size:46px">✹</div><h2 style="color:var(--gold)">첨탑 정복!</h2>
   <p>알레프-원의 창조물이 무너지고, 탑 꼭대기에 고요한 별빛이 내려앉습니다.</p>
   <p>층 ${S.floor} · 처치한 잔상 ${S.stats.kills} · 에코 ${S.echoes.length}개 · 덱 ${S.deck.length}장</p>
-  <button class="btn gold" onclick="newGame()">다시 오르기</button> <button class="btn" onclick="S=null;render()">타이틀</button></div></div>`}
+  <button class="btn gold" onclick="goMenu('select')">다시 오르기</button> <button class="btn" onclick="goMenu('title')">타이틀</button></div></div>`}
 function modalHTML(){
   const m=S.modal;
   if(m.kind==='deck'){
