@@ -35,7 +35,7 @@ h1,h2,h3{margin:0}
 .title h1{font-size:40px;letter-spacing:2px;background:linear-gradient(90deg,var(--sk),var(--gold),var(--aem));-webkit-background-clip:text;background-clip:text;color:transparent}
 .party-intro{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;max-width:1000px}
 .pi.sel{cursor:pointer;transition:.15s;display:flex;flex-direction:column}
-.pi.sel:hover{border-color:var(--c);transform:translateY(-4px);box-shadow:0 10px 26px -8px var(--c)}
+.pi.sel:hover{border-color:var(--c);transform:translateY(-4px)}
 .pi .kit{font-size:11px;color:var(--dim);padding-left:15px;margin:8px 0 0;line-height:1.5;flex:1}
 .pi .pick{margin-top:10px;text-align:center;font-weight:800;color:var(--c);border:1px solid var(--c);border-radius:9px;padding:6px}
 .pi{width:220px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left}
@@ -52,17 +52,49 @@ h1,h2,h3{margin:0}
 .t-party .tp{width:clamp(46px,6.5vw,72px);aspect-ratio:1;border-radius:50%;border:2px solid var(--c);background-color:#0c1126;box-shadow:0 0 20px -4px var(--c);animation:idle 3.2s ease-in-out infinite;display:grid;place-items:center;font-weight:800}
 .t-menu{display:flex;flex-direction:column;gap:10px;width:min(330px,100%)}
 .t-menu button{padding:13px 18px;border-radius:12px;font-size:17px;font-weight:800;background:rgba(22,29,58,.78);border:1px solid #4a5aa8;backdrop-filter:blur(4px);transition:.15s}
-.t-menu button:hover{border-color:var(--gold);transform:translateX(4px);box-shadow:0 0 22px -6px var(--gold)}
+.t-menu button:hover{border-color:var(--gold);transform:translateX(4px)}
 .t-menu button.main{background:linear-gradient(180deg,#8a6a1c,#5e4612);border-color:var(--gold)}
 .t-menu small{display:block;font-size:11px;font-weight:400;color:#e8dcb8;margin-top:3px}
 .t-foot{position:absolute;bottom:14px;left:16px;right:16px;font-size:11px;color:var(--dim)}
 .backbtn{align-self:flex-start}
+.vfx{position:fixed;pointer-events:none;z-index:65}
+.vfx.slash{width:var(--s);height:var(--s);transform:translate(-50%,-50%) rotate(var(--r))}
+.vfx.slash svg{width:100%;height:100%;overflow:visible;animation-delay:inherit}
+.vfx.slash path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:slashdraw .34s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:inherit;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}
+@keyframes slashdraw{55%{stroke-dashoffset:0;opacity:1}100%{stroke-dashoffset:-100;opacity:0}}
+.vfx.spark{width:6px;height:6px;margin:-3px;border-radius:50%;background:var(--c);animation:spark .5s ease-out forwards}
+@keyframes spark{0%{transform:none;opacity:1}100%{transform:translate(var(--dx),var(--dy)) scale(.2);opacity:0}}
+.vfx.ring{width:var(--s);height:var(--s);border:3px solid var(--c);border-radius:50%;transform:translate(-50%,-50%) scale(.2);animation:ring .45s ease-out forwards}
+@keyframes ring{to{transform:translate(-50%,-50%) scale(1);opacity:0;border-width:1px}}
+.vfx.tracer{height:3px;transform-origin:0 50%;transform:rotate(var(--a)) scaleX(0);background:linear-gradient(90deg,transparent,var(--c) 60%,#fff);border-radius:2px;animation:tracer .22s ease-out forwards}
+@keyframes tracer{60%{transform:rotate(var(--a)) scaleX(1);opacity:1}100%{transform:rotate(var(--a)) scaleX(1);opacity:0}}
+.vfx.star{font-size:46px;color:var(--c);transform:translate(-50%,-50%) scale(.3);animation:star .5s ease-out forwards}
+@keyframes star{50%{transform:translate(-50%,-50%) scale(1.2) rotate(40deg);opacity:1}100%{transform:translate(-50%,-50%) scale(.6) rotate(80deg);opacity:0}}
+.vfx.shield{width:var(--s);height:var(--s);transform:translate(-50%,-50%) scale(.7);animation:shieldp .55s ease-out forwards}
+.vfx.shield svg{width:100%;height:100%}
+@keyframes shieldp{30%{transform:translate(-50%,-50%) scale(1.05);opacity:1}100%{transform:translate(-50%,-50%) scale(1.15);opacity:0}}
+.vfx.magic{width:var(--s);transform:translate(-50%,-50%) scale(.5);animation:magic .75s ease-out forwards}
+.vfx.magic svg{width:100%;display:block}
+@keyframes magic{25%{transform:translate(-50%,-50%) scale(1);opacity:1}100%{transform:translate(-50%,-50%) scale(1.15) rotate(8deg);opacity:0}}
+.vfx.plus{font-size:20px;font-weight:900;color:var(--green);opacity:0;animation:plus .9s ease-out forwards}
+@keyframes plus{15%{opacity:1}100%{transform:translateY(-50px);opacity:0}}
+.cutin{position:fixed;left:0;right:0;top:30%;height:170px;z-index:70;pointer-events:none}
+.cutin .band{position:absolute;inset:18px 0;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--c) 55%,#0b0f1d) 12%,color-mix(in srgb,var(--c) 40%,#0b0f1d) 88%,transparent);transform:skewY(-3deg) scaleX(0);transform-origin:0 50%;animation:cibar 1.2s ease forwards}
+.cutin .img{position:absolute;left:10%;top:-20px;width:210px;height:210px;border-radius:50%;background:#0c1126 center 18%/130% no-repeat;border:3px solid var(--c);display:grid;place-items:center;font-size:60px;font-weight:900;color:#111;opacity:0;animation:ciimg 1.2s ease forwards}
+.cutin .txt{position:absolute;left:calc(10% + 240px);top:58px;text-align:left;opacity:0;animation:citxt 1.2s ease forwards}
+.cutin .txt small{display:block;font-size:13px;color:#e8ecff;letter-spacing:2px}
+.cutin .txt b{font-size:clamp(24px,4vw,40px);color:#fff;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+@keyframes cibar{0%{transform:skewY(-3deg) scaleX(0)}14%{transform:skewY(-3deg) scaleX(1);opacity:1}78%{opacity:1}100%{transform:skewY(-3deg) scaleX(1);opacity:0}}
+@keyframes ciimg{0%{transform:translateX(-140px);opacity:0}18%{transform:none;opacity:1}75%{transform:translateX(24px);opacity:1}100%{transform:translateX(140px);opacity:0}}
+@keyframes citxt{0%{transform:translateX(120px);opacity:0}24%{transform:none;opacity:1}75%{opacity:1}100%{opacity:0}}
+@media (max-width:640px){.cutin .img{width:120px;height:120px;top:20px;left:4%}.cutin .txt{left:calc(4% + 136px)}}
+.box.pause{max-width:420px}
 /* map */
 .mapwrap{position:relative;margin:0 auto;width:min(560px,100%);}
 .map{position:relative}
 .map svg{position:absolute;inset:0;width:100%;height:100%}
 .node{position:absolute;transform:translate(-50%,50%);width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--panel);display:grid;place-items:center;font-size:12px;font-weight:700;line-height:1}
-.node.avail{border-color:var(--gold);box-shadow:0 0 0 4px rgba(255,215,94,.18);animation:pulse 1.4s infinite}
+.node.avail{border-color:var(--gold);color:var(--gold)!important}
 .node.done{opacity:.45}
 .node.cur{border-color:#fff;background:#3b4aa0}
 .node.boss{width:76px;height:76px;font-size:13px;border-color:var(--red)}
@@ -145,7 +177,7 @@ h1,h2,h3{margin:0}
 .unit.swappable:hover .swaptag{opacity:1}
 .swaptag.ready{opacity:.9;border-color:var(--gold);color:var(--gold)}
 .libwrap{position:absolute;top:-44px;left:50%;transform:translateX(-50%);z-index:8}
-.libbtn{white-space:nowrap;padding:6px 14px;border-radius:999px;border:1px solid #fff;background:linear-gradient(90deg,#4a3c9c,#a24fa0);font-weight:800;font-size:13px;animation:pulse 1.4s infinite;box-shadow:0 0 18px #b47cff}
+.libbtn{white-space:nowrap;padding:6px 14px;border-radius:999px;border:1px solid #fff;background:linear-gradient(90deg,#4a3c9c,#a24fa0);font-weight:800;font-size:13px}
 /* 행동 연출 */
 .body.atk{animation:lungeR .45s cubic-bezier(.2,.8,.3,1)}
 .enemy .body.atk{animation:lungeL .45s cubic-bezier(.2,.8,.3,1)}
@@ -177,10 +209,10 @@ h1,h2,h3{margin:0}
 .pile{width:56px;height:70px;border-radius:10px;border:2px solid #6f7fc9;background:linear-gradient(160deg,#2f3d86,#18204a);font-weight:900;font-size:16px;position:relative;box-shadow:3px 3px 0 #10163a,6px 6px 0 #0b0f28}
 .pile small{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--dim);white-space:nowrap;font-weight:400}
 .pile.disc{border-color:#a96f7f;background:linear-gradient(160deg,#6a2f45,#2a1424);box-shadow:-3px 3px 0 #2a1020,-6px 6px 0 #1a0a14}
-.endturn{padding:13px 20px;border-radius:14px;font-weight:900;font-size:15px;background:linear-gradient(#41b0b4,#1f6a78);border:2px solid #aef6f2;box-shadow:0 0 16px rgba(80,220,220,.35);transition:.15s}
+.endturn{padding:13px 20px;border-radius:14px;font-weight:900;font-size:15px;background:linear-gradient(#41b0b4,#1f6a78);border:2px solid #aef6f2;transition:.15s}
 .endturn:hover:not(:disabled){transform:scale(1.05)}
 .endturn:disabled{filter:grayscale(1) brightness(.6);cursor:default}
-.endturn.glow{animation:pulse 1.3s infinite}
+.endturn.glow{background:linear-gradient(#4fc8cc,#26808f)}
 .hand{position:absolute;left:96px;right:120px;bottom:0;top:0}
 .hand .card{position:absolute;bottom:-26px;transform-origin:50% 130%;transition:transform .18s,left .25s,filter .2s}
 .hand .card:hover:not(.off),.hand .card.sel{z-index:80!important;transform:translateX(-50%) translateY(-52px) rotate(0) scale(1.14)!important}
@@ -609,7 +641,8 @@ function playCard(uid,T){
   const c=S.c;const idx=c.hand.findIndex(x=>x.uid===uid);const card=c.hand[idx];const d=CD[card.id];
   c.energy-=costOf(card);c.hand.splice(idx,1);
   const owner=d.o==='any'?c.active:d.o;c.cur=owner;
-  const atk=d.t==='공격';anim('u-'+owner,atk?'atk':'cast');FXDELAY=atk?170:60;
+  const atk=d.t==='공격';anim('u-'+owner,atk?'atk':'cast');FXDELAY=atk?170:60;HITSEQ=0;
+  if(!atk)vfx('circle','u-'+owner,{c:CH[owner].color});
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
   d.p(vals(card),T,card);FXDELAY=0;c.calcNow=0;
   if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
@@ -634,19 +667,21 @@ function hit(T,base,o={}){
   let m=1;if(c.amp>0)m*=1.3;if(c.weak>0)m*=.75;if(T.vuln>0)m*=1.5;
   dmgEnemy(T,Math.max(0,Math.floor(d*m)));
 }
-function dmgEnemy(T,d,pierce){
+function dmgEnemy(T,d,pierce,style){
   let left=d;if(!pierce){const ab=Math.min(T.block,left);T.block-=ab;left-=ab}
-  T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',FXDELAY);
+  const dl=FXDELAY+HITSEQ*110;HITSEQ++;const own=S.c.cur;
+  T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',dl);
+  vfx(style||(pierce?'burst':(WEAPON[own]||'sword')),'e'+T.uid,{c:pierce?EL.회절:CH[own].color,from:'u-'+own,big:d>=18},dl);
   if(T.hp<=0){T.hp=0;T.dead=true;S.stats.kills++;log(`${EN[T.id].n} 처치!`);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++}
 }
 const fz=(T,n)=>{if(T&&!T.dead){T.fz+=n;pop(T,`잔향 +${n}`,'info')}};
 const vuln=(T,n)=>{if(T&&!T.dead)T.vuln+=n+(has('explorer')?1:0)};
-function gainBlock(n){const c=S.c;c.block+=n;pop('party',`+${n} 보호막`,'blk');if(c.hyp&&n>0&&alive().length)dmgEnemy(pick(alive()),c.hyp)}
+function gainBlock(n){const c=S.c;c.block+=n;pop('party',`+${n} 보호막`,'blk');vfx('shield','u-'+c.active,{});if(c.hyp&&n>0&&alive().length)dmgEnemy(pick(alive()),c.hyp,false,'burst')}
 function paint(n){const c=S.c;c.paint=Math.min(12,c.paint+n);if(n>0)pop('p-lyn',`색채 +${n}`,'info')}
 function bloom(n){const c=S.c;c.bloom=Math.min(10,c.bloom+n);if(n>0)pop('p-cam',`개화 +${n}`,'info')}
 function unravel(T,n){if(T&&!T.dead){T.ur+=n;pop(T,`해체 +${n}`,'info')}}
 function selfHurt(id,n){const p=S.party[id];if(!p||p.down)return;const lost=Math.min(n,p.hp-1);if(lost<=0)return;p.hp-=lost;pop('p-'+id,`-${lost}`,'dmg');if(id==='cam'&&S.c.camUni)bloom(S.c.camUni)}
-function heal(id,n){const p=S.party[id];if(p.down)return;const before=p.hp;p.hp=Math.min(p.maxHp,p.hp+n);if(S.c&&S.screen==='combat'&&p.hp>before)pop('p-'+id,`+${p.hp-before}`,'heal')}
+function heal(id,n){const p=S.party[id];if(p.down)return;const before=p.hp;p.hp=Math.min(p.maxHp,p.hp+n);if(S.c&&S.screen==='combat'&&p.hp>before){pop('p-'+id,`+${p.hp-before}`,'heal');vfx('heal','u-'+id,{})}}
 function setField(n,b){const f=S.c.field;f.t=Math.max(f.t,n);f.b=Math.max(f.b,b);pop('party','별의 영역','info')}
 function toggleMecha(b){const c=S.c;if(c.mecha){c.mecha=false;gainBlock(b);pop('p-aem','일반 형태','info')}else{c.mecha=true;pop('p-aem','메카스카우트!','info')}}
 
@@ -694,7 +729,7 @@ function clickLib(){
 }
 function doLib(T){
   const c=S.c;const id=c.active;c.lib[id]=0;c.cur=id;
-  anim('u-'+id,id==='sk'?'cast':'ult');FXDELAY=id==='sk'?100:380;
+  cutIn(id);anim('u-'+id,id==='sk'?'cast':'ult',520);FXDELAY=id==='sk'?600:880;HITSEQ=0;
   if(id==='rov'){hit(T,22);fz(T,6)}
   if(id==='aem'){c.mecha=true;hit(T,28)}
   if(id==='sk'){T_().forEach(x=>heal(x,10));gainBlock(12);c.field.t+=2;c.field.b=Math.max(c.field.b,4)}
@@ -704,7 +739,7 @@ function doLib(T){
   if(id==='cam'){hit(T,26);bloom(3)}
   FXDELAY=0;gainConc(id,1);
   if(has('aix')){c.energy++;draw(1)}
-  banner(CH[id].lib.split(':')[0]);log(`${CH[id].name} — ${CH[id].lib.split(':')[0]}`);
+  log(`${CH[id].name} — ${CH[id].lib.split(':')[0]}`);
   afterAction();
 }
 
@@ -725,7 +760,7 @@ async function endTurn(){
     if(m.w){c.weak+=m.w;pop('party',`약화 ${m.w}`,'info')}
     log(`${EN[e.id].n} — ${m.n}`);
     if(m.d){anim('e'+e.uid,'atk');render();await sleep(190);
-      for(let h=0;h<(m.h||1);h++){if(h)anim('e'+e.uid,'jab');hurtParty(enemyDmg(e,m));render();await sleep(h<(m.h||1)-1?200:330);if(wiped()){render();await sleep(700);return lose()}}}
+      for(let h=0;h<(m.h||1);h++){if(h)anim('e'+e.uid,'jab');hurtParty(enemyDmg(e,m),e);render();await sleep(h<(m.h||1)-1?200:330);if(wiped()){render();await sleep(700);return lose()}}}
     else{anim('e'+e.uid,'cast');render();await sleep(380)}
   }
   c.enemies.forEach(e=>{if(!e.dead){e.vuln=Math.max(0,e.vuln-1);e.weak=Math.max(0,e.weak-1);e.ur=Math.max(0,e.ur-1);setIntent(e)}});
@@ -733,9 +768,10 @@ async function endTurn(){
 }
 const enemyDmg=(e,m)=>{let d=m.d+e.str+e.bonus;if(e.weak>0)d=Math.floor(d*.75);return d};
 const wiped=()=>T_().every(id=>S.party[id].down);
-function hurtParty(d){
+function hurtParty(d,e){
   const c=S.c;const ab=Math.min(c.block,d);c.block-=ab;const rest=d-ab;
   const p=S.party[c.active];
+  if(e)vfx('claw','u-'+c.active,{c:EL[EN[e.id].el]||'#ff5d6c',big:d>=15});
   if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
   if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
@@ -914,6 +950,7 @@ function shakeQ(){}
 const ACLS=['atk','jab','hit','cast','ult','block'];
 function bodyOf(key){return key.startsWith('u-')?document.querySelector(`#${key} .body`):document.querySelector(`#e-${key.slice(1)} .body`)}
 function flushFx(){
+  const vq=VQ;VQ=[];vq.forEach(v=>setTimeout(()=>runVfx(v),v.delay||0));
   const layer=$('#fx');const fq=FXQ;FXQ=[];const aq=AQ;AQ=[];
   const per={};
   fq.forEach(f=>{const k=per[f.target]=(per[f.target]||0)+1;setTimeout(()=>{
@@ -935,6 +972,47 @@ function flushFx(){
     if(sp&&art&&art.attack&&['atk','ult','jab'].includes(a.cls)){sp.innerHTML=spriteImg(art.attack,true);
       setTimeout(()=>{if(sp.isConnected)sp.innerHTML=spriteImg(art.idle)},art.attack.frames/8*1000)}
   },a.delay));
+}
+let VQ=[],HITSEQ=0;
+const WEAPON={rov:'sword',aem:'sword',sk:'orb',lyn:'shot',mor:'heavy',chi:'heavy',cam:'sword'};
+function vfx(type,key,o,delay){VQ.push({type,key,o:o||{},delay:delay??FXDELAY})}
+function centerOf(key){const el=bodyOf(key);if(!el)return null;const r=el.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height*.45,w:r.width,h:r.height,b:r.bottom}}
+function fxEl(html,cls,x,y,style,life){const d=document.createElement('div');d.className='vfx '+cls;d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';if(style)d.setAttribute('style',d.getAttribute('style')+';'+style);$('#fx').appendChild(d);setTimeout(()=>d.remove(),life||700);return d}
+function sparks(x,y,c,n,spread){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,r=spread*(.5+Math.random()*.7);fxEl('','spark',x,y,`--c:${c};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`,600)}}
+function runVfx(v){
+  const t=centerOf(v.key);if(!t)return;const c=v.o.c||'#fff';const S0=Math.max(90,t.w*(v.o.big?1.3:1));
+  if(v.type==='sword'||v.type==='heavy'){
+    const n=v.type==='heavy'?1:(Math.random()<.5?1:2);const sz=v.type==='heavy'?S0*1.35:S0;
+    for(let i=0;i<n;i++){const r=(Math.random()*70-35)+(i?90:0);
+      fxEl(`<svg viewBox="0 0 100 100"><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="${c}" stroke-width="${v.type==='heavy'?13:9}"/><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="#fff" stroke-width="3"/></svg>`,'slash',t.x,t.y,`--s:${sz}px;--r:${r}deg;animation-delay:${i*70}ms`,600)}
+    if(v.type==='heavy')fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*1.3}px`,600);
+    sparks(t.x,t.y,c,v.o.big?14:9,S0*.55);
+  }else if(v.type==='shot'){
+    const f=centerOf(v.o.from);
+    if(f){const dx=t.x-f.x,dy=t.y-f.y;fxEl('','tracer',f.x+f.w*.3,f.y,`--c:${c};width:${Math.hypot(dx,dy)-f.w*.3}px;--a:${Math.atan2(dy,dx)}rad`,350)}
+    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.6}px`,450);sparks(t.x,t.y,c,7,S0*.4);
+  }else if(v.type==='orb'){
+    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0}px`,600);fxEl('✦','star',t.x,t.y,`--c:${c}`,600);sparks(t.x,t.y,c,10,S0*.5);
+  }else if(v.type==='burst'){
+    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.7}px`,500);sparks(t.x,t.y,c,6,S0*.35);
+  }else if(v.type==='claw'){
+    fxEl(`<svg viewBox="0 0 100 100">${[0,1,2].map(i=>`<path pathLength="100" d="M${22+i*20} 12 L${8+i*20} 88" stroke="${c}" stroke-width="7"/><path pathLength="100" d="M${22+i*20} 12 L${8+i*20} 88" stroke="#fff" stroke-width="2"/>`).join('')}</svg>`,'slash claw',t.x,t.y,`--s:${S0*(v.o.big?1.1:.85)}px;--r:${Math.random()*30-15}deg`,600);
+    sparks(t.x,t.y,c,v.o.big?10:6,S0*.4);
+  }else if(v.type==='shield'){
+    fxEl(`<svg viewBox="0 0 100 100"><polygon points="50,4 92,27 92,73 50,96 8,73 8,27" fill="rgba(111,182,255,.18)" stroke="#8cc8ff" stroke-width="3"/></svg>`,'shield',t.x,t.y,`--s:${t.w*1.25}px`,650);
+  }else if(v.type==='circle'){
+    fxEl(`<svg viewBox="0 0 100 40"><ellipse cx="50" cy="20" rx="46" ry="15" fill="none" stroke="${c}" stroke-width="2.5" stroke-dasharray="6 5"/><ellipse cx="50" cy="20" rx="32" ry="10" fill="none" stroke="${c}" stroke-width="1.5"/></svg>`,'magic',t.x,t.b-4,`--s:${t.w*1.4}px`,800);
+  }else if(v.type==='heal'){
+    for(let i=0;i<5;i++)fxEl('+','plus',t.x+(Math.random()-.5)*t.w*.7,t.y+(Math.random()-.2)*t.h*.4,`animation-delay:${i*80}ms`,1000);
+  }
+}
+function cutIn(id){
+  const C=CH[id];const name=C.lib.split(':')[0].replace('공명 해방 ','');
+  const a=ARTS[id]||{};const img=a.portrait?`background-image:url('${a.portrait}')`:'';
+  const d=document.createElement('div');d.className='cutin';d.style.setProperty('--c',C.color);
+  d.innerHTML=`<div class="band"></div><div class="img" style="${img}">${img?'':C.ini}</div><div class="txt"><small>공명 해방 · ${C.name}</small><b>${name}</b></div>`;
+  document.body.appendChild(d);setTimeout(()=>d.remove(),1250);
+  const st=$('#stage');if(st){st.classList.remove('shake');void st.offsetWidth;setTimeout(()=>st.classList.add('shake'),850)}
 }
 function banner(t){const b=document.createElement('div');b.className='banner';b.textContent=t;document.body.appendChild(b);setTimeout(()=>b.remove(),1150)}
 function flyCard(uid,T){
@@ -977,7 +1055,7 @@ function topBar(){
     <span class="grow"></span>
     ${S.echoes.map(e=>`<span class="chip echo" title="${ECHO[e].n}: ${ECHO[e].tx}">${ECHO[e].i} ${ECHO[e].n}</span>`).join('')}
     <button class="btn" style="padding:5px 12px" onclick="showDeck()">덱 ${S.deck.length}</button>
-    <button class="btn" style="padding:5px 12px" title="타이틀로 (지도에서는 자동 저장돼요)" onclick="toTitle()">☰</button>
+    <button class="btn" style="padding:5px 12px" title="타이틀로 (지도에서는 자동 저장돼요)" onclick="openPause()">☰</button>
   </div>`;
 }
 function render(){
@@ -1012,8 +1090,18 @@ function continueRun(){const o=loadSave();if(!o)return;S=o;S.screen='map';S._scr
 function goMenu(m){S=null;MENU=m;render();window.scrollTo(0,0)}
 function toTitle(){
   if(S&&S.screen!=='map'&&!confirm('지금 화면의 진행(전투·사건 등)은 저장되지 않아요. 마지막으로 저장된 지도 위치에서 이어할 수 있어요. 타이틀로 갈까요?'))return;
+  if(S&&S.screen==='map')saveRun();
   goMenu('title');
 }
+const IS_APP=/Electron/.test(navigator.userAgent);
+function openPause(){if(!S)return;S.modal={kind:'pause'};render()}
+function abandonRun(){if(!confirm('이번 판을 포기할까요? 저장된 진행도 사라져요.'))return;clearSave();goMenu('title')}
+function quitGame(){if(S&&S.screen==='map')saveRun();window.close()}
+addEventListener('keydown',e=>{
+  if(e.key!=='Escape'||DRAG)return;
+  if(S&&S.modal){closeModal();return}
+  if(S)openPause();
+});
 function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen()}catch(e){}}
 function titleHTML(){
   const sv=loadSave();
@@ -1026,6 +1114,7 @@ function titleHTML(){
       <button class="${sv?'':'main'}" onclick="${sv?`if(confirm('새 게임을 시작하면 저장된 진행이 사라져요. 계속할까요?')){clearSave();goMenu('select')}`:`goMenu('select')`}">새 게임</button>
       <button onclick="goMenu('help')">플레이 방법</button>
       <button onclick="toggleFS()">전체 화면</button>
+      ${IS_APP?`<button onclick="quitGame()">게임 종료</button>`:''}
     </div>
     <div class="t-foot">개인용 팬메이드 프로토타입 · 명조: 워더링 웨이브와 모든 캐릭터의 권리는 Kuro Games에 있습니다</div>
   </div>`;
@@ -1173,7 +1262,7 @@ function buildCombat(){
 function setHP(root,hp,max,block){
   const pct=Math.max(0,hp/max*100)+'%';
   root.querySelector('.cur').style.width=pct;root.querySelector('.lag').style.width=pct;
-  root.querySelector('span').textContent=`${hp} / ${max}`;
+  root.querySelector('.hpb span').textContent=`${hp} / ${max}`;
   const hb=root.querySelector('.hpb');hb.classList.toggle('blocked',block>0);hb.querySelector('.blk').textContent=block;
 }
 function updateCombat(){
@@ -1402,6 +1491,17 @@ function modalHTML(){
       <div class="cards" style="margin-top:14px">${sorted.map(c=>cardHTML(c)).join('')}</div>
       <div style="text-align:center;margin-top:16px"><button class="btn" onclick="closeModal()">닫기</button></div></div></div>`;
   }
+  if(m.kind==='pause'){const inMap=S.screen==='map';
+    return `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box pause"><h2>일시정지</h2>
+      <p class="dim">${ACTS[S.act].name} · ${S.floor}층 · ${S.team.map(id=>CH[id].name).join(', ')}</p>
+      <div class="choices">
+        <button class="choice" onclick="closeModal()"><b>계속하기</b></button>
+        <button class="choice" onclick="showDeck()"><b>덱 보기</b></button>
+        <button class="choice" onclick="toggleFS()"><b>전체 화면</b></button>
+        <button class="choice" onclick="toTitle()"><b>저장하고 타이틀로</b><small>${inMap?'지금 위치가 저장돼요.':'진행 중인 전투·사건은 저장되지 않고, 마지막 지도 위치부터 이어해요.'}</small></button>
+        <button class="choice" onclick="abandonRun()"><b>이번 판 포기</b><small>저장을 지우고 타이틀로 돌아가요.</small></button>
+        ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>${inMap?'지금 위치를 저장하고 종료해요.':'마지막 지도 위치부터 이어할 수 있어요.'}</small></button>`:''}
+      </div></div></div>`}
   if(m.kind==='pile')return `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box"><h2>${m.title}</h2>
       <div class="cards" style="margin-top:14px">${m.list.map(c=>cardHTML(c)).join('')||'<p class="dim">비어 있음</p>'}</div>
       <div style="text-align:center;margin-top:16px"><button class="btn" onclick="closeModal()">닫기</button></div></div></div>`;
