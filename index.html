@@ -454,6 +454,11 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .mnode.vis i img{filter:grayscale(.2) brightness(1.1)}.mnode.past i img{filter:grayscale(1)}
 .mnode.cur i{box-shadow:inset 0 0 0 3px #fff,0 0 0 4px rgba(255,255,255,.3)}
 .mnode.t-event i img{filter:brightness(1.4)}
+.card .ench{position:absolute;top:30px;right:6px;z-index:3;font-size:9.5px;font-weight:800;padding:1px 6px;color:#111;background:var(--e);clip-path:polygon(4px 0,100% 0,calc(100% - 4px) 100%,0 100%)}
+.stage .bgsvg{filter:hue-rotate(var(--hue,0deg))}
+.maphead em{display:block;font-style:normal;color:var(--dim);font-size:12px;margin-top:4px}
+.ancient{max-width:560px;text-align:center}
+.anc-art{width:120px;height:120px;margin:0 auto 6px;background:center/contain no-repeat;filter:drop-shadow(0 0 22px #e9d9a6);animation:hover 3s ease-in-out infinite}
 </style>
 </head>
 <body>
@@ -695,8 +700,8 @@ function newGame(start,diff){
   const hp=CH[start].maxHp+14;S.party[start]={hp,maxHp:hp,down:false};
   ['_a','_a','_a','_a','_b','_b','_b','_b','_s','_s'].forEach(x=>S.deck.push(mk(start+x)));
   if(DIFF[diff].curse)S.deck.push(mk('noise'));
-  S.map=genMap();
-  render();
+  pickVariant();S.map=genMap();
+  openAncient();
 }
 
 /* ============ 지도 ============ */
@@ -754,7 +759,7 @@ function enterNode(key){
   if(t==='event'){const x=Math.random();const fc=S.mysF=(S.mysF||.1);
     if(x<fc){S.mysF=.1;S.screen='msg';S.msg={title:'? — 매복',body:'고요하던 무음 지대에서 잔상이 튀어나왔다!'};t='battle'}
     else{S.mysF=fc+.1;if(x<fc+.05)t='shop';else if(x<fc+.09)t='treasure'}}
-  if(t==='battle'){const A=ACTS[S.act];startCombat(pick(S.fights<2?A.easy:A.normal),'battle');S.fights++}
+  if(t==='battle'){const A=ACTS[S.act];startCombat(pick(S.fights<2?A.easy:A.normal.concat(AV().normalAdd||[])),'battle');S.fights++}
   else if(t==='elite')startCombat(pick(ACTS[S.act].elite),'elite');
   else if(t==='event')startEvent();
   else if(t==='rest'){S.screen='rest';S.restDone=false;render()}
@@ -773,7 +778,7 @@ function spawn(id){
 }
 function startCombat(ids,kind){
   const lead=T_().find(id=>!S.party[id].down);
-  S.c={kind,enemies:ids.map(spawn),draw:shuffle(S.deck.map(c=>({...c}))),discard:[],hand:[],exhaust:[],energy:0,block:0,amp:0,weak:0,
+  S.c={kind,enemies:ids.map(spawn),draw:(()=>{const a=shuffle(S.deck.map(c=>({...c})));a.sort((x,y)=>(x.ench==='innate')-(y.ench==='innate'));return a})(),discard:[],hand:[],exhaust:[],energy:0,block:0,amp:0,weak:0,
     field:{t:0,b:0},orbit:0,melody:0,ghost:0,mecha:false,active:lead,conc:Object.fromEntries(T_().map(id=>[id,0])),lib:Object.fromEntries(T_().map(id=>[id,0])),paint:0,bloom:0,calc:0,calcNow:0,nextE:0,hyp:0,bond:0,freeBrush:0,camUni:0,
     switched:0,turn:0,tgt:null,log:[],busy:false,cur:lead,id:UID++};
   if(kind==='elite'&&S.burn)S.c.enemies.forEach(e=>{e.maxHp=e.hp=Math.round(e.hp*1.25);e.str+=2;e.burn=1});
@@ -793,7 +798,7 @@ function setIntent(e){const m=(e.p2&&EN[e.id].m2)||EN[e.id].m;e.move=m[e.mi%m.le
 function log(t){S.c.log.push(t);if(S.c.log.length>4)S.c.log.shift()}
 function startTurn(){
   const c=S.c;c.turn++;c.block=0;c.switched=0;
-  c.energy=3+(has('levia')?1:0)+c.nextE;c.nextE=0;
+  c.energy=3+(S.bonusE||0)+(has('levia')?1:0)+c.nextE;c.nextE=0;
   if(c.bond)heal(c.active,c.bond);
   if(has('turtle'))gainBlock(4);
   if(has('hoar')&&c.turn===1)c.block=10;
@@ -812,10 +817,53 @@ function draw(n){
     c.hand.push(c.draw.pop());
   }
 }
+const ENCH={
+  sharp:{n:'예리',tx:'공격 피해 +3',c:'#ff8a8a'},sturdy:{n:'견고',tx:'얻는 보호막 +3',c:'#8cc8ff'},
+  swift:{n:'신속',tx:'비용 -1',c:'#9ff0c8'},echo:{n:'메아리',tx:'전투에서 처음 쓸 때 복사본을 손에 추가',c:'#d6a8ff'},
+  innate:{n:'선천',tx:'전투 시작 시 손에서 시작',c:'#ffd75e'}};
+function enchOk(card,k){const d=CD[card.id];if(d.unplay||card.ench)return false;if(k==='sharp')return d.t==='공격';if(k==='sturdy')return /보호막/.test(cardText(card));if(k==='swift')return (Array.isArray(d.c)?d.c[card.up?1:0]:d.c)>0;return true}
+function randomEnch(card){const ks=Object.keys(ENCH).filter(k=>enchOk(card,k));return ks.length?pick(ks):null}
+function enchantFlow(n,title,after){
+  let left=n;const step=()=>{if(left--<=0){S.modal=null;after&&after();render();return}
+    chooseCard(x=>!!randomEnch(x),title+` (${n-left}/${n})`,x=>{x.ench=randomEnch(x);step()})};
+  if(!S.deck.some(x=>randomEnch(x))){after&&after();return render()}step();
+}
+const VARIANTS=[
+  [{name:'1구역 · 잠긴 해안의 탑',hue:0,flavor:'달빛 아래 가라앉은 해안. 바닷물이 탑의 아랫부분을 삼켰다.'},
+   {name:'1구역 · 무음 지대의 숲',hue:95,flavor:'소리가 사라진 숲. 잔상들이 풀숲 사이에서 숨을 죽이고 있다.',normalAdd:[['gulp','gulp'],['hoar','chirp'],['cruise','cruise','zig']]}],
+  [{name:'2구역 · 별빛 첨탑',hue:0,flavor:'별빛이 결정처럼 굳은 첨탑. 공허의 기척이 가까워진다.'},
+   {name:'2구역 · 라하이로이 폐허',hue:-55,flavor:'붉게 타오른 폐허 도시. 기계 잔상들이 순찰을 돈다.',normalAdd:[['scout','scout'],['saur','fdread'],['spear','snip']]}]];
+function pickVariant(){S.vari=rnd(0,1)}
+const AV=()=>VARIANTS[S.act][S.vari||0];
+const ANCIENTS=[
+  {n:'잔향의 관측자',t:'1구역의 고대',art:'2/26/Sequence_Node_To_the_New_World.png',line:'"새로운 파도가 탑을 오르는구나. 무엇을 짊어지고 가겠느냐."'},
+  {n:'별을 짓는 자',t:'2구역의 고대',art:'b/bd/Sequence_Node_Infinity_Awaits_Me.png',line:'"여기까지 온 공명이여. 대가를 치를 각오가 있다면, 더 큰 힘을 주마."'}];
+const BLESS=[
+  {k:'hp',n:'단단한 공명',d:'파티 전원 최대 체력 +10',f:()=>T_().forEach(id=>{S.party[id].maxHp+=10;S.party[id].hp+=10})},
+  {k:'rare',n:'희귀한 선율',d:'파티 공명자의 희귀 카드 1장 획득',f:()=>{const pool=REWARD_POOL.filter(k=>CD[k].r&&S.team.includes(CD[k].o));if(pool.length)S.deck.push(mk(pick(pool)))}},
+  {k:'remove',n:'잡음 정리',d:'카드 2장 제거',flow:after=>{let n=2;const step=()=>{if(n--<=0||S.deck.length<=5){S.modal=null;after();return}chooseCard(()=>true,'제거할 카드',x=>{S.deck=S.deck.filter(y=>y.uid!==x.uid);step()})};step()}},
+  {k:'ench',n:'공명 각인',d:'카드 2장에 무작위 인챈트(예리·견고·신속·메아리·선천)',flow:after=>enchantFlow(2,'인챈트할 카드',after)},
+  {k:'echo',n:'잊힌 에코',d:'무작위 에코 1개 획득',f:()=>{const pool=TREASURE_ECHO.filter(e=>!has(e));if(pool.length)gainEcho(pick(pool))}},
+  {k:'gold',n:'조개 화폐 더미',d:'조개 화폐 +150',f:()=>{S.gold+=150}},
+  {k:'upgrade',n:'정련',d:'무작위 카드 3장 강화',f:()=>shuffle(S.deck.filter(x=>!x.up&&!CD[x.id].unplay)).slice(0,3).forEach(x=>x.up=true)},
+];
+const BLESS2=[{k:'energy',n:'과부하된 심장',d:'매 턴 에너지 +1 · 대신 덱에 「잔향 노이즈」 2장',f:()=>{S.bonusE=(S.bonusE||0)+1;S.deck.push(mk('noise'),mk('noise'))}},
+  {k:'pact',n:'피의 계약',d:'희귀 카드 2장 획득 · 대신 파티 전원 최대 체력 -8',f:()=>{const pool=REWARD_POOL.filter(k=>CD[k].r&&S.team.includes(CD[k].o));for(let i=0;i<2&&pool.length;i++)S.deck.push(mk(pick(pool)));T_().forEach(id=>{const p=S.party[id];p.maxHp=Math.max(10,p.maxHp-8);p.hp=Math.min(p.hp,p.maxHp)})}}];
+function openAncient(){
+  const opts=shuffle(BLESS.slice()).slice(0,2).concat(S.act?[pick(BLESS2)]:[shuffle(BLESS.slice()).find(b=>b.k==='hp'||b.k==='gold')]);
+  const seen=new Set();S.ancient={opts:opts.filter(o=>!seen.has(o.k)&&seen.add(o.k)).map(o=>o.k)};S.screen='ancient';S.modal=null;render();
+}
+function takeBlessing(k){const b=[...BLESS,...BLESS2].find(x=>x.k===k);const done=()=>{S.screen='map';S.ancient=null;S._scrolled=false;render()};
+  if(b.flow)b.flow(done);else{b.f();done()}}
+function ancientHTML(){const A=ANCIENTS[S.act];
+  return `<div class="screen"><div class="box wbox ancient"><div class="anc-art" style="background-image:url('${WIKI+A.art}/revision/latest/scale-to-width-down/240')"></div>
+   <small class="eng">ANCIENT · ${AV().name}</small><h2>${A.n}</h2><div class="dim">${A.t}</div>${S.healNote?`<p class="dim">구역을 넘어오며 모든 공명자가 최대 체력의 ${S.healNote}%를 회복했습니다.</p>`:''}
+   <p>${A.line}</p><div class="choices">${S.ancient.opts.map(k=>{const b=[...BLESS,...BLESS2].find(x=>x.k===k);return `<button class="choice" onclick="takeBlessing('${k}')"><b>${b.n}</b><small>${b.d}</small></button>`}).join('')}</div></div></div>`}
 function costOf(card){
   const d=CD[card.id];let k=Array.isArray(d.c)?d.c[card.up?1:0]:d.c;
   if(d.o!=='any'&&d.o!==S.c.active)k+=1;
   if(card.id==='aem_break'&&S.c.mecha)k-=1;
+  if(card.ench==='swift')k-=1;
   return Math.max(0,k);
 }
 function canPlay(card){
@@ -841,7 +889,9 @@ function playCard(uid,T){
   const atk=d.t==='공격';anim('u-'+owner,atk?'atk':'cast');FXDELAY=atk?170:60;HITSEQ=0;
   if(!atk)vfx('circle','u-'+owner,{c:CH[owner].color});
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
-  d.p(vals(card),T,card);FXDELAY=0;c.calcNow=0;
+  c.curCard=card;
+  if(card.ench==='echo'&&!card.echoed){card.echoed=1;c.hand.push({...card,uid:UID++,ench:null})}
+  d.p(vals(card),T,card);FXDELAY=0;c.calcNow=0;c.curCard=null;
   if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
   gainConc(owner,1);gainLib(owner,1);
   if(d.pw){}else if(d.ex)c.exhaust.push(card);else c.discard.push(card);
@@ -885,7 +935,7 @@ function maybeWin(){
 function gainConc(id,n){S.c.conc[id]=Math.min(3,S.c.conc[id]+n)}
 function gainLib(id,n){S.c.lib[id]=Math.min(5,S.c.lib[id]+n)}
 function hit(T,base,o={}){
-  if(!T||T.dead)return;const c=S.c;let d=base;
+  if(!T||T.dead)return;const c=S.c;let d=base+(c.curCard&&c.curCard.ench==='sharp'&&!o.raw?3:0);
   if(!o.raw)d+=(c.cur==='aem'&&c.mecha?3:0)+(has('fdread')?1:0)+(has('dreamless')?2:0)+((c.cur==='aem'||c.cur==='mor')&&has('snip')?2:0)+(c.cur==='cam'?c.bloom:0)+(c.cur==='lyn'?Math.floor(c.paint/2):0)+c.calcNow;
   d+=T.ur||0;
   let m=1;if(c.amp>0)m*=1.3;if(c.weak>0)m*=.75;if(T.vuln>0)m*=1.5;
@@ -901,7 +951,7 @@ function dmgEnemy(T,d,pierce,style){
 }
 const fz=(T,n)=>{if(T&&!T.dead){T.fz+=n;pop(T,`잔향 +${n}`,'info')}};
 const vuln=(T,n)=>{if(T&&!T.dead)T.vuln+=n+(has('explorer')?1:0)};
-function gainBlock(n){const c=S.c;c.block+=n;pop('party',`+${n} 보호막`,'blk');vfx('shield','u-'+c.active,{});if(c.hyp&&n>0&&alive().length)dmgEnemy(pick(alive()),c.hyp,false,'burst')}
+function gainBlock(n){const c=S.c;if(c.curCard&&c.curCard.ench==='sturdy'&&n>0)n+=3;c.block+=n;pop('party',`+${n} 보호막`,'blk');vfx('shield','u-'+c.active,{});if(c.hyp&&n>0&&alive().length)dmgEnemy(pick(alive()),c.hyp,false,'burst')}
 function paint(n){const c=S.c;c.paint=Math.min(12,c.paint+n);if(n>0)pop('p-lyn',`색채 +${n}`,'info')}
 function bloom(n){const c=S.c;c.bloom=Math.min(10,c.bloom+n);if(n>0)pop('p-cam',`개화 +${n}`,'info')}
 function unravel(T,n){if(T&&!T.dead){T.ur+=n;pop(T,`해체 +${n}`,'info')}}
@@ -1014,7 +1064,8 @@ function winCombat(){
   S.gold+=gold;
   const rw={gold,cards:rollCards(3,kind!=='battle'),echo:null};
   if(kind==='elite'&&S.burn){rw.gold+=50;S.gold+=50;rw.burnEcho=pick(TREASURE_ECHO.filter(e=>!has(e)))||null;gainEcho(rw.burnEcho)}
-  if(kind==='elite'||kind==='boss'){const ids=c.enemies.map(e=>e.id).filter(id=>ECHO[id]&&!has(id));rw.echo=ids.length?ids[0]:pick(TREASURE_ECHO.filter(e=>!has(e)))||null}
+  if(kind==='boss'){rw.bossPick=shuffle(['levia',...TREASURE_ECHO,'crown','aix','mephis'].filter(e=>!has(e)&&ECHO[e])).slice(0,3)}
+  else if(kind==='elite'){const ids=c.enemies.map(e=>e.id).filter(id=>ECHO[id]&&!has(id));rw.echo=ids.length?ids[0]:pick(TREASURE_ECHO.filter(e=>!has(e)))||null}
   else if(Math.random()<.22){const ids=c.enemies.map(e=>e.id).filter(id=>ECHO[id]&&!has(id));if(ids.length)rw.echo=pick(ids)}
   if(rw.echo)gainEcho(rw.echo);
   S.reward=rw;S.screen='reward';S.c=null;
@@ -1031,9 +1082,9 @@ function rollCards(n,better){
 function takeReward(uid){const c=S.reward.cards.find(x=>x.uid===uid);if(c)S.deck.push(c);S.reward.cards=[];afterReward()}
 function afterReward(){
   if(S.pos&&S.pos.r===ROWS){
-    if(S.act===0){S.act=1;S.pos=null;S.path=[];S.map=genMap();S.fights=0;
+    if(S.act===0){S.act=1;S.pos=null;S.path=[];pickVariant();S.map=genMap();S.fights=0;
       T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*DF().heal))});
-      S.screen='msg';S.msg={title:'2구역 · 별빛 첨탑',body:'레비아탄의 잔향이 잦아들자 탑 위로 이어지는 계단이 열립니다.<br>잠시 숨을 고르며 모든 공명자가 <b>최대 체력의 ${Math.round(DF().heal*100)}%</b>를 회복했습니다.'};
+      S.healNote=Math.round(DF().heal*100);openAncient();return;
     }else{S.screen='win';clearSave()}
   }else S.screen='map';
   render();
@@ -1109,11 +1160,14 @@ function openShop(){
   const cards=rollCards(5,true).map(c=>({c,price:CD[c.id].r?rnd(110,140):rnd(45,75),sold:false}));
   cards.push({c:mk('any_tune'),price:40,sold:false});
   const ech=shuffle(TREASURE_ECHO.filter(e=>!has(e))).slice(0,2).map(e=>({e,price:rnd(130,160),sold:false}));
-  S.shop={cards,ech,removed:false,kit:false};S.screen='shop';render();
+  S.shop={cards,ech,removed:false,kit:false,trinket:Math.random()<.3};
+  if(S.shop.trinket){S.shop.cards=[];S.shop.ech=shuffle(TREASURE_ECHO.concat(['crown','aix','mephis','turtle']).filter(e=>!has(e)&&ECHO[e])).slice(0,4).map(e=>({e,price:rnd(110,150),sold:false}))}
+  S.screen='shop';render();
 }
 function buyCard(i){const it=S.shop.cards[i];if(it.sold||S.gold<it.price)return;S.gold-=it.price;it.sold=true;S.deck.push(it.c);render()}
 function buyEcho(i){const it=S.shop.ech[i];if(it.sold||S.gold<it.price)return;S.gold-=it.price;it.sold=true;gainEcho(it.e);render()}
 function buyRemove(){if(S.shop.removed||S.gold<75)return;chooseCard(()=>true,'제거할 카드 (75 화폐)',x=>{S.gold-=75;S.shop.removed=true;S.deck=S.deck.filter(y=>y.uid!==x.uid);S.modal=null;render()})}
+function buyEnch(){if(S.shop.enched||S.gold<90)return;S.gold-=90;S.shop.enched=1;enchantFlow(1,'인챈트할 카드')}
 function buyKit(){if(S.shop.kit||S.gold<40)return;S.gold-=40;S.shop.kit=true;T_().forEach(id=>{const p=S.party[id];if(!p.down)p.hp=Math.min(p.maxHp,p.hp+15)});render()}
 
 /* ============ 모달 ============ */
@@ -1319,6 +1373,7 @@ function cardHTML(card,o={}){
     ${d.unplay?'':`<div class="cost ${waiting?'up':''}">${cost}</div>`}
     ${waiting?'<div class="wait">대기 +1</div>':''}
     <div class="nm ${card.up?'u':''}">${d.n}${card.up?'+':''}</div>
+    ${card.ench?`<div class="ench" style="--e:${ENCH[card.ench].c}"${tipAttr(`<b>인챈트 · ${ENCH[card.ench].n}</b><br>${ENCH[card.ench].tx}`)}>✦ ${ENCH[card.ench].n}</div>`:''}
     ${CARD_ART[card.id]?`<div class="art aimg" style="--ic:url('${WIKI+CARD_ART[card.id]}/revision/latest/scale-to-width-down/160')">${art?`<span class="who" style="${art}"></span>`:''}</div>`:`<div class="art" style="${art}">${art?'':`<div class="sym">${TYPESYM[d.t]}</div>`}</div>`}
     <div class="ty">${d.t}${d.r?' · 희귀':''}${d.ex?' · 소멸':''}</div>
     <div class="tx">${cardText(card)}</div>
@@ -1327,7 +1382,7 @@ function cardHTML(card,o={}){
 }
 function topBar(){
   return `<div class="top">
-    <b>${ACTS[S.act].name}</b><span class="chip">층 ${S.floor}</span>
+    <b>${AV().name}</b><span class="chip">층 ${S.floor}</span>
     ${T_().map(id=>{const p=S.party[id];return `<span class="chip"><span class="dot" style="background:${CH[id].color}"></span>${CH[id].name} ${p.down?'<span style="color:var(--red)">기절</span>':`${p.hp}/${p.maxHp}`}</span>`}).join('')}
     <span class="chip" style="color:var(--gold)">◎ ${S.gold}</span>
     <span class="grow"></span>
@@ -1345,7 +1400,7 @@ function render(){
   const scr=$('#screen');
   if(!S)scr.innerHTML=MENU==='select'?selectHTML():MENU==='help'?helpHTML():titleHTML();
   else if(S.screen==='combat'){const cur=scr.querySelector('.combat');if(!cur||cur.dataset.cid!=S.c.id||S.c.rebuild){HAND_SEEN=cur&&cur.dataset.cid==S.c.id?new Set(S.c.hand.map(x=>x.uid)):new Set();scr.innerHTML=buildCombat();S.c.rebuild=false}updateCombat()}
-  else scr.innerHTML={map:mapHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
+  else scr.innerHTML={map:mapHTML,ancient:ancientHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
   if(S&&S.screen==='map')saveRun();
   if(S&&S.screen==='map'){const cur=document.querySelector('.node.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
@@ -1474,7 +1529,7 @@ function mapHTML(readonly){
     <div class="bimg" style="${ba.portrait?`background-image:url('${ba.portrait}')`:''}"></div><span>명식 · ${EN[bid].n}</span></button>`;
   const legend=Object.entries(NODE).filter(([k])=>k!=='boss').map(([k,t])=>`<div class="lg t-${k}" style="--c:${t.c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg>${nodeImg(k)}</i>${t.l}</div>`).join('');
   return `<div class="mapscr">
-    <div class="maphead"><small>TOWER OF ECHOES · ACT ${S.act+1}</small><b>${ACTS[S.act].name}</b></div>
+    <div class="maphead"><small>TOWER OF ECHOES · ACT ${S.act+1}</small><b>${AV().name}</b><em>${AV().flavor}</em></div>
     <div class="mapwrap"><div class="map" style="height:${H}px"><svg class="mlines" viewBox="0 0 100 ${H}" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
     <aside class="maplegend"><small>LEGEND</small>${legend}<div class="lg burnlg"><i></i>불타는 정예</div></aside>
   </div>`;
@@ -1532,7 +1587,7 @@ function buildCombat(){
   const c=S.c;
   const motes=Array.from({length:14},(_,i)=>`<i class="mote" style="left:${(i*71)%100}%;bottom:${10+(i*13)%40}%;animation-delay:${(i*.53)%7}s;background:${S.act?'#e3b8ff':'#bfe6ff'}"></i>`).join('');
   return `<div class="combat" data-cid="${c.id}">
-    <div class="stage" id="stage">${bgSVG(S.act)}${motes}
+    <div class="stage" id="stage" style="--hue:${AV().hue}deg">${bgSVG(S.act)}${motes}
       <div class="stlog" id="stlog"></div><div class="tgthint" id="tgthint"></div>
       ${T_().map((id,i)=>`<div class="unit party" id="u-${id}" style="--c:${CH[id].color};--dl:${i*.45}s" onclick="clickUnit('${id}')">
         <div class="swaptag"></div><div class="libwrap"></div>
@@ -1558,7 +1613,7 @@ function setHP(root,hp,max,block){
 }
 function updateCombat(){
   const c=S.c;const order=[c.active,...T_().filter(x=>x!==c.active)];
-  const maxE=3+(has('levia')?1:0);
+  const maxE=3+(S.bonusE||0)+(has('levia')?1:0);
   T_().forEach(id=>{
     const el=$('#u-'+id);const p=S.party[id];const slot=order.indexOf(id);const front=slot===0;
     el.className=`unit party s${slot} ${p.down?'down':''} ${!front&&!p.down&&!c.busy&&!c.tgt?'swappable':''}`;
@@ -1767,6 +1822,8 @@ function rewardHTML(){
   const rows=[`<div class="rw got"><i>◎</i><span>조개 화폐 <b>+${r.gold}</b></span></div>`];
   if(r.echo)rows.push(`<div class="rw got"${tipAttr(ECHO[r.echo].tx)}><i>${ECHO[r.echo].i}</i><span>에코 흡수 · <b>${ECHO[r.echo].n}</b><small>${ECHO[r.echo].tx}</small></span></div>`);
   if(r.burnEcho)rows.push(`<div class="rw got burnrw"><i>${ECHO[r.burnEcho].i}</i><span>불타는 정예 보상 · <b>${ECHO[r.burnEcho].n}</b><small>${ECHO[r.burnEcho].tx}</small></span></div>`);
+  if(r.bossPick)rows.push(`<div class="rw" style="flex-wrap:wrap"><i>✹</i><span>명식의 에코 · 하나를 고르세요<small>${r.bossPick.map(e=>`<button class="choice" style="display:inline-block;margin:6px 6px 0 0;width:200px" onclick="S.reward.bossPick=null;gainEcho('${e}');S.reward.picked='${e}';render()"><b>${ECHO[e].i} ${ECHO[e].n}</b><small>${ECHO[e].tx}</small></button>`).join('')}</small></span></div>`);
+  if(r.picked)rows.push(`<div class="rw got"><i>${ECHO[r.picked].i}</i><span>명식의 에코 · <b>${ECHO[r.picked].n}</b></span></div>`);
   if(r.cards.length)rows.push(`<button class="rw" onclick="S.reward.open=!S.reward.open;render()"><i>🂠</i><span>카드 보상<small>3장 중 1장을 덱에 추가</small></span></button>`);
   return `<div class="screen"><div class="box wbox" style="max-width:${open?900:520}px"><small class="eng">REWARD</small><h2>${r.title||'전투 승리'}</h2>
     <div class="rws">${rows.join('')}</div>
@@ -1792,12 +1849,13 @@ function restHTML(){
 }
 function shopHTML(){
   const s=S.shop;
-  return `<div class="screen"><div class="box" style="max-width:960px"><h2 style="text-align:center">탑 속의 상점</h2>
-    <p class="dim" style="text-align:center">"조개 화폐만 있으면 뭐든지! 잔상 빼고요."</p>
+  return `<div class="screen"><div class="box" style="max-width:960px"><h2 style="text-align:center">${s.trinket?'떠돌이 에코 상인':'탑 속의 상점'}</h2>
+    <p class="dim" style="text-align:center">${s.trinket?'"카드는 없어. 대신 진짜 귀한 에코만 모아 왔지."':'"조개 화폐만 있으면 뭐든지! 잔상 빼고요."'}</p>
     <div class="cards">${s.cards.map((it,i)=>`<div class="shopitem" style="${it.sold?'opacity:.25':''}">${cardHTML(it.c,{click:it.sold?'':`buyCard(${i})`})}<span class="price">◎ ${it.price}</span></div>`).join('')}</div>
     <div class="cards" style="margin-top:16px">
       ${s.ech.map((it,i)=>`<button class="choice" style="width:220px;${it.sold?'opacity:.25':''}" onclick="buyEcho(${i})" ${it.sold||S.gold<it.price?'disabled':''}><div class="echoicon">${ECHO[it.e].i}</div><b>${ECHO[it.e].n}</b><small>${ECHO[it.e].tx}</small><span class="price">◎ ${it.price}</span></button>`).join('')}
       <button class="choice" style="width:220px" onclick="buyRemove()" ${s.removed||S.gold<75?'disabled':''}><b>카드 제거</b><small>덱에서 카드 1장 제거</small><span class="price">◎ 75</span></button>
+      ${s.trinket?'':`<button class="choice" style="width:220px" onclick="buyEnch()" ${s.enched||S.gold<90?'disabled':''}><b>공명 각인</b><small>카드 1장에 무작위 인챈트</small><span class="price">◎ 90</span></button>`}
       <button class="choice" style="width:220px" onclick="buyKit()" ${s.kit||S.gold<40?'disabled':''}><b>응급 키트</b><small>모든 공명자 체력 15 회복</small><span class="price">◎ 40</span></button>
     </div>
     <div style="text-align:center;margin-top:16px"><button class="btn primary" onclick="S.screen='map';render()">떠나기</button></div></div></div>`;
