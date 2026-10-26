@@ -447,6 +447,13 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .card .art.aimg::before{content:'';position:absolute;inset:6px 18%;background:var(--ic) center/contain no-repeat;filter:drop-shadow(0 0 8px color-mix(in srgb,var(--c) 80%,transparent));z-index:1}
 .card .art.aimg::after{background:linear-gradient(180deg,transparent 60%,rgba(0,0,0,.35))}
 .card .art .who{position:absolute;right:4px;bottom:4px;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--c);z-index:2;background-size:cover!important;background-position:50% 25%!important}
+.mnode i,.lg i{position:relative;overflow:hidden}
+.mnode i img,.lg i img{position:absolute;inset:-22%;width:144%;height:144%;object-fit:cover;transform:rotate(-45deg);pointer-events:none}
+.mnode i img~*,.mnode i:has(img) svg,.lg i:has(img) svg{display:none}
+.mnode i{width:38px;height:38px;background:#0d1330}.mnode.t-elite i{width:46px;height:46px}
+.mnode.vis i img{filter:grayscale(.2) brightness(1.1)}.mnode.past i img{filter:grayscale(1)}
+.mnode.cur i{box-shadow:inset 0 0 0 3px #fff,0 0 0 4px rgba(255,255,255,.3)}
+.mnode.t-event i img{filter:brightness(1.4)}
 </style>
 </head>
 <body>
@@ -1444,6 +1451,8 @@ const NODE_SVG={
   event:'<path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.7V14M12 18v.5"/>',rest:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"/>',
   shop:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 0 1 6 0"/>',treasure:'<path d="M4 9h16v10H4zM4 9l2-4h12l2 4M12 9v10"/>',
   recruit:'<path d="M12 5v14M5 12h14"/>'};
+const NODE_IMG={battle:'0/02/Tick_Tack_Icon.png',elite:'7/70/Crownless_Icon.png',shop:'d/d1/Item_Shell_Credit.png',treasure:'f/fb/Item_Andante_Helix.png',rest:'b/b0/Item_Nova.png',event:'2/26/Sequence_Node_To_the_New_World.png',recruit:'4/47/Resonator_Rover.png'};
+const nodeImg=t=>NODE_IMG[t]?`<img src="${WIKI+NODE_IMG[t]}/revision/latest/scale-to-width-down/80" referrerpolicy="no-referrer" alt="" onerror="this.remove()">`:'';
 function mapHTML(readonly){
   const GAP=86,H=ROWS*GAP+250;const av=readonly?[]:availNodes();const path=S.path||[];
   const yOf=(r,n)=>H-(r*GAP+70+(n?n.jy:0));
@@ -1458,12 +1467,12 @@ function mapHTML(readonly){
   S.map.forEach((row,r)=>row.forEach(n=>{
     const key=`${r}-${n.i}`;const T=NODE[n.type];const isAv=av.includes(key);
     const isCur=S.pos&&S.pos.r===r&&S.pos.i===n.i;const vis=path.includes(key);const past=S.pos&&r<S.pos.r&&!vis;
-    nodes+=`<button class="mnode t-${n.type} ${n.burn?'burn':''} ${isAv?'avail':''} ${isCur?'cur':''} ${vis?'vis':''} ${past?'past':''}" style="left:${n.x*100}%;top:${yOf(r,n)}px;--c:${T.c}"${tipAttr(`<b>${T.l}${n.burn?' · 불타는 정예':''}</b><br>${NODE_TIP[n.type]}${n.burn?'<hr>더 강하지만 에코를 하나 더 주는 정예예요.':''}`)} ${isAv?`onclick="enterNode('${key}')"`:'disabled'}><i><svg viewBox="0 0 24 24">${NODE_SVG[n.type]}</svg></i></button>`;
+    nodes+=`<button class="mnode t-${n.type} ${n.burn?'burn':''} ${isAv?'avail':''} ${isCur?'cur':''} ${vis?'vis':''} ${past?'past':''}" style="left:${n.x*100}%;top:${yOf(r,n)}px;--c:${T.c}"${tipAttr(`<b>${T.l}${n.burn?' · 불타는 정예':''}</b><br>${NODE_TIP[n.type]}${n.burn?'<hr>더 강하지만 에코를 하나 더 주는 정예예요.':''}`)} ${isAv?`onclick="enterNode('${key}')"`:'disabled'}><i><svg viewBox="0 0 24 24">${NODE_SVG[n.type]}</svg>${nodeImg(n.type)}</i></button>`;
   }));
   const bav=av.includes('boss');const bid=ACTS[S.act].boss;const ba=ARTS[bid]||{};
   nodes+=`<button class="mboss ${bav?'avail':''}" style="top:${H-(ROWS*GAP+110)}px" ${bav?`onclick="enterNode('boss')"`:'disabled'}${tipAttr(`<b>명식 · ${EN[bid].n}</b><br>${EN[bid].pv?EN[bid].pv.tx:''}`)}>
     <div class="bimg" style="${ba.portrait?`background-image:url('${ba.portrait}')`:''}"></div><span>명식 · ${EN[bid].n}</span></button>`;
-  const legend=Object.entries(NODE).filter(([k])=>k!=='boss').map(([k,t])=>`<div class="lg t-${k}" style="--c:${t.c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg></i>${t.l}</div>`).join('');
+  const legend=Object.entries(NODE).filter(([k])=>k!=='boss').map(([k,t])=>`<div class="lg t-${k}" style="--c:${t.c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg>${nodeImg(k)}</i>${t.l}</div>`).join('');
   return `<div class="mapscr">
     <div class="maphead"><small>TOWER OF ECHOES · ACT ${S.act+1}</small><b>${ACTS[S.act].name}</b></div>
     <div class="mapwrap"><div class="map" style="height:${H}px"><svg class="mlines" viewBox="0 0 100 ${H}" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
