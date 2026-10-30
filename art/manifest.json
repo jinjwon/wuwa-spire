@@ -1,0 +1,326 @@
+[
+  {
+    "id": "rov",
+    "source": "exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "rovM",
+    "source": "exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "aem",
+    "source": "exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "sk",
+    "source": "exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "lyn",
+    "source": "exec-8f038a01-3412-4384-93c2-45eb51ce106e.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "mor",
+    "source": "exec-8f038a01-3412-4384-93c2-45eb51ce106e.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "chi",
+    "source": "exec-8f038a01-3412-4384-93c2-45eb51ce106e.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "cam",
+    "source": "exec-8f038a01-3412-4384-93c2-45eb51ce106e.png",
+    "frameSize": 128,
+    "attackFrames": 4,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_snip",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_zig",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_tick",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_gulp",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_chirp",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_vjun",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_fjun",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_cruise",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_fdread",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_hoar",
+    "source": "exec-e49888c9-441d-4651-9942-94699bb320da.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_cheron",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_vheron",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_hdread",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_spear",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_saur",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_tamb",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_scout",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_crown",
+    "source": "exec-0c5e5a30-a8a1-4e92-815f-7b288c5a1240.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_mephis",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_aix",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_explorer",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_rider",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_gorilla",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_dreamless",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_turtle",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_hecate",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_levia",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  },
+  {
+    "id": "enemy_aleph",
+    "source": "exec-09273e82-48bd-4a69-9d7e-2a4469c68251.png",
+    "frameSize": 128,
+    "attackFrames": 0,
+    "idle": "CSS breathing/hover",
+    "provenance": "OpenAI built-in image_gen; Wuthering Waves fan reinterpretation; original IP Kuro Games",
+    "review": "generated design approximation, not official sprites"
+  }
+]

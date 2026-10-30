@@ -1,0 +1,1371 @@
+[
+  {
+    "file": "maps/coast-battle.png",
+    "region": "coast",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "maps/forest-battle.png",
+    "region": "forest",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "maps/spire-battle.png",
+    "region": "spire",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "maps/lahai-battle.png",
+    "region": "lahai",
+    "width": 640,
+    "height": 360
+  },
+  {
+    "file": "maps/coast-route.png",
+    "region": "coast",
+    "width": 320,
+    "height": 640
+  },
+  {
+    "file": "maps/forest-route.png",
+    "region": "forest",
+    "width": 320,
+    "height": 640
+  },
+  {
+    "file": "maps/spire-route.png",
+    "region": "spire",
+    "width": 320,
+    "height": 640
+  },
+  {
+    "file": "maps/lahai-route.png",
+    "region": "lahai",
+    "width": 320,
+    "height": 640
+  },
+  {
+    "file": "motion/rov_guard.png",
+    "id": "rov",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rov_hit.png",
+    "id": "rov",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rov_cast.png",
+    "id": "rov",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rov_ultimate.png",
+    "id": "rov",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rovM_guard.png",
+    "id": "rovM",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rovM_hit.png",
+    "id": "rovM",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rovM_cast.png",
+    "id": "rovM",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/rovM_ultimate.png",
+    "id": "rovM",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aem_guard.png",
+    "id": "aem",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aem_hit.png",
+    "id": "aem",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aem_cast.png",
+    "id": "aem",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aem_ultimate.png",
+    "id": "aem",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/sk_guard.png",
+    "id": "sk",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/sk_hit.png",
+    "id": "sk",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/sk_cast.png",
+    "id": "sk",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/sk_ultimate.png",
+    "id": "sk",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/lyn_guard.png",
+    "id": "lyn",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/lyn_hit.png",
+    "id": "lyn",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/lyn_cast.png",
+    "id": "lyn",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/lyn_ultimate.png",
+    "id": "lyn",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/mor_guard.png",
+    "id": "mor",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/mor_hit.png",
+    "id": "mor",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/mor_cast.png",
+    "id": "mor",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/mor_ultimate.png",
+    "id": "mor",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/chi_guard.png",
+    "id": "chi",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/chi_hit.png",
+    "id": "chi",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/chi_cast.png",
+    "id": "chi",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/chi_ultimate.png",
+    "id": "chi",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/cam_guard.png",
+    "id": "cam",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/cam_hit.png",
+    "id": "cam",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/cam_cast.png",
+    "id": "cam",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/cam_ultimate.png",
+    "id": "cam",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_snip_attack.png",
+    "id": "enemy_snip",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_snip_cast.png",
+    "id": "enemy_snip",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_snip_hit.png",
+    "id": "enemy_snip",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_zig_attack.png",
+    "id": "enemy_zig",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_zig_cast.png",
+    "id": "enemy_zig",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_zig_hit.png",
+    "id": "enemy_zig",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tick_attack.png",
+    "id": "enemy_tick",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tick_cast.png",
+    "id": "enemy_tick",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tick_hit.png",
+    "id": "enemy_tick",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gulp_attack.png",
+    "id": "enemy_gulp",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gulp_cast.png",
+    "id": "enemy_gulp",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gulp_hit.png",
+    "id": "enemy_gulp",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_chirp_attack.png",
+    "id": "enemy_chirp",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_chirp_cast.png",
+    "id": "enemy_chirp",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_chirp_hit.png",
+    "id": "enemy_chirp",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vjun_attack.png",
+    "id": "enemy_vjun",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vjun_cast.png",
+    "id": "enemy_vjun",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vjun_hit.png",
+    "id": "enemy_vjun",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fjun_attack.png",
+    "id": "enemy_fjun",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fjun_cast.png",
+    "id": "enemy_fjun",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fjun_hit.png",
+    "id": "enemy_fjun",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cruise_attack.png",
+    "id": "enemy_cruise",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cruise_cast.png",
+    "id": "enemy_cruise",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cruise_hit.png",
+    "id": "enemy_cruise",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fdread_attack.png",
+    "id": "enemy_fdread",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fdread_cast.png",
+    "id": "enemy_fdread",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_fdread_hit.png",
+    "id": "enemy_fdread",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hoar_attack.png",
+    "id": "enemy_hoar",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hoar_cast.png",
+    "id": "enemy_hoar",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hoar_hit.png",
+    "id": "enemy_hoar",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cheron_attack.png",
+    "id": "enemy_cheron",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cheron_cast.png",
+    "id": "enemy_cheron",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_cheron_hit.png",
+    "id": "enemy_cheron",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vheron_attack.png",
+    "id": "enemy_vheron",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vheron_cast.png",
+    "id": "enemy_vheron",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_vheron_hit.png",
+    "id": "enemy_vheron",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hdread_attack.png",
+    "id": "enemy_hdread",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hdread_cast.png",
+    "id": "enemy_hdread",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hdread_hit.png",
+    "id": "enemy_hdread",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_spear_attack.png",
+    "id": "enemy_spear",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_spear_cast.png",
+    "id": "enemy_spear",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_spear_hit.png",
+    "id": "enemy_spear",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_saur_attack.png",
+    "id": "enemy_saur",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_saur_cast.png",
+    "id": "enemy_saur",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_saur_hit.png",
+    "id": "enemy_saur",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tamb_attack.png",
+    "id": "enemy_tamb",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tamb_cast.png",
+    "id": "enemy_tamb",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_tamb_hit.png",
+    "id": "enemy_tamb",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_scout_attack.png",
+    "id": "enemy_scout",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_scout_cast.png",
+    "id": "enemy_scout",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_scout_hit.png",
+    "id": "enemy_scout",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_crown_attack.png",
+    "id": "enemy_crown",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_crown_cast.png",
+    "id": "enemy_crown",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_crown_hit.png",
+    "id": "enemy_crown",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_mephis_attack.png",
+    "id": "enemy_mephis",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_mephis_cast.png",
+    "id": "enemy_mephis",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_mephis_hit.png",
+    "id": "enemy_mephis",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aix_attack.png",
+    "id": "enemy_aix",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aix_cast.png",
+    "id": "enemy_aix",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aix_hit.png",
+    "id": "enemy_aix",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_explorer_attack.png",
+    "id": "enemy_explorer",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_explorer_cast.png",
+    "id": "enemy_explorer",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_explorer_hit.png",
+    "id": "enemy_explorer",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_rider_attack.png",
+    "id": "enemy_rider",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_rider_cast.png",
+    "id": "enemy_rider",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_rider_hit.png",
+    "id": "enemy_rider",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gorilla_attack.png",
+    "id": "enemy_gorilla",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gorilla_cast.png",
+    "id": "enemy_gorilla",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_gorilla_hit.png",
+    "id": "enemy_gorilla",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_dreamless_attack.png",
+    "id": "enemy_dreamless",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_dreamless_cast.png",
+    "id": "enemy_dreamless",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_dreamless_hit.png",
+    "id": "enemy_dreamless",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_turtle_attack.png",
+    "id": "enemy_turtle",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_turtle_cast.png",
+    "id": "enemy_turtle",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_turtle_hit.png",
+    "id": "enemy_turtle",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hecate_attack.png",
+    "id": "enemy_hecate",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hecate_cast.png",
+    "id": "enemy_hecate",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_hecate_hit.png",
+    "id": "enemy_hecate",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_levia_attack.png",
+    "id": "enemy_levia",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_levia_cast.png",
+    "id": "enemy_levia",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_levia_hit.png",
+    "id": "enemy_levia",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aleph_attack.png",
+    "id": "enemy_aleph",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aleph_cast.png",
+    "id": "enemy_aleph",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/enemy_aleph_hit.png",
+    "id": "enemy_aleph",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aemMecha_attack.png",
+    "id": "aemMecha",
+    "state": "attack",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aemMecha_guard.png",
+    "id": "aemMecha",
+    "state": "guard",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aemMecha_hit.png",
+    "id": "aemMecha",
+    "state": "hit",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aemMecha_cast.png",
+    "id": "aemMecha",
+    "state": "cast",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "motion/aemMecha_ultimate.png",
+    "id": "aemMecha",
+    "state": "ultimate",
+    "frames": 4,
+    "frameSize": 128
+  },
+  {
+    "file": "cards/rov_a.png",
+    "id": "rov_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_b.png",
+    "id": "rov_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_s.png",
+    "id": "rov_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_amp.png",
+    "id": "rov_amp",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_blade.png",
+    "id": "rov_blade",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_brand.png",
+    "id": "rov_brand",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_res.png",
+    "id": "rov_res",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_echo.png",
+    "id": "rov_echo",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_void.png",
+    "id": "rov_void",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/rov_name.png",
+    "id": "rov_name",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_a.png",
+    "id": "aem_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_b.png",
+    "id": "aem_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_s.png",
+    "id": "aem_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_dash.png",
+    "id": "aem_dash",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_shard.png",
+    "id": "aem_shard",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_wing.png",
+    "id": "aem_wing",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_star.png",
+    "id": "aem_star",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_sync.png",
+    "id": "aem_sync",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_break.png",
+    "id": "aem_break",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/aem_ghost.png",
+    "id": "aem_ghost",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_a.png",
+    "id": "sk_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_b.png",
+    "id": "sk_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_s.png",
+    "id": "sk_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_heal.png",
+    "id": "sk_heal",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_wall.png",
+    "id": "sk_wall",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_veil.png",
+    "id": "sk_veil",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_chaos.png",
+    "id": "sk_chaos",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_orbit.png",
+    "id": "sk_orbit",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/sk_care.png",
+    "id": "sk_care",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_a.png",
+    "id": "lyn_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_b.png",
+    "id": "lyn_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_s.png",
+    "id": "lyn_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_spray.png",
+    "id": "lyn_spray",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_rapid.png",
+    "id": "lyn_rapid",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_free.png",
+    "id": "lyn_free",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_merc.png",
+    "id": "lyn_merc",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_quick.png",
+    "id": "lyn_quick",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/lyn_canvas.png",
+    "id": "lyn_canvas",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_a.png",
+    "id": "mor_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_b.png",
+    "id": "mor_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_s.png",
+    "id": "mor_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_mass.png",
+    "id": "mor_mass",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_conv.png",
+    "id": "mor_conv",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_crit.png",
+    "id": "mor_crit",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_hyp.png",
+    "id": "mor_hyp",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_probe.png",
+    "id": "mor_probe",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/mor_lecture.png",
+    "id": "mor_lecture",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_a.png",
+    "id": "chi_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_b.png",
+    "id": "chi_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_s.png",
+    "id": "chi_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_null.png",
+    "id": "chi_null",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_sever.png",
+    "id": "chi_sever",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_echo.png",
+    "id": "chi_echo",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_law.png",
+    "id": "chi_law",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_bond.png",
+    "id": "chi_bond",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/chi_blade.png",
+    "id": "chi_blade",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_a.png",
+    "id": "cam_a",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_b.png",
+    "id": "cam_b",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_s.png",
+    "id": "cam_s",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_pistil.png",
+    "id": "cam_pistil",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_vine.png",
+    "id": "cam_vine",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_thirst.png",
+    "id": "cam_thirst",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_bloom.png",
+    "id": "cam_bloom",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_fervor.png",
+    "id": "cam_fervor",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/cam_uni.png",
+    "id": "cam_uni",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/any_tune.png",
+    "id": "any_tune",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/any_shell.png",
+    "id": "any_shell",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/noise.png",
+    "id": "noise",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/static.png",
+    "id": "static",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/burn.png",
+    "id": "burn",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "cards/node_icons.png",
+    "id": "node_icons",
+    "width": 144,
+    "height": 96
+  },
+  {
+    "file": "maps/node-battle.png",
+    "id": "battle",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-elite.png",
+    "id": "elite",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-event.png",
+    "id": "event",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-rest.png",
+    "id": "rest",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-shop.png",
+    "id": "shop",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-treasure.png",
+    "id": "treasure",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-recruit.png",
+    "id": "recruit",
+    "width": 32,
+    "height": 32
+  },
+  {
+    "file": "maps/node-boss.png",
+    "id": "boss",
+    "width": 32,
+    "height": 32
+  }
+]
