@@ -530,6 +530,17 @@ const SFX={
   lose:()=>[392,330,262,196].forEach((f,i)=>tone(f,.35,'triangle',.18,null,i*.16)),
   click:()=>tone(760,.03,'square',.05),
 };
+/* 배경음: assets/bgm/<장면>.mp3 가 있으면 반복 재생 (없으면 조용히 넘어감) */
+if(OPT.bgm==null)OPT.bgm=1;
+const BGM={el:null,key:null};
+function bgmScene(){if(!S)return 'title';if(S.screen==='combat')return S.c&&S.c.kind==='boss'?'boss':'battle';return ['over','win'].includes(S.screen)?S.screen:'map'}
+function playBgm(){
+  const k=OPT.bgm?bgmScene():null;if(k===BGM.key)return;BGM.key=k;
+  const old=BGM.el;if(old){old.animate([{opacity:1},{opacity:0}],600);let v=old.volume;const t=setInterval(()=>{v-=.05;if(v<=0){clearInterval(t);old.pause()}else old.volume=v},40)}
+  if(!k){BGM.el=null;return}
+  const a=new Audio(`assets/bgm/${k}.mp3`);a.loop=true;a.volume=.35;a.onerror=()=>{};BGM.el=a;a.play().catch(()=>{});
+}
+addEventListener('pointerdown',()=>{if(BGM.el&&BGM.el.paused)BGM.el.play().catch(()=>{})});
 function sfx(k,delay){if(window.FAST||!OPT.sfx)return;const go=()=>{try{SFX[k]()}catch(e){}};delay?setTimeout(go,delay/OPT.speed):go()}
 addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button'))sfx('click')});
 /* 히트스톱: 맞는 순간 무대 애니메이션을 잠깐 멈춤 */
@@ -1489,6 +1500,7 @@ function render(){
   if(S&&S.screen==='map')saveRun();
   if(S&&S.screen==='map'){const cur=document.querySelector('.node.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
   requestAnimationFrame(flushFx);
+  playBgm();
 }
 let MENU='title';
 const SAVE_KEY='wuwa-spire-save-v2';
@@ -1961,6 +1973,7 @@ function modalHTML(){
         <button class="choice" onclick="toggleFS()"><b>전체 화면</b></button>
         <button class="choice" onclick="OPT.speed=OPT.speed===1?2:1;saveOpt();render()"><b>전투 속도 ×${OPT.speed}</b><small>적 턴·연출 대기 시간을 줄여요</small></button>
         <button class="choice" onclick="OPT.sfx=OPT.sfx?0:1;saveOpt();render()"><b>효과음 ${OPT.sfx?'켜짐':'꺼짐'}</b></button>
+        <button class="choice" onclick="OPT.bgm=OPT.bgm?0:1;saveOpt();render()"><b>배경음 ${OPT.bgm?'켜짐':'꺼짐'}</b><small>assets/bgm 폴더의 mp3를 재생해요</small></button>
         <button class="choice" onclick="toTitle()"><b>저장하고 타이틀로</b><small>${inMap?'지금 위치가 저장돼요.':'진행 중인 전투·사건은 저장되지 않고, 마지막 지도 위치부터 이어해요.'}</small></button>
         <button class="choice" onclick="abandonRun()"><b>이번 판 포기</b><small>저장을 지우고 타이틀로 돌아가요.</small></button>
         ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>${inMap?'지금 위치를 저장하고 종료해요.':'마지막 지도 위치부터 이어할 수 있어요.'}</small></button>`:''}
