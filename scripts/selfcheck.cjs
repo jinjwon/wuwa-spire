@@ -8,6 +8,10 @@ const CHECKS = {
   echo_skill: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';gainEcho('crown');enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
     const T=alive()[0],h=T.hp;useEcho(T);const ok1=T.hp<h&&S.c.echoCd===3;const h2=T.hp;useEcho(T);const ok2=T.hp===h2;
     S.c.busy=false;startTurn();const ok3=S.c.echoCd===2;S.c.enemies.forEach(e=>{e.dead=true});let ok4=true;try{useEcho()}catch(e){ok4=false}return ok1&&ok2&&ok3&&ok4})()`,
+  vibration: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
+    const T=alive()[0];addVib(T,6);const a=T.broken===1&&T.vib===0;addVib(T,6);const b=T.broken===1&&T.vib===0;
+    const hp=S.party[S.c.active].hp;await endTurn();const c2=S.party[S.c.active].hp===hp&&T.broken===0;
+    const B=spawn('levia');return a&&b&&c2&&B.vibMax===16})()`,
 };
 const only = process.argv.slice(2);
 (async () => {
