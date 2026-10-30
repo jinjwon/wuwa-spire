@@ -145,7 +145,8 @@ h1,h2,h3{margin:0}
 .eimg img{width:100%;height:100%;object-fit:contain;display:block;filter:drop-shadow(0 0 10px color-mix(in srgb,var(--c) 70%,transparent)) drop-shadow(0 8px 6px rgba(0,0,0,.55))}
 .sprite{width:100%;aspect-ratio:1;overflow:hidden;position:relative}
 .sprite img{display:block;height:100%;image-rendering:pixelated;animation-name:spr;animation-iteration-count:infinite}
-@keyframes spr{to{transform:translateX(-100%)}}
+@keyframes spr{to{transform:translateX(var(--spr-end))}}
+@media(prefers-reduced-motion:reduce){.sprite img{animation:none!important}.unit .fig,.unit .body{animation:none!important}}
 .ph{width:100%;display:block;filter:drop-shadow(0 0 12px var(--c))}
 .uhud{width:calc(100% + 26px);max-width:200px;margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;z-index:2}
 .unit.enemy.boss .uhud{max-width:280px}
@@ -290,6 +291,7 @@ body.dragging .hand .card{pointer-events:none}
 
 /* ===== v2: 전신 캐릭터 · 움직임 · 슬더스식 UI ===== */
 .stage{--ph:clamp(170px,33vh,320px)}
+.unit.party .sprite{width:var(--ph);margin-left:calc((100% - var(--ph))/2)}
 .full{height:var(--ph);display:flex;justify-content:center;align-items:flex-end}
 .full img{height:100%;width:auto;max-width:none;display:block;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 8px 10px rgba(0,0,0,.45))}
 .unit.party .uhud{margin-top:6px}
@@ -459,6 +461,41 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .maphead em{display:block;font-style:normal;color:var(--dim);font-size:12px;margin-top:4px}
 .ancient{max-width:560px;text-align:center}
 .anc-art{width:120px;height:120px;margin:0 auto 6px;background:center/contain no-repeat;filter:drop-shadow(0 0 22px #e9d9a6);animation:hover 3s ease-in-out infinite}
+/* 도트 전투·지역·카드: 배경은 낮은 대비, 조작 정보는 선명하게 유지합니다. */
+.battle-art{position:absolute;inset:0;z-index:-1;pointer-events:none;background:#10182b}
+.battle-art img{width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated}
+.battle-art::after{content:'';position:absolute;inset:0;background:linear-gradient(#090f2422,#090f2410 45%,#090f2444)}
+.mapwrap{background:#101929;padding:0;border:2px solid #566775;clip-path:none;box-shadow:0 0 0 3px #080e1d}
+.route-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;pointer-events:none;opacity:.68}
+.mlines{z-index:1;filter:drop-shadow(0 1px 2px #02050b)}
+.mlines line{stroke:#e2e4cc;stroke-width:2.5;stroke-dasharray:4 5;opacity:.75}
+.mlines line.hot{stroke:#ffe5a0;stroke-width:4;opacity:1}
+.mnode,.mboss{z-index:2}
+.mnode{width:48px;height:48px}
+.mnode i{width:36px;height:36px;background:#10182bee;box-shadow:inset 0 0 0 2px var(--c),0 2px 0 3px #0a1021}
+.mnode i img,.lg i img{inset:5%;width:90%;height:90%;object-fit:contain;image-rendering:pixelated}
+.mnode.avail:focus-visible{outline:3px solid #fff;outline-offset:5px}
+.mboss .bimg{image-rendering:pixelated;background-size:contain;background-repeat:no-repeat}
+.mboss span{background:#080e1de6;padding:5px 9px;text-shadow:1px 2px #000}
+.card{border-radius:4px;box-shadow:3px 4px 0 #080c18,0 8px 18px #0008}
+.card .art.pixel-card{flex:none;height:76px;border-radius:0;border:2px solid #060c1c}
+.pixel-card img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated}
+.card .art.pixel-card::after{background:linear-gradient(transparent 75%,#080e1d55)}
+.card .nm,.card .ty{border-radius:2px}
+.unit .fig:has(.sprite){animation:pixelBreathe 1.6s steps(2,end) infinite}
+.unit.enemy.fly .fig:has(.sprite){animation:pixelHover 2.4s steps(4,end) infinite}
+.unit .body:not(.hit):not(.block):not(.cast):not(.ult):not(.atk):not(.jab):not(.enter) .sprite{filter:drop-shadow(2px 3px 0 #05091488)}
+.body.enter{animation:pixelEnter .45s ease-out}
+@keyframes pixelBreathe{50%{transform:translateY(-2px)}}
+@keyframes pixelHover{50%{transform:translateY(-8px)}}
+@keyframes pixelEnter{0%{transform:translateX(-28px);opacity:.4}60%{transform:translateX(4px)}100%{transform:none;opacity:1}}
+.unit.down .fig:has(.sprite),.unit.dead .fig:has(.sprite){animation:none}
+@media(prefers-reduced-motion:reduce){.unit .fig:has(.sprite),.body.enter,.mnode.avail i,.mboss.avail .bimg{animation:none!important}}
+.aura::after{display:none}
+.stage.stop *{animation-play-state:paused!important}
+.card .hk{position:absolute;top:-9px;right:-7px;z-index:4;width:20px;height:20px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#0b1024;color:var(--wu-acc,#e9d9a6);border:1px solid #556}
+.endturn small{font-size:10px;opacity:.7;margin-left:4px}
+.card .wait{right:16px}
 </style>
 </head>
 <body>
@@ -469,7 +506,34 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const sleep=ms=>window.FAST?Promise.resolve():new Promise(r=>setTimeout(r,ms));
+const OPT=(()=>{try{return JSON.parse(localStorage.getItem('wuwa-opt'))||{}}catch(e){return {}}})();OPT.speed=OPT.speed||1;if(OPT.sfx==null)OPT.sfx=1;
+const saveOpt=()=>{try{localStorage.setItem('wuwa-opt',JSON.stringify(OPT))}catch(e){}};
+const sleep=ms=>window.FAST?Promise.resolve():new Promise(r=>setTimeout(r,ms/OPT.speed));
+/* 효과음: 파일 없이 WebAudio로 합성 */
+let AC=null;
+function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
+function tone(f,dur,type,g,f2,t0=0){const a=ac(),t=a.currentTime+t0,o=a.createOscillator(),v=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);v.gain.setValueAtTime(g*.6,t);v.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(v).connect(a.destination);o.start(t);o.stop(t+dur)}
+function noise(dur,g,freq,t0=0){const a=ac(),t=a.currentTime+t0,b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const n=a.createBufferSource(),f=a.createBiquadFilter(),v=a.createGain();n.buffer=b;f.type='bandpass';f.frequency.value=freq;v.gain.setValueAtTime(g*.6,t);v.gain.exponentialRampToValueAtTime(.001,t+dur);n.connect(f).connect(v).connect(a.destination);n.start(t)}
+const SFX={
+  hit:()=>{noise(.12,.55,1200);tone(160,.12,'square',.18,70)},
+  crit:()=>{noise(.22,.7,700);tone(110,.25,'sawtooth',.25,40);tone(880,.08,'square',.08,440)},
+  hurt:()=>{noise(.16,.5,500);tone(120,.18,'sawtooth',.2,50)},
+  block:()=>{tone(620,.09,'triangle',.25,900);noise(.05,.2,4000)},
+  card:()=>noise(.07,.18,2600),
+  draw:()=>tone(1200,.035,'sine',.05,1500),
+  end:()=>{tone(392,.12,'triangle',.18);tone(294,.18,'triangle',.18,null,.1)},
+  heal:()=>[523,659,784].forEach((f,i)=>tone(f,.15,'sine',.12,null,i*.06)),
+  death:()=>{tone(320,.45,'sawtooth',.18,45);noise(.4,.35,300)},
+  ult:()=>{tone(220,.5,'sawtooth',.16,880);noise(.5,.2,2000,.1)},
+  win:()=>[523,659,784,1047].forEach((f,i)=>tone(f,.25,'triangle',.18,null,i*.1)),
+  lose:()=>[392,330,262,196].forEach((f,i)=>tone(f,.35,'triangle',.18,null,i*.16)),
+  click:()=>tone(760,.03,'square',.05),
+};
+function sfx(k,delay){if(window.FAST||!OPT.sfx)return;const go=()=>{try{SFX[k]()}catch(e){}};delay?setTimeout(go,delay/OPT.speed):go()}
+addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button'))sfx('click')});
+/* 히트스톱: 맞는 순간 무대 애니메이션을 잠깐 멈춤 */
+function hitStop(ms){if(window.FAST)return;const st=document.getElementById('stage');if(!st)return;st.classList.add('stop');clearTimeout(hitStop.t);hitStop.t=setTimeout(()=>st.classList.remove('stop'),ms)}
 let UID=1;
 const mk=(id,up=false)=>({uid:UID++,id,up});
 
@@ -886,7 +950,7 @@ function playCard(uid,T){
   const c=S.c;const idx=c.hand.findIndex(x=>x.uid===uid);const card=c.hand[idx];const d=CD[card.id];
   c.energy-=costOf(card);c.hand.splice(idx,1);
   const owner=d.o==='any'?c.active:d.o;c.cur=owner;
-  const atk=d.t==='공격';anim('u-'+owner,atk?'atk':'cast');FXDELAY=atk?170:60;HITSEQ=0;
+  const atk=d.t==='공격';anim('u-'+owner,atk?'atk':d.v?.b?'block':'cast');FXDELAY=atk?170:60;HITSEQ=0;
   if(!atk)vfx('circle','u-'+owner,{c:CH[owner].color});
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
   c.curCard=card;
@@ -896,7 +960,7 @@ function playCard(uid,T){
   gainConc(owner,1);gainLib(owner,1);
   if(d.pw){}else if(d.ex)c.exhaust.push(card);else c.discard.push(card);
   log(`${CH[owner].name} — ${d.n}${card.up?'+':''}`);
-  onPlayerCard(d);
+  onPlayerCard(d);sfx('card');
   afterAction();
 }
 function afterAction(){
@@ -945,8 +1009,9 @@ function dmgEnemy(T,d,pierce,style){
   let left=d;if(!pierce){const ab=Math.min(T.block,left);T.block-=ab;left-=ab}
   const dl=FXDELAY+HITSEQ*110;HITSEQ++;const own=S.c.cur;
   T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',dl);
+  sfx(d>=18?'crit':'hit',dl);if(!window.FAST)setTimeout(()=>hitStop(d>=18?110:55),dl/OPT.speed);
   vfx(style||(pierce?'burst':(WEAPON[own]||'sword')),'e'+T.uid,{c:pierce?EL.회절:CH[own].color,from:'u-'+own,big:d>=18},dl);
-  if(T.hp<=0){T.hp=0;T.dead=true;S.stats.kills++;log(`${EN[T.id].n} 처치!`);vfx('death','e'+T.uid,{c:EL[EN[T.id].el]},dl+120);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++}
+  if(T.hp<=0){T.hp=0;T.dead=true;sfx('death',dl+120);S.stats.kills++;log(`${EN[T.id].n} 처치!`);vfx('death','e'+T.uid,{c:EL[EN[T.id].el]},dl+120);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++}
   enemyHook(T,!pierce&&style!=='burst');
 }
 const fz=(T,n)=>{if(T&&!T.dead){T.fz+=n;pop(T,`잔향 +${n}`,'info')}};
@@ -956,7 +1021,7 @@ function paint(n){const c=S.c;c.paint=Math.min(12,c.paint+n);if(n>0)pop('p-lyn',
 function bloom(n){const c=S.c;c.bloom=Math.min(10,c.bloom+n);if(n>0)pop('p-cam',`개화 +${n}`,'info')}
 function unravel(T,n){if(T&&!T.dead){T.ur+=n;pop(T,`해체 +${n}`,'info')}}
 function selfHurt(id,n){const p=S.party[id];if(!p||p.down)return;const lost=Math.min(n,p.hp-1);if(lost<=0)return;p.hp-=lost;pop('p-'+id,`-${lost}`,'dmg');if(id==='cam'&&S.c.camUni)bloom(S.c.camUni)}
-function heal(id,n){const p=S.party[id];if(p.down)return;const before=p.hp;p.hp=Math.min(p.maxHp,p.hp+n);if(S.c&&S.screen==='combat'&&p.hp>before){pop('p-'+id,`+${p.hp-before}`,'heal');vfx('heal','u-'+id,{})}}
+function heal(id,n){const p=S.party[id];if(p.down)return;const before=p.hp;p.hp=Math.min(p.maxHp,p.hp+n);if(S.c&&S.screen==='combat'&&p.hp>before){sfx('heal');pop('p-'+id,`+${p.hp-before}`,'heal');vfx('heal','u-'+id,{})}}
 function setField(n,b){const f=S.c.field;f.t=Math.max(f.t,n);f.b=Math.max(f.b,b);pop('party','별의 영역','info')}
 function toggleMecha(b){const c=S.c;if(c.mecha){c.mecha=false;gainBlock(b);pop('p-aem','일반 형태','info')}else{c.mecha=true;pop('p-aem','메카스카우트!','info')}}
 
@@ -970,7 +1035,7 @@ function doSwitch(id){
   c.active=id;c.cur=id;
   if(!c.switched){if(has('vjun'))gainBlock(5);if(has('zig'))draw(1)}
   c.switched++;
-  anim('u-'+id,'cast');
+  anim('u-'+id,'enter');
   if(full){FXDELAY=200;intro(id);FXDELAY=0;log(`협주 → 변주! ${CH[out].name} → ${CH[id].name}`);banner(`${CH[out].name} 협주 → ${CH[id].name} 변주`)}
   else log(`${CH[id].name}(으)로 교체`);
   if(c.ghost&&alive().length){c.cur='aem';hit(pick(alive()),c.ghost)}
@@ -1019,7 +1084,7 @@ function doLib(T){
 }
 
 /* 적 턴 */
-async function endTurn(){
+async function endTurn(){sfx('end');
   const c=S.c;if(c.busy)return;c.busy=true;c.tgt=null;
   discardHandFx();
   for(const x of c.hand){const d=CD[x.id];if(d.eth){c.exhaust.push(x);continue}if(x.id==='burn'){hurtParty(3);pop('party','오염 -3','dmg')}c.discard.push(x)}
@@ -1054,12 +1119,13 @@ function hurtParty(d,e){
   const c=S.c;const ab=Math.min(c.block,d);c.block-=ab;const rest=d-ab;
   const p=S.party[c.active];
   if(e)vfx('claw','u-'+c.active,{c:EL[EN[e.id].el]||'#ff5d6c',big:d>=15});
+  sfx(rest>0?'hurt':'block',FXDELAY);if(rest>0)hitStop(rest>=15?100:50);
   if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
   if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
-function lose(){S.c.busy=false;S.screen='over';clearSave();render()}
+function lose(){sfx('lose');S.c.busy=false;S.screen='over';clearSave();render()}
 function winCombat(){
-  const c=S.c;const kind=c.kind;
+  sfx('win');const c=S.c;const kind=c.kind;
   let gold=kind==='boss'?rnd(90,110):kind==='elite'?rnd(32,42):rnd(14,22);if(has('charm'))gold=Math.round(gold*1.5);
   S.gold+=gold;
   const rw={gold,cards:rollCards(3,kind!=='battle'),echo:null};
@@ -1188,15 +1254,19 @@ let ROVER_SKIN=(()=>{try{return localStorage.getItem('wuwa-rover-skin')||'F'}cat
 function toggleRover(){ROVER_SKIN=ROVER_SKIN==='F'?'M':'F';try{localStorage.setItem('wuwa-rover-skin',ROVER_SKIN)}catch(e){}render()}
 function loadImg(src){return new Promise(r=>{const i=new Image();i.referrerPolicy='no-referrer';const t=setTimeout(()=>r(null),6000);
   i.onload=()=>{clearTimeout(t);r(i)};i.onerror=()=>{clearTimeout(t);r(null)};i.src=src})}
-const stripOf=i=>i?{src:i.src,frames:Math.max(1,Math.round(i.naturalWidth/i.naturalHeight))}:null;
+const stripOf=i=>i&&i.naturalHeight>0&&i.naturalWidth%i.naturalHeight===0?{src:i.src,frames:i.naturalWidth/i.naturalHeight}:null;
+const artKey=id=>id==='rov'&&ROVER_SKIN==='M'?'rovM':id==='aem'&&S?.screen==='combat'&&S.c?.mecha?'aemMecha':id;
+const artOf=id=>ARTS[artKey(id)]||ARTS[id]||{};
 async function loadArt(){
-  await Promise.all([...ALL,...Object.keys(EN)].map(async id=>{
-    const pre=CH[id]?'':'enemy_';
+  await Promise.all([...ALL,'rovM','aemMecha',...Object.keys(EN)].map(async id=>{
+    const pre=CH[id]||id==='rovM'||id==='aemMecha'?'':'enemy_';
     const [idle,atk,local]=await Promise.all([loadImg(`assets/${pre}${id}_idle.png`),loadImg(`assets/${pre}${id}_attack.png`),loadImg(`assets/${pre}${id}.png`)]);
     let portrait=local?local.src:null;
     const web=WEB_ART[id]||(ENEMY_ART[id]&&WIKI+ENEMY_ART[id]+'/revision/latest');
     if(!portrait&&web){const w=await loadImg(web);if(w)portrait=w.src}
     const A={idle:stripOf(idle),attack:stripOf(atk),portrait};
+    const states=pre?['attack','cast','hit']:['guard','cast','hit','ultimate'];
+    await Promise.all(states.map(async state=>{const image=await loadImg(`assets/motion/${pre}${id}_${state}.png`);if(image)A[state]=stripOf(image)}));
     if(CH[id]&&!idle){
       if(id==='rov'){const [f,m]=await Promise.all([loadImg(fullUrl('rovF')),loadImg(fullUrl('rovM'))]);A.fullF=f&&f.src;A.fullM=m&&m.src}
       else if(FULL_ART[id]){const f=await loadImg(fullUrl(id));A.full=f&&f.src}
@@ -1206,7 +1276,7 @@ async function loadArt(){
 }
 function spriteImg(s,once){
   const n=s.frames;
-  return `<img src="${s.src}" style="width:${n*100}%;${n>1?`animation-duration:${(n/8).toFixed(2)}s;animation-timing-function:steps(${n});${once?'animation-iteration-count:1;':''}`:'animation:none;'}">`;
+  return `<img src="${s.src}" alt="" draggable="false" style="width:${n*100}%;--spr-end:${-100*(n-1)/n}%;${n>1?`animation-duration:${(n/8).toFixed(2)}s;animation-timing-function:steps(${n},jump-none);${once?'animation-iteration-count:1;animation-fill-mode:forwards;':''}`:'animation:none;'}">`;
 }
 function partySVG(id){
   const c=CH[id].color;
@@ -1224,8 +1294,8 @@ function enemySVG(id,uid){
     <text x="50" y="64" text-anchor="middle" font-size="${d.boss?30:26}" fill="${c}">${d.sym}</text></svg>`;
 }
 function figHTML(id,uid){
-  const a=ARTS[id]||{};
-  if(a.idle)return `<div class="sprite">${spriteImg(a.idle)}</div>`;
+  const a=artOf(id);
+  if(a.idle)return `<div class="sprite" data-art="${artKey(id)}">${spriteImg(a.idle)}</div>`;
   const full=!uid&&(id==='rov'?(ROVER_SKIN==='M'?a.fullM:a.fullF):a.full);
   if(full)return `<div class="full"><img src="${full}" referrerpolicy="no-referrer" alt="" draggable="false"></div>`;
   if(a.portrait&&uid)return `<div class="eimg"><img src="${a.portrait}" referrerpolicy="no-referrer" alt=""></div>`;
@@ -1233,7 +1303,7 @@ function figHTML(id,uid){
   return uid?enemySVG(id,uid):partySVG(id);
 }
 function artStyle(owner){
-  const a=ARTS[owner]||{};
+  const a=artOf(owner);
   if(a.portrait)return `background-image:url('${a.portrait}');background-size:cover;background-position:50% 28%`;
   if(a.idle)return `background-image:url('${a.idle.src}');background-size:${a.idle.frames*100*1.0}% auto;background-position:0 20%;image-rendering:pixelated`;
   return '';
@@ -1245,7 +1315,22 @@ let FXQ=[],AQ=[],FXDELAY=0;
 function pop(target,text,cls){FXQ.push({target:typeof target==='string'?target:'e'+target.uid,text,cls,delay:FXDELAY})}
 function anim(key,cls,delay){AQ.push({key,cls,delay:delay??0})}
 function shakeQ(){}
-const ACLS=['atk','jab','hit','cast','ult','block'];
+const ACLS=['atk','jab','hit','cast','ult','block','enter'];
+const MOTION_STATE={atk:'attack',jab:'attack',hit:'hit',cast:'cast',ult:'ultimate',block:'guard',enter:'cast'};
+function resetSprite(sp,id){
+  if(!sp.isConnected)return;
+  const art=artOf(id),down=sp.closest('.down,.dead');
+  sp.dataset.art=artKey(id);delete sp.dataset.motion;
+  sp.innerHTML=spriteImg(down&&art.hit?art.hit:art.idle,!!down);
+  if(down){const img=sp.firstElementChild;img.style.animation='none';img.style.transform='translateX(-25%)'}
+}
+function playSprite(sp,id,state){
+  const art=artOf(id),strip=art[state]||(state==='ultimate'?art.cast:state==='guard'?art.cast:null);
+  if(!strip||!art.idle)return;
+  clearTimeout(sp._restore);sp.dataset.motion=state;sp.dataset.art=artKey(id);
+  sp.innerHTML=spriteImg(strip,true);
+  sp._restore=setTimeout(()=>resetSprite(sp,id),strip.frames/8*1000);
+}
 function bodyOf(key){return key.startsWith('u-')?document.querySelector(`#${key} .body`):document.querySelector(`#e-${key.slice(1)} .body`)}
 function flushFx(){
   const vq=VQ;VQ=[];vq.forEach(v=>setTimeout(()=>runVfx(v),v.delay||0));
@@ -1267,9 +1352,8 @@ function flushFx(){
     el.addEventListener('animationend',done);
     // 공격 스프라이트가 있으면 한 번 재생
     const id=a.key.startsWith('u-')?a.key.slice(2):(S.c&&(S.c.enemies.find(e=>'e'+e.uid===a.key)||{}).id);
-    const art=ARTS[id];const sp=el.querySelector('.sprite');
-    if(sp&&art&&art.attack&&['atk','ult','jab'].includes(a.cls)){sp.innerHTML=spriteImg(art.attack,true);
-      setTimeout(()=>{if(sp.isConnected)sp.innerHTML=spriteImg(art.idle)},art.attack.frames/8*1000)}
+    const sp=el.querySelector('.sprite');
+    if(sp&&MOTION_STATE[a.cls])playSprite(sp,id,MOTION_STATE[a.cls]);
   },a.delay));
 }
 let VQ=[],HITSEQ=0;
@@ -1308,9 +1392,9 @@ function runVfx(v){
     for(let i=0;i<5;i++)fxEl('+','plus',t.x+(Math.random()-.5)*t.w*.7,t.y+(Math.random()-.2)*t.h*.4,`animation-delay:${i*80}ms`,1000);
   }
 }
-function cutIn(id){
+function cutIn(id){sfx('ult');
   const C=CH[id];const name=C.lib.split(':')[0].replace('공명 해방 ','');
-  const a=ARTS[id]||{};const img=a.portrait?`background-image:url('${a.portrait}')`:'';
+  const a=artOf(id);const img=a.portrait?`background-image:url('${a.portrait}')`:'';
   const d=document.createElement('div');d.className='cutin';d.style.setProperty('--c',C.color);
   d.innerHTML=`<div class="band"></div><div class="img" style="${img}">${img?'':C.ini}</div><div class="txt"><small>공명 해방 · ${C.name}</small><b>${name}</b></div>`;
   document.body.appendChild(d);setTimeout(()=>d.remove(),1250);
@@ -1336,7 +1420,7 @@ function flyCard(uid,T){
 
 /* ============ 렌더 ============ */
 const esc=s=>String(s);
-const CARD_ART={"rov_a": "a/ad/Skill_Sword.png", "rov_b": "c/c4/Skill_Echoing_Orchestra.png", "rov_s": "4/45/Skill_Resonating_Slashes.png", "rov_amp": "c/c4/Skill_Echoing_Orchestra.png", "rov_blade": "7/79/Skill_Instant_of_Annihilation.png", "rov_brand": "c/c4/Skill_Echoing_Orchestra.png", "rov_res": "4/45/Skill_Resonating_Slashes.png", "rov_echo": "4/45/Skill_Resonating_Slashes.png", "rov_void": "7/79/Skill_Instant_of_Annihilation.png", "rov_name": "c/c4/Skill_Echoing_Orchestra.png", "aem_a": "a/ad/Skill_Sword.png", "aem_b": "1/1f/Skill_Silent_Protection.png", "aem_s": "8/89/Skill_Shared_Voyage.png", "aem_dash": "1/1f/Skill_To_Sculpt_the_Silence.png", "aem_shard": "b/be/Sequence_Node_Gilded_Glimmer_of_the_First_Dawn.png", "aem_wing": "7/72/Skill_Between_the_Stars.png", "aem_star": "a/a3/Skill_Towards_the_Daybreak.png", "aem_sync": "e/e0/Sequence_Node_Ethereal_Waltz_on_Binary_Tides.png", "aem_break": "0/01/Sequence_Node_Voyage_to_the_Astral_Shore.png", "aem_ghost": "8/83/Skill_Overture_of_Departure.png", "sk_a": "f/f6/Skill_Rectifier.png", "sk_b": "1/10/Skill_Self_Gravitation.png", "sk_s": "4/41/Skill_Astral_Chord.png", "sk_heal": "c/c3/Skill_Binary_Butterfly.png", "sk_wall": "e/e7/Sequence_Node_Echoes_in_Silence.png", "sk_veil": "2/2f/Skill_Proof_of_Existence.png", "sk_chaos": "9/99/Skill_Chaos_Theory.png", "sk_orbit": "1/1f/Skill_End_Loop.png", "sk_care": "0/0e/Skill_Life_Entwined.png", "lyn_a": "2/28/Skill_Pistols.png", "lyn_b": "2/27/Sequence_Node_Shadows_of_a_Wind_Racer.png", "lyn_s": "4/4b/Skill_Lynae-Style_Palettes.png", "lyn_spray": "9/9a/Skill_Colors_Never_Fade%21.png", "lyn_rapid": "a/a0/Skill_Prismatic_Overblast.png", "lyn_free": "d/d5/Skill_Chromaticity_Modeling.png", "lyn_merc": "a/a5/Skill_Let%27s_Hit_the_Road%21.png", "lyn_quick": "2/21/Skill_Tune_Break_Pistols.png", "lyn_canvas": "b/be/Sequence_Node_Days_to_be_Painted_Like_a_Canvas.png", "mor_a": "8/87/Skill_Broadblade.png", "mor_b": "e/e4/Skill_Convergence.png", "mor_s": "e/ec/Skill_Resolution_%28Mornye%29.png", "mor_mass": "8/8a/Skill_Mass-Energy_Equivalence.png", "mor_conv": "e/e4/Skill_Convergence.png", "mor_crit": "9/91/Skill_Critical_Protocol.png", "mor_hyp": "8/8a/Skill_Recursion.png", "mor_probe": "1/1e/Skill_Tune_Break_Broadblade.png", "mor_lecture": "e/ec/Skill_Resolution_%28Mornye%29.png", "chi_a": "8/87/Skill_Broadblade.png", "chi_b": "2/28/Skill_Reverberance_-_Return.png", "chi_s": "0/02/Skill_Fractured_Composition.png", "chi_null": "0/09/Skill_Moment_of_Nihility.png", "chi_sever": "1/1e/Skill_Tune_Break_Broadblade.png", "chi_echo": "2/28/Skill_Reverberance_-_Return.png", "chi_law": "7/7c/Skill_Unraveling_-_Law_Zero.png", "chi_bond": "0/02/Skill_Fractured_Composition.png", "chi_blade": "d/d4/Skill_Sight_of_Unraveling_-_Oblivion.png", "cam_a": "a/ad/Skill_Sword.png", "cam_b": "8/87/Skill_Twining.png", "cam_s": "e/e9/Skill_Valse_of_Bloom_and_Blight.png", "cam_pistil": "0/0e/Skill_Fervor_Efflorescent.png", "cam_vine": "8/87/Skill_Twining.png", "cam_thirst": "8/88/Skill_Everblooming.png", "cam_bloom": "0/0e/Skill_Fervor_Efflorescent.png", "cam_fervor": "8/88/Skill_Everblooming.png", "cam_uni": "6/62/Skill_Vegetative_Universe.png", "any_tune": "1/1f/Skill_End_Loop.png", "any_shell": "d/d1/Item_Shell_Credit.png"};
+const cardArt=id=>`assets/cards/${id}.png`;
 const TYPESYM={공격:'⚔',스킬:'◈',파워:'✦',저주:'✕',상태:'⚠'};
 const KW={
   '보호막':'적의 공격 피해를 먼저 막아요. 내 턴이 시작되면 사라져요.',
@@ -1367,14 +1451,14 @@ function cardHTML(card,o={}){
   const waiting=inCombat&&d.o!=='any'&&d.o!==S.c.active;
   const off=inCombat&&!canPlay(card);
   const sel=inCombat&&S.c.tgt&&S.c.tgt.uid===card.uid;
-  const art=d.o==='any'?'':artStyle(d.o);
   const tipText=kwTip(cardText(card)+(d.ex?' 소멸':'')+(d.pw?' 파워':'')+(waiting?' 대기 +1':''));
   return `<div class="card t-${d.t} ${off?'off':''} ${sel?'sel':''}" data-card="${card.uid}"${tipAttr(tipText)} style="--c:${col};${o.style||''}" ${o.click?`onclick="${o.click}"`:''} ${o.down?`onpointerdown="${o.down}"`:''}>
     ${d.unplay?'':`<div class="cost ${waiting?'up':''}">${cost}</div>`}
     ${waiting?'<div class="wait">대기 +1</div>':''}
     <div class="nm ${card.up?'u':''}">${d.n}${card.up?'+':''}</div>
+    ${o.hk?`<div class="hk">${o.hk}</div>`:''}
     ${card.ench?`<div class="ench" style="--e:${ENCH[card.ench].c}"${tipAttr(`<b>인챈트 · ${ENCH[card.ench].n}</b><br>${ENCH[card.ench].tx}`)}>✦ ${ENCH[card.ench].n}</div>`:''}
-    ${CARD_ART[card.id]?`<div class="art aimg" style="--ic:url('${WIKI+CARD_ART[card.id]}/revision/latest/scale-to-width-down/160')">${art?`<span class="who" style="${art}"></span>`:''}</div>`:`<div class="art" style="${art}">${art?'':`<div class="sym">${TYPESYM[d.t]}</div>`}</div>`}
+    <div class="art pixel-card"><img src="${cardArt(card.id)}" alt="" draggable="false"></div>
     <div class="ty">${d.t}${d.r?' · 희귀':''}${d.ex?' · 소멸':''}</div>
     <div class="tx">${cardText(card)}</div>
     <div class="ow">${d.o==='any'?'공용':CH[d.o].name}${inCombat&&d.o!=='any'&&S.party[d.o].down?' (기절)':''}</div>
@@ -1431,7 +1515,7 @@ function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():doc
 function titleHTML(){
   const sv=loadSave();
   const motes=Array.from({length:22},(_,i)=>`<i class="mote" style="left:${(i*47)%100}%;bottom:${(i*17)%60}%;animation-delay:${(i*.41)%7}s;background:${i%3?'#bfe6ff':'#ffe9a8'}"></i>`).join('');
-  return `<div class="titlescr">${bgSVG(0)}${motes}
+  return `<div class="titlescr">${battleBackground('coast')}${motes}
     <div class="t-party">${ALL.map((id,i)=>`<div class="tp" style="--c:${CH[id].color};animation-delay:${i*.35}s;${artStyle(id)}" title="${CH[id].name}">${ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle)?'':CH[id].ini}</div>`).join('')}</div>
     <div class="t-logo"><div class="t-sub">WUTHERING WAVES · FAN-MADE DECKBUILDER</div><h1>첨탑의 메아리</h1><div class="t-en">Echoes of the Spire</div></div>
     <div class="t-menu">
@@ -1506,8 +1590,9 @@ const NODE_SVG={
   event:'<path d="M9 9a3 3 0 1 1 4 2.8c-.7.3-1 .9-1 1.7V14M12 18v.5"/>',rest:'<path d="M20 14A8 8 0 1 1 10 4a6 6 0 0 0 10 10z"/>',
   shop:'<path d="M5 8h14l-1 12H6zM9 8a3 3 0 0 1 6 0"/>',treasure:'<path d="M4 9h16v10H4zM4 9l2-4h12l2 4M12 9v10"/>',
   recruit:'<path d="M12 5v14M5 12h14"/>'};
-const NODE_IMG={battle:'0/02/Tick_Tack_Icon.png',elite:'7/70/Crownless_Icon.png',shop:'d/d1/Item_Shell_Credit.png',treasure:'f/fb/Item_Andante_Helix.png',rest:'b/b0/Item_Nova.png',event:'2/26/Sequence_Node_To_the_New_World.png',recruit:'4/47/Resonator_Rover.png'};
-const nodeImg=t=>NODE_IMG[t]?`<img src="${WIKI+NODE_IMG[t]}/revision/latest/scale-to-width-down/80" referrerpolicy="no-referrer" alt="" onerror="this.remove()">`:'';
+const NODE_IMG=Object.fromEntries(['battle','elite','event','rest','shop','treasure','recruit','boss'].map(id=>[id,`maps/node-${id}.png`]));
+const nodeImg=t=>NODE_IMG[t]?`<img src="assets/${NODE_IMG[t]}" alt="" onerror="this.remove()">`:'';
+const regionArt=()=>[['coast','forest'],['spire','lahai']][S.act][S.vari||0];
 function mapHTML(readonly){
   const GAP=86,H=ROWS*GAP+250;const av=readonly?[]:availNodes();const path=S.path||[];
   const yOf=(r,n)=>H-(r*GAP+70+(n?n.jy:0));
@@ -1530,7 +1615,7 @@ function mapHTML(readonly){
   const legend=Object.entries(NODE).filter(([k])=>k!=='boss').map(([k,t])=>`<div class="lg t-${k}" style="--c:${t.c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg>${nodeImg(k)}</i>${t.l}</div>`).join('');
   return `<div class="mapscr">
     <div class="maphead"><small>TOWER OF ECHOES · ACT ${S.act+1}</small><b>${AV().name}</b><em>${AV().flavor}</em></div>
-    <div class="mapwrap"><div class="map" style="height:${H}px"><svg class="mlines" viewBox="0 0 100 ${H}" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
+    <div class="mapwrap"><div class="map" style="height:${H}px"><img class="route-art" src="assets/maps/${regionArt()}-route.png" alt="" draggable="false"><svg class="mlines" viewBox="0 0 100 ${H}" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
     <aside class="maplegend"><small>LEGEND</small>${legend}<div class="lg burnlg"><i></i>불타는 정예</div></aside>
   </div>`;
 }
@@ -1552,28 +1637,8 @@ function intentHTML(e){
   return parts.join('');
 }
 function intentTitle(e){const m=e.move;const t=[];if(m.d)t.push(`공격 ${enemyDmg(e,m)}${m.h>1?`×${m.h}`:''}`);if(m.b)t.push(`방어 ${m.b}`);if(m.s)t.push(`힘 +${m.s}`);if(m.w)t.push(`약화 ${m.w}`);if(m.add)t.push(`덱에 「${CD[m.add[0]].n}」 ${m.add[1]}장`);return `${m.n}: ${t.join(', ')}`}
-function bgSVG(act){
-  const stars=Array.from({length:40},(_,i)=>`<circle cx="${(i*137)%1000}" cy="${(i*71)%230}" r="${i%5?1:1.8}" fill="#fff" opacity="${.25+(i%4)*.15}"/>`).join('');
-  if(act===0)return `<svg class="bgsvg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMax slice">
-    <defs><linearGradient id="sky0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0b1532"/><stop offset=".62" stop-color="#173a5e"/><stop offset="1" stop-color="#0a1e30"/></linearGradient>
-    <radialGradient id="moon0"><stop offset="0" stop-color="#fff6d8"/><stop offset=".25" stop-color="#ffe9a8" stop-opacity=".5"/><stop offset="1" stop-color="#ffe9a8" stop-opacity="0"/></radialGradient>
-    <linearGradient id="sea0" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1d4a6e"/><stop offset="1" stop-color="#081624"/></linearGradient></defs>
-    <rect width="1000" height="500" fill="url(#sky0)"/>${stars}
-    <circle cx="780" cy="105" r="140" fill="url(#moon0)"/><circle cx="780" cy="105" r="30" fill="#fff4d0"/>
-    <path d="M488 300 L494 150 L500 70 L506 150 L512 300Z" fill="#0a1430"/><ellipse cx="500" cy="170" rx="34" ry="5" fill="none" stroke="#5fa8c8" stroke-opacity=".5"/><ellipse cx="500" cy="230" rx="46" ry="6" fill="none" stroke="#5fa8c8" stroke-opacity=".35"/>
-    <path d="M0 300 Q120 255 250 292 T540 284 T820 270 T1000 292 V340 H0Z" fill="#0c1d36"/>
-    <rect y="320" width="1000" height="180" fill="url(#sea0)"/>
-    ${Array.from({length:9},(_,i)=>`<rect x="${(i*173)%900}" y="${335+i*9}" width="${60+(i%3)*40}" height="2" fill="#9fd8ff" opacity=".18"/>`).join('')}
-    <path d="M0 400 Q500 352 1000 400 V500 H0Z" fill="#0e1a2e"/><path d="M0 400 Q500 352 1000 400" fill="none" stroke="#6fb6ff" stroke-opacity=".25" stroke-width="2"/>
-  </svg>`;
-  return `<svg class="bgsvg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMax slice">
-    <defs><linearGradient id="sky1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#120b2e"/><stop offset=".6" stop-color="#3a1f5e"/><stop offset="1" stop-color="#1a1036"/></linearGradient>
-    <radialGradient id="neb1" cx=".3" cy=".3"><stop offset="0" stop-color="#ff8ad8" stop-opacity=".35"/><stop offset="1" stop-color="#ff8ad8" stop-opacity="0"/></radialGradient></defs>
-    <rect width="1000" height="500" fill="url(#sky1)"/><rect width="1000" height="500" fill="url(#neb1)"/>${stars}
-    ${[[120,210,30],[260,150,22],[700,120,26],[860,190,34],[500,60,18]].map(([x,y,w])=>`<path d="M${x-w} 330 L${x-w/3} ${y+40} L${x} ${y} L${x+w/3} ${y+40} L${x+w} 330Z" fill="#1e1240" stroke="#b78cff" stroke-opacity=".35"/>`).join('')}
-    <path d="M0 330 Q250 300 500 322 T1000 310 V500 H0Z" fill="#170d33"/>
-    <path d="M0 400 Q500 352 1000 400 V500 H0Z" fill="#1a1238"/><path d="M0 400 Q500 352 1000 400" fill="none" stroke="#d6a8ff" stroke-opacity=".3" stroke-width="2"/>
-  </svg>`;
+function battleBackground(region=regionArt()){
+  return `<div class="battle-art"><img src="assets/maps/${region}-battle.png" alt="" draggable="false"></div>`;
 }
 function enemyPos(n,i,boss,slot){
   if(slot!=null)return slot?[46,44]:[58,14];
@@ -1587,7 +1652,7 @@ function buildCombat(){
   const c=S.c;
   const motes=Array.from({length:14},(_,i)=>`<i class="mote" style="left:${(i*71)%100}%;bottom:${10+(i*13)%40}%;animation-delay:${(i*.53)%7}s;background:${S.act?'#e3b8ff':'#bfe6ff'}"></i>`).join('');
   return `<div class="combat" data-cid="${c.id}">
-    <div class="stage" id="stage" style="--hue:${AV().hue}deg">${bgSVG(S.act)}${motes}
+    <div class="stage" id="stage">${battleBackground()}${motes}
       <div class="stlog" id="stlog"></div><div class="tgthint" id="tgthint"></div>
       ${T_().map((id,i)=>`<div class="unit party" id="u-${id}" style="--c:${CH[id].color};--dl:${i*.45}s" onclick="clickUnit('${id}')">
         <div class="swaptag"></div><div class="libwrap"></div>
@@ -1602,7 +1667,7 @@ function buildCombat(){
     <div class="bottom">
       <div class="lhud"><div class="energy" id="energy"></div><button class="pile" id="pdraw" onclick="showPile('draw')"></button></div>
       <div class="hand" id="hand"></div>
-      <div class="rhud"><button class="endturn" id="endbtn" onclick="endTurn()">턴 종료</button><button class="pile disc" id="pdisc" onclick="showPile('discard')"></button></div>
+      <div class="rhud"><button class="endturn" id="endbtn" onclick="endTurn()">턴 종료 <small>E</small></button><button class="pile disc" id="pdisc" onclick="showPile('discard')"></button></div>
     </div></div>`;
 }
 function setHP(root,hp,max,block){
@@ -1617,6 +1682,8 @@ function updateCombat(){
   T_().forEach(id=>{
     const el=$('#u-'+id);const p=S.party[id];const slot=order.indexOf(id);const front=slot===0;
     el.className=`unit party s${slot} ${p.down?'down':''} ${!front&&!p.down&&!c.busy&&!c.tgt?'swappable':''}`;
+    const sp=el.querySelector('.sprite');
+    if(sp&&sp.dataset.art!==artKey(id)){clearTimeout(sp._restore);resetSprite(sp,id)}
     const sw=el.querySelector('.swaptag');const ready=c.conc[c.active]>=3;
     sw.className='swaptag'+(!front&&!p.down&&ready&&!c.busy?' ready':'');
     sw.textContent=front||p.down?'':`${ready?'협주 → 변주!':'교체'}${switchCost()?' (에너지 1)':''}`;
@@ -1666,7 +1733,7 @@ function renderHand(){
   const spacing=n>1?Math.min(cw*.82,(W-cw)/(n-1)):0;const mid=(n-1)/2;
   if(DRAG)return;
   h.innerHTML=c.hand.map((card,i)=>{const d=i-mid;const rot=n>1?d*Math.min(6,30/n):0;const y=d*d*(n>6?2.2:3.5);
-    return cardHTML(card,{combat:1,down:`dragStart(event,'card',${card.uid})`,style:`left:calc(50% + ${d*spacing}px);transform:translateX(-50%) translateY(${y}px) rotate(${rot}deg);z-index:${i+1}`})}).join('');
+    return cardHTML(card,{combat:1,down:`dragStart(event,'card',${card.uid})`,style:`left:calc(50% + ${d*spacing}px);transform:translateX(-50%) translateY(${y}px) rotate(${rot}deg);z-index:${i+1}`,hk:i<9?i+1:0})}).join('');
   const pile=$('#pdraw');if(!pile||window.FAST){c.hand.forEach(x=>HAND_SEEN.add(x.uid));return}
   const pr=pile.getBoundingClientRect();let k=0;
   c.hand.forEach(x=>{if(HAND_SEEN.has(x.uid))return;HAND_SEEN.add(x.uid);const el=h.querySelector(`[data-card="${x.uid}"]`);if(!el)return;
@@ -1816,6 +1883,14 @@ function libDown(ev){
   });
   addEventListener('pointerdown',()=>{if(tip){tip.remove();tip=null}});
 })();
+let HOVER_E=null;addEventListener('pointerover',e=>{const u=e.target.closest&&e.target.closest('.unit.enemy');if(u)HOVER_E=+u.id.slice(2)});
+addEventListener('keydown',e=>{
+  if(!S||S.screen!=='combat'||S.modal||DRAG||!S.c||S.c.busy||e.repeat)return;
+  if(e.key==='e'||e.key==='E'||e.key==='Enter'){e.preventDefault();endTurn();return}
+  const n=+e.key;if(!n)return;const card=S.c.hand[n-1];if(!card)return;
+  if(!canPlay(card)){nope(document.querySelector(`[data-card="${card.uid}"]`),'사용할 수 없어요');return}
+  const T=alive().find(x=>x.uid===HOVER_E)||alive()[0];flyCard(card.uid,CD[card.id].tg?T:null);playCard(card.uid,T);
+});
 addEventListener('resize',()=>{if(S&&S.screen==='combat'&&$('#hand')&&!DRAG)renderHand()});
 function rewardHTML(){
   const r=S.reward;const open=r.open;
@@ -1884,6 +1959,8 @@ function modalHTML(){
         <button class="choice" onclick="closeModal()"><b>계속하기</b></button>
         <button class="choice" onclick="showDeck()"><b>덱 보기</b></button>
         <button class="choice" onclick="toggleFS()"><b>전체 화면</b></button>
+        <button class="choice" onclick="OPT.speed=OPT.speed===1?2:1;saveOpt();render()"><b>전투 속도 ×${OPT.speed}</b><small>적 턴·연출 대기 시간을 줄여요</small></button>
+        <button class="choice" onclick="OPT.sfx=OPT.sfx?0:1;saveOpt();render()"><b>효과음 ${OPT.sfx?'켜짐':'꺼짐'}</b></button>
         <button class="choice" onclick="toTitle()"><b>저장하고 타이틀로</b><small>${inMap?'지금 위치가 저장돼요.':'진행 중인 전투·사건은 저장되지 않고, 마지막 지도 위치부터 이어해요.'}</small></button>
         <button class="choice" onclick="abandonRun()"><b>이번 판 포기</b><small>저장을 지우고 타이틀로 돌아가요.</small></button>
         ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>${inMap?'지금 위치를 저장하고 종료해요.':'마지막 지도 위치부터 이어할 수 있어요.'}</small></button>`:''}
