@@ -561,6 +561,13 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .turnban::before{top:4px}.turnban::after{bottom:4px}
 .turnban b{letter-spacing:10px;font-weight:700}
 #tip{background:rgba(10,14,31,.96);border:none;border-radius:0;box-shadow:inset 0 0 0 1px rgba(233,217,166,.5);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
+.echobtn{width:54px;height:54px;border:none;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:linear-gradient(135deg,#6a4fd0,#2a1c66);position:relative;font-size:20px;color:#fff}
+.echobtn i{font-style:normal}.echobtn em{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:9px;font-style:normal;color:#e9d9a6}
+.echobtn.cd{filter:grayscale(.8) brightness(.6)}.echobtn b{position:absolute;inset:0;display:grid;place-items:center;font-size:20px;color:#fff;background:rgba(0,0,0,.35)}
+.echobtn:not(.cd):not(:disabled){animation:mpulse 1.4s infinite}
+.relic.main{box-shadow:0 0 0 2px #e9d9a6}.relic[onclick]{cursor:pointer}
+.lhud::before{top:64px}
+.relics{flex-basis:auto;order:-1;margin-left:4px}.relic{width:26px;height:26px;font-size:13px}
 </style>
 </head>
 <body>
@@ -841,7 +848,27 @@ const ECHO={
 };
 const TREASURE_ECHO=['tuner','pendant','charm','gulp','vjun','fdread','hoar','zig'];
 const has=id=>S.echoes.includes(id);
-function gainEcho(id){if(!id||has(id))return;S.echoes.push(id);ECHO[id].get&&ECHO[id].get();}
+function gainEcho(id){if(!id||has(id))return;S.echoes.push(id);ECHO[id].get&&ECHO[id].get();if(!S.mainEcho&&ECHO_SKILL[id])S.mainEcho=id}
+/* 독창 시스템 ①: 주 에코를 장착하면 전투 중 쿨다운 액티브 스킬로 사용 (명조 에코 스킬) */
+const ECHO_SKILL={
+  crown:{n:'처단',cd:3,tg:1,tx:'적 하나에게 14 피해',run:T=>hit(T,14)},
+  mephis:{n:'낙뢰',cd:3,tx:'모든 적에게 8 피해',run:()=>alive().forEach(e=>hit(e,8))},
+  aix:{n:'애곡',cd:3,tg:1,tx:'적 하나 취약 2·약화 2',run:T=>{vuln(T,2);T.weak+=2;pop(T,'취약·약화','info')}},
+  explorer:{n:'관통 사격',cd:2,tg:1,tx:'적 하나에게 6×2 피해',run:T=>{hit(T,6);hit(T,6)}},
+  rider:{n:'돌격',cd:3,tg:1,tx:'적 하나에게 16 피해',run:T=>hit(T,16)},
+  gorilla:{n:'내려찍기',cd:4,tx:'모든 적에게 10 피해',run:()=>alive().forEach(e=>hit(e,10))},
+  dreamless:{n:'허무 붕괴',cd:4,tg:1,tx:'적 하나에게 22 피해',run:T=>hit(T,22)},
+  turtle:{n:'종소리 방벽',cd:3,tx:'보호막 15',run:()=>gainBlock(15)},
+  hecate:{n:'달의 저주',cd:3,tx:'모든 적 약화 2 + 6 피해',run:()=>alive().forEach(e=>{e.weak+=2;hit(e,6)})},
+  levia:{n:'해일',cd:4,tx:'모든 적에게 12 피해',run:()=>alive().forEach(e=>hit(e,12))},
+};
+function equipEcho(id){if(!ECHO_SKILL[id])return;S.mainEcho=id;render()}
+function useEcho(T){
+  const c=S.c;if(!c||c.busy||c.ending||!S.mainEcho||c.echoCd>0)return;
+  const sk=ECHO_SKILL[S.mainEcho];if(!sk||!alive().length)return;
+  T=T&&!T.dead?T:alive()[0];c.cur=c.active;anim('u-'+c.active,'cast');FXDELAY=150;HITSEQ=0;sk.run(T);FXDELAY=0;
+  c.echoCd=sk.cd;log(`에코 스킬 — ${sk.n}`);banner(`에코 스킬 · ${sk.n}`);afterAction();
+}
 
 /* ============ 구역 ============ */
 const ACTS=[
@@ -967,6 +994,7 @@ function log(t){S.c.log.push(t);if(S.c.log.length>4)S.c.log.shift()}
 function startTurn(){
   const c=S.c;c.turn++;c.block=0;c.switched=0;
   c.energy=3+(S.bonusE||0)+(has('levia')?1:0)+c.nextE;c.nextE=0;
+  if(c.turn>1&&c.echoCd>0)c.echoCd--;
   if(c.bond)heal(c.active,c.bond);
   if(has('turtle'))gainBlock(4);
   if(has('hoar')&&c.turn===1)c.block=10;
@@ -1578,7 +1606,7 @@ function topBar(){
     ${S.screen!=='map'?`<button class="btn" style="padding:5px 12px" onclick="showMap()">지도</button>`:''}
     <button class="btn" style="padding:5px 12px" onclick="showDeck()">덱 ${S.deck.length}</button>
     <button class="btn" style="padding:5px 12px" title="일시정지" onclick="openPause()">☰</button>
-    ${S.echoes.length?`<div class="relics">${S.echoes.map(e=>`<span class="relic"${tipAttr(`<b>${ECHO[e].n}</b><br>${ECHO[e].tx}`)}>${ECHO[e].i}</span>`).join('')}</div>`:''}
+    ${S.echoes.length?`<div class="relics">${S.echoes.map(e=>`<span class="relic ${S.mainEcho===e?'main':''}" ${ECHO_SKILL[e]?`onclick="equipEcho('${e}')"`:''}${tipAttr(`<b>${ECHO[e].n}</b><br>${ECHO[e].tx}${ECHO_SKILL[e]?`<hr><b>에코 스킬 · ${ECHO_SKILL[e].n}</b> (쿨다운 ${ECHO_SKILL[e].cd}턴)<br>${ECHO_SKILL[e].tx}<br>${S.mainEcho===e?'주 에코로 장착 중':'클릭해서 주 에코로 장착'}`:''}`)}>${ECHO[e].i}</span>`).join('')}</div>`:''}
   </div>`;
 }
 function render(){
@@ -1782,7 +1810,7 @@ function buildCombat(){
         <div class="uhud">${hudSkel()}</div></div>`}).join('')}
     </div>
     <div class="bottom">
-      <div class="lhud"><div class="energy" id="energy"></div><button class="pile" id="pdraw" data-tip="<b>뽑을 카드</b><br>클릭해서 목록 보기" onclick="showPile('draw')"></button></div>
+      <div class="lhud"><button class="echobtn" id="echobtn" onclick="useEcho(alive().find(x=>x.uid===HOVER_E))"></button><div class="energy" id="energy"></div><button class="pile" id="pdraw" data-tip="<b>뽑을 카드</b><br>클릭해서 목록 보기" onclick="showPile('draw')"></button></div>
       <div class="hand" id="hand"></div>
       <div class="rhud"><button class="endturn" id="endbtn" onclick="endTurn()"><small class="en">END TURN</small>턴 종료 <small>E</small></button><button class="pile disc" id="pdisc" data-tip="<b>버린 카드</b><br>클릭해서 목록 보기" onclick="showPile('discard')"></button></div>
     </div></div>`;
@@ -1838,6 +1866,9 @@ function updateCombat(){
     const pv=d.pv;if(pv&&!(pv.k==='enrage'&&e.p2))s.unshift(stc(pv.n+(pv.k==='static'?` ${4-(S.c.cards||0)%4}`:''),'#ff9ab0',pv.n,pv.tx));
     el.querySelector('.sts').innerHTML=s.join('');
   });
+  const eb2=$('#echobtn');if(eb2){const id=S.mainEcho,sk=id&&ECHO_SKILL[id];eb2.style.display=sk?'':'none';
+    if(sk){eb2.innerHTML=`<i>${ECHO[id].i}</i>${c.echoCd>0?`<b>${c.echoCd}</b>`:'<em>Q</em>'}`;eb2.classList.toggle('cd',c.echoCd>0);eb2.disabled=c.busy||c.echoCd>0;
+      eb2.dataset.tip=`<b>에코 스킬 · ${sk.n}</b><br>${sk.tx}<br>쿨다운 ${sk.cd}턴${c.echoCd>0?` · ${c.echoCd}턴 남음`:' · 사용 가능 (Q)'}`}}
   const en=$('#energy');en.textContent=`${c.energy}/${maxE}`;en.dataset.tip='<b>에너지</b><br>카드를 쓰는 데 필요해요. 매 턴 다시 채워져요.';en.classList.toggle('zero',c.energy===0);
   $('#pdraw').innerHTML=`${c.draw.length}<small>뽑을 카드</small>`;$('#pdisc').innerHTML=`${c.discard.length}<small>버린 카드</small>`;
   const eb=$('#endbtn');eb.disabled=c.busy;eb.classList.toggle('glow',!c.busy&&!c.hand.some(canPlay));
@@ -2004,6 +2035,7 @@ let HOVER_E=null;addEventListener('pointerover',e=>{const u=e.target.closest&&e.
 addEventListener('keydown',e=>{
   if(!S||S.screen!=='combat'||S.modal||DRAG||!S.c||S.c.busy||e.repeat)return;
   if(e.key==='e'||e.key==='E'||e.key==='Enter'){e.preventDefault();endTurn();return}
+  if(e.key==='q'||e.key==='Q'){useEcho(alive().find(x=>x.uid===HOVER_E));return}
   const n=+e.key;if(!n)return;const card=S.c.hand[n-1];if(!card)return;
   if(!canPlay(card)){nope(document.querySelector(`[data-card="${card.uid}"]`),'사용할 수 없어요');return}
   const T=alive().find(x=>x.uid===HOVER_E)||alive()[0];flyCard(card.uid,CD[card.id].tg?T:null);playCard(card.uid,T);
