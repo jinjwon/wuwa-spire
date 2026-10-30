@@ -571,6 +571,10 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .vib{width:100%;height:6px;margin-top:2px;background:#1a1606;box-shadow:0 0 0 1px #000;cursor:help}
 .vib i{display:block;height:100%;background:linear-gradient(90deg,#c9a22a,#ffe48a);transition:width .25s}
 .vib.broken i{background:#fff;animation:mpulse .6s infinite}
+.mlines line.peek{stroke:#9ff0c8;stroke-width:4;stroke-dasharray:none;opacity:1}
+.tut{position:fixed;left:50%;top:18%;transform:translateX(-50%);z-index:92;width:min(420px,90vw);padding:16px 18px;background:rgba(10,14,31,.96);box-shadow:inset 0 0 0 1px #e9d9a6;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.tut b{display:block;font-size:17px;margin:2px 0 6px}.tut p{margin:0 0 12px;line-height:1.55;color:#dfe5ff;font-size:13.5px}.tut div{text-align:right}
+.lhud:has(.echobtn[style*="none"])::before{top:-6px}
 </style>
 </head>
 <body>
@@ -952,7 +956,7 @@ function enterNode(key){
   if(!availNodes().includes(key))return;
   S.floor++;
   if(key==='boss'){S.pos={r:ROWS,i:0};S.burn=false;return startCombat([ACTS[S.act].boss],'boss')}
-  const [r,i]=key.split('-').map(Number);S.pos={r,i};(S.path=S.path||[]).push(key);
+  S._scrolled=false;const [r,i]=key.split('-').map(Number);S.pos={r,i};(S.path=S.path||[]).push(key);
   let t=S.map[r][i].type;S.burn=!!S.map[r][i].burn;
   if(t==='event'){const x=Math.random();const fc=S.mysF=(S.mysF||.1);
     if(x<fc){S.mysF=.1;S.screen='msg';S.msg={title:'? — 매복',body:'고요하던 무음 지대에서 잔상이 튀어나왔다!'};t='battle'}
@@ -972,7 +976,7 @@ const alive=()=>S.c.enemies.filter(e=>!e.dead);
 function spawn(id){
   const d=EN[id];const k=(d.boss||d.elite?1:S.act===1?1.2:1.1)*DF().hp;
   const hp=Math.round(rnd(d.hp[0],d.hp[1])*k);
-  return{uid:UID++,id,hp,maxHp:hp,block:0,str:d.elite?DF().elite:0,weak:0,vuln:0,fz:0,ur:0,vib:0,vibMax:d.boss?16:d.elite?10:6,broken:0,dead:false,mi:d.boss?0:rnd(0,d.m.length-1),bonus:(d.boss?0:(S.act===1?3:1))+DF().add};
+  return{uid:UID++,id,hp,maxHp:hp,block:0,str:d.elite?DF().elite:0,weak:0,vuln:0,fz:0,ur:0,vib:0,vibMax:d.boss?22:d.elite?14:8,broken:0,dead:false,mi:d.boss?0:rnd(0,d.m.length-1),bonus:(d.boss?0:(S.act===1?3:1))+DF().add};
 }
 function startCombat(ids,kind){
   const lead=T_().find(id=>!S.party[id].down);
@@ -990,6 +994,7 @@ function startCombat(ids,kind){
   S.screen='combat';
   log(kind==='boss'?`명식 「${EN[ids[0]].n}」 출현!`:kind==='elite'?'강력한 잔상이 앞을 가로막습니다.':'잔상과 조우했습니다.');
   startTurn();
+  if(!OPT.tut&&!window.FAST)setTimeout(()=>showTut(0),900);
   if(kind==='boss')turnBanner(`명식 · ${EN[ids[0]].n}`,EN[ids[0]].pv?EN[ids[0]].pv.tx:'');
 }
 function setIntent(e){const m=(e.p2&&EN[e.id].m2)||EN[e.id].m;e.move=m[e.mi%m.length];e.mi++}
@@ -1630,7 +1635,7 @@ function render(){
   else scr.innerHTML={map:mapHTML,ancient:ancientHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
   if(S&&S.screen==='map')saveRun();
-  if(S&&S.screen==='map'){const cur=document.querySelector('.node.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
+  if(S&&S.screen==='map'){const cur=document.querySelector('.mnode.avail,.mboss.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
   requestAnimationFrame(flushFx);
   playBgm();
 }
@@ -1713,8 +1718,13 @@ function helpHTML(){
       <div class="flow">${tile('aem')}<div class="fa"><b>협주 에너지 ■■■</b><span>카드 3장 사용</span></div>${tile('sk')}<div class="fa"><b>교체!</b><span>대기 공명자 클릭</span></div><div class="burst">협주 + 변주<br><small>두 스킬 연속 발동</small></div></div>
       <p>공격은 <b>출전 중인 공명자</b>만 받아요. 다친 공명자는 뒤로 빼 주세요. 해방 게이지(5칸)가 차면 <b>공명 해방</b> 버튼이 떠요.</p></section>
     <section class="hs"><small class="eng">STEP 5 · 지도</small><h3>길을 골라 올라가세요</h3><div class="hs-nodes">${['battle','elite','event','rest','shop','treasure','recruit'].map(node).join('')}</div></section>
-    <section class="hs"><small class="eng">STEP 6 · 단축키</small><h3>편하게 플레이하기</h3>
-      <div class="hs-icons"><div><kbd>1</kbd>~<kbd>9</kbd> 카드 사용 (마우스 올린 적 대상)</div><div><kbd>E</kbd> / <kbd>Enter</kbd> 턴 종료</div><div><kbd>Esc</kbd> 일시정지 · 음량 · 전투 속도</div><div>우클릭 · <kbd>Esc</kbd> 카드 끌기 취소</div></div>
+    <section class="hs"><small class="eng">STEP 6 · 에코 스킬</small><h3>쓰러뜨린 정예·명식의 힘을 빌려요</h3>
+      <p>정예나 명식을 쓰러뜨려 얻은 에코를 상단 아이콘에서 클릭해 <b>주 에코</b>로 장착하면, 전투 중 에너지 위의 마름모 버튼이나 <kbd>Q</kbd>로 <b>에코 스킬</b>을 써요. 쓰고 나면 몇 턴 쿨다운이 있어요.</p></section>
+    <section class="hs"><small class="eng">STEP 7 · 공진</small><h3>진동 게이지를 채워 공진 파괴</h3>
+      <div class="hs-row"><div style="width:220px"><div class="hpb" style="position:relative"><i class="cur" style="width:70%"></i><span>48 / 70</span></div><div class="vib"><i style="width:80%"></i></div></div>
+      <p style="flex:1">체력 바 아래 <b>노란 바</b>가 진동 게이지예요. 공격 한 번에 1, 협주→변주·공명 해방은 3씩 차요. 가득 차면 <b>공진 파괴</b> — 적은 다음 행동을 건너뛰고, 그동안 받는 피해가 50% 늘어나요. 보스는 게이지가 더 커요.</p></div></section>
+    <section class="hs"><small class="eng">STEP 8 · 단축키</small><h3>편하게 플레이하기</h3>
+      <div class="hs-icons"><div><kbd>1</kbd>~<kbd>9</kbd> 카드 사용 (마우스 올린 적 대상)</div><div><kbd>E</kbd> / <kbd>Enter</kbd> 턴 종료</div><div><kbd>Q</kbd> 에코 스킬</div><div><kbd>Esc</kbd> 일시정지 · 음량 · 전투 속도</div><div>우클릭 · <kbd>Esc</kbd> 카드 끌기 취소</div></div>
       <p class="dim">로그라이크라 중간 저장이 없어요. 게임을 중단하거나 쓰러지면 처음부터 다시 오르세요.</p></section>
   </div>`;
 }
@@ -1758,7 +1768,7 @@ function mapHTML(readonly){
     const k=`${r}-${n.i}`;const y1=yOf(r,n);
     const tg=r===ROWS-1?[{x:.5,y:H-(ROWS*GAP+110),k:'boss'}]:n.next.map(j=>{const m=S.map[r+1][j];return{x:m.x,y:yOf(r+1,m),k:`${r+1}-${j}`}});
     tg.forEach(t=>{const hot=onPath(k,t.k)||(t.k==='boss'&&path.includes(k)&&S.pos&&S.pos.r===ROWS);
-      lines+=`<line x1="${n.x*100}" y1="${y1}" x2="${t.x*100}" y2="${t.y}" class="${hot?'hot':''}" vector-effect="non-scaling-stroke"/>`})}));
+      lines+=`<line x1="${n.x*100}" y1="${y1}" x2="${t.x*100}" y2="${t.y}" class="${hot?'hot':''}" data-a="${k}" vector-effect="non-scaling-stroke"/>`})}));
   let nodes='';
   S.map.forEach((row,r)=>row.forEach(n=>{
     const key=`${r}-${n.i}`;const T=NODE[n.type];const isAv=av.includes(key);
@@ -1911,6 +1921,13 @@ function discardHandFx(){
     cl.animate([{transform:'none',opacity:1},{transform:`translate(${pr.left+pr.width/2-r.left-r.width/2}px,${pr.top+pr.height/2-r.top-r.height/2}px) scale(.2) rotate(25deg)`,opacity:.3}],{duration:380,delay:i*45,easing:'cubic-bezier(.5,0,.7,1)',fill:'forwards'});
     setTimeout(()=>cl.remove(),420+i*45)});
 }
+const TUT=[['카드를 끌어 사용해요','공격 카드는 적에게, 스킬 카드는 무대 위로 끌어다 놓으세요. 숫자키 1~9도 돼요.'],
+  ['적 머리 위 아이콘을 보세요','다음 턴에 적이 할 행동이에요. 공격 수치만큼 보호막을 쌓아 대비하세요.'],
+  ['공진을 노리세요','공격하면 적의 노란 진동 바가 차요. 가득 차면 공진 파괴로 적이 한 턴 쉬고 피해를 더 받아요.'],
+  ['턴 종료','에너지를 다 쓰면 E 또는 턴 종료 버튼. 일시정지(Esc)에서 설명을 다시 볼 수 있어요.']];
+function showTut(i){document.querySelectorAll('.tut').forEach(x=>x.remove());if(i>=TUT.length){OPT.tut=1;saveOpt();return}
+  const d=document.createElement('div');d.className='tut';d.innerHTML=`<small class="eng">GUIDE ${i+1}/${TUT.length}</small><b>${TUT[i][0]}</b><p>${TUT[i][1]}</p><div><button class="btn" onclick="showTut(${TUT.length})">건너뛰기</button> <button class="btn primary" onclick="showTut(${i+1})">${i<TUT.length-1?'다음':'시작'}</button></div>`;
+  document.body.appendChild(d)}
 function turnBanner(t,sub){
   if(window.FAST)return;const b=document.createElement('div');b.className='turnban';b.innerHTML=`<b>${t}</b>${sub?`<small>${sub}</small>`:''}`;
   document.body.appendChild(b);setTimeout(()=>b.remove(),1250);
@@ -2055,6 +2072,8 @@ addEventListener('keydown',e=>{
   if(!canPlay(card)){nope(document.querySelector(`[data-card="${card.uid}"]`),'사용할 수 없어요');return}
   const T=alive().find(x=>x.uid===HOVER_E)||alive()[0];flyCard(card.uid,CD[card.id].tg?T:null);playCard(card.uid,T);
 });
+addEventListener('pointerover',e=>{const n=e.target.closest&&e.target.closest('.mnode');document.querySelectorAll('.mlines line.peek').forEach(l=>l.classList.remove('peek'));
+  if(n&&n.getAttribute('onclick')){const k=n.getAttribute('onclick').match(/'(.+)'/)[1];document.querySelectorAll(`.mlines line[data-a="${k}"]`).forEach(l=>l.classList.add('peek'))}});
 addEventListener('resize',()=>{if(S&&S.screen==='combat'&&$('#hand')&&!DRAG)renderHand()});
 function rewardHTML(){
   const r=S.reward;const open=r.open;
@@ -2066,7 +2085,7 @@ function rewardHTML(){
   if(r.cards.length)rows.push(`<button class="rw" onclick="S.reward.open=!S.reward.open;render()"><i>🂠</i><span>카드 보상<small>3장 중 1장을 덱에 추가</small></span></button>`);
   return `<div class="screen"><div class="box wbox" style="max-width:${open?900:520}px"><small class="eng">REWARD</small><h2>${r.title||'전투 승리'}</h2>
     <div class="rws">${rows.join('')}</div>
-    ${open&&r.cards.length?`<div class="cards" style="margin-top:14px">${r.cards.map(c=>cardHTML(c,{click:`takeReward(${c.uid})`})).join('')}</div>`:''}
+    ${open&&r.cards.length?`<div class="cards" style="margin-top:14px">${r.cards.map(c=>{const n=S.deck.filter(x=>x.id===c.id).length;return `<div class="shopitem">${cardHTML(c,{click:`takeReward(${c.uid})`})}<span class="dim" style="font-size:12px">덱에 ${n}장 보유</span></div>`}).join('')}</div>`:''}
     <div style="margin-top:16px;text-align:right"><button class="btn primary" onclick="S.reward.cards=[];afterReward()">${r.cards.length?'카드 건너뛰고 계속':'계속'}</button></div></div></div>`;
 }
 function eventHTML(){
