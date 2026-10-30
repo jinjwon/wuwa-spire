@@ -542,6 +542,25 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .stlog div:not(:last-child){display:none}
 @media (max-width:1000px){.bottom{height:184px}.hand .card{bottom:6px}}
 .hand{left:128px;right:150px}
+/* ===== Task2: 명조 스타일 HUD ===== */
+.energy{border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);width:84px;height:84px;background:radial-gradient(circle at 50% 40%,#fff6d6,#e9b84a 45%,#8a5a10 100%);border:none;box-shadow:none;position:relative;font-size:20px}
+.lhud .energy{filter:drop-shadow(0 0 10px rgba(233,217,166,.55))}
+.lhud::before{content:'';position:absolute;left:50%;top:-6px;width:104px;height:104px;transform:translateX(-50%);border:1px solid rgba(233,217,166,.45);border-radius:50%;
+  background:repeating-conic-gradient(from 0deg,rgba(233,217,166,.35) 0 2deg,transparent 2deg 12deg);-webkit-mask:radial-gradient(circle,transparent 60%,#000 61%);mask:radial-gradient(circle,transparent 60%,#000 61%);animation:spin 18s linear infinite;pointer-events:none}
+.energy.zero{filter:grayscale(.8) brightness(.6)}
+.endturn{border:none;border-radius:0;clip-path:polygon(14px 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%,0 14px);background:linear-gradient(120deg,#1d2a5a,#0f1638);box-shadow:inset 0 0 0 1.5px #e9d9a6;color:#fff;padding:12px 22px 12px 20px;display:flex;flex-direction:column;align-items:flex-start;line-height:1.15}
+.endturn .en{font-size:9px;letter-spacing:3px;color:#e9d9a6;margin:0 0 2px}
+.endturn.glow{background:linear-gradient(120deg,#8a6a1c,#5e4612)}
+.endturn:hover:not(:disabled){transform:none;box-shadow:inset 0 0 0 2px #fff}
+.pile{border:none;border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);width:60px;height:60px;background:linear-gradient(135deg,#2a3a7a,#121a40);box-shadow:none;font-size:15px}
+.pile.disc{background:linear-gradient(135deg,#6a2f45,#2a1424);box-shadow:none}
+.pile small{bottom:-18px}
+.lhud,.rhud{gap:16px}
+.turnban{background:linear-gradient(90deg,transparent,rgba(10,14,31,.9) 22%,rgba(10,14,31,.9) 78%,transparent)}
+.turnban::before,.turnban::after{content:'';position:absolute;left:18%;right:18%;height:1px;background:linear-gradient(90deg,transparent,#e9d9a6,transparent)}
+.turnban::before{top:4px}.turnban::after{bottom:4px}
+.turnban b{letter-spacing:10px;font-weight:700}
+#tip{background:rgba(10,14,31,.96);border:none;border-radius:0;box-shadow:inset 0 0 0 1px rgba(233,217,166,.5);clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px)}
 </style>
 </head>
 <body>
@@ -1763,9 +1782,9 @@ function buildCombat(){
         <div class="uhud">${hudSkel()}</div></div>`}).join('')}
     </div>
     <div class="bottom">
-      <div class="lhud"><div class="energy" id="energy"></div><button class="pile" id="pdraw" onclick="showPile('draw')"></button></div>
+      <div class="lhud"><div class="energy" id="energy"></div><button class="pile" id="pdraw" data-tip="<b>뽑을 카드</b><br>클릭해서 목록 보기" onclick="showPile('draw')"></button></div>
       <div class="hand" id="hand"></div>
-      <div class="rhud"><button class="endturn" id="endbtn" onclick="endTurn()">턴 종료 <small>E</small></button><button class="pile disc" id="pdisc" onclick="showPile('discard')"></button></div>
+      <div class="rhud"><button class="endturn" id="endbtn" onclick="endTurn()"><small class="en">END TURN</small>턴 종료 <small>E</small></button><button class="pile disc" id="pdisc" data-tip="<b>버린 카드</b><br>클릭해서 목록 보기" onclick="showPile('discard')"></button></div>
     </div></div>`;
 }
 function setHP(root,hp,max,block){
