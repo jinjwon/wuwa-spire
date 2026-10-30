@@ -496,10 +496,36 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .card .hk{position:absolute;top:-9px;right:-7px;z-index:4;width:20px;height:20px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#0b1024;color:var(--wu-acc,#e9d9a6);border:1px solid #556}
 .endturn small{font-size:10px;opacity:.7;margin-left:4px}
 .card .wait{right:16px}
-#ytbox{position:fixed;left:10px;bottom:10px;z-index:95;width:200px;height:113px;box-shadow:0 0 0 1px #4a5aa8;background:#000;opacity:.85}
-#ytbox:hover{opacity:1}
-#ytbox iframe{width:100%;height:100%;border:0}
-#ytbox button{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;border:1px solid #888;background:#111;color:#fff;font-size:11px}
+#ytbox{position:fixed;left:10px;bottom:10px;z-index:95;width:260px;background:rgba(10,14,31,.92);box-shadow:inset 0 0 0 1px var(--wu-line,#4a5aa8);clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px);padding:8px}
+#ytbox .mp-head{display:flex;align-items:center;gap:6px}
+#ytbox .mp-disc{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#e9d9a6 18%,#1b2550 20%);color:#e9d9a6;animation:spin 4s linear infinite;flex:none;font-size:11px}
+#ytbox .mp-t{flex:1;min-width:0}#ytbox .mp-t small{display:block;font-size:8px;letter-spacing:2px;color:#e9d9a6}
+#ytbox .mp-t b{display:block;font-size:11px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#ytbox button{background:none;border:0;color:#fff;font-size:13px;padding:2px}
+#ytbox input{width:60px;accent-color:#e9d9a6}
+#ytbox iframe{display:block;width:100%;height:136px;border:0;margin-top:6px}
+#ytbox.mini{width:236px}#ytbox.mini iframe{width:200px;height:113px;margin:6px auto 0}
+#ytbox.mini .mp-head button:last-child{transform:rotate(180deg)}
+.help{max-width:860px;margin:0 auto;gap:14px;align-items:stretch;text-align:left}
+.help h2{text-align:center}
+.hs{background:linear-gradient(160deg,rgba(24,31,62,.95),rgba(12,16,34,.95));box-shadow:inset 0 0 0 1px var(--wu-line);padding:16px 18px;clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px)}
+.hs h3{margin:2px 0 8px;font-size:17px}.hs p{margin:6px 0;line-height:1.6;color:#dfe5ff}
+.hs-row{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.card.demo{cursor:default;flex:none}
+.callout{margin:0;padding-left:4px;list-style:none;display:flex;flex-direction:column;gap:8px;flex:1;min-width:240px;font-size:13px;line-height:1.5}
+.callout .k{color:var(--wu-acc);margin-right:4px}
+.hs-icons{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;font-size:13px}
+.hs-icons svg{width:22px;height:22px;vertical-align:middle}
+.hs-nodes{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.hs-nodes .lg{align-items:flex-start;gap:12px;font-size:12px}.hs-nodes .lg i{width:30px;height:30px;margin:4px}
+.hs-nodes .lg span{display:block;color:var(--dim)}
+.flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0}
+.hp-av{width:64px;height:64px;border-radius:50%;border:2px solid var(--c);background-color:#0c1126}
+.fa{display:flex;flex-direction:column;align-items:center;font-size:12px;color:var(--dim)}.fa b{color:var(--gold)}
+.fa::after{content:'➜';font-size:20px;color:var(--wu-acc)}
+.burst{padding:10px 14px;background:linear-gradient(90deg,#4a3c9c,#a24fa0);font-weight:800;text-align:center;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-width:3px;border-radius:4px;background:#141b3c;font-size:12px;font-family:inherit}
+#ytbox{left:auto;right:12px;bottom:auto;top:78px;opacity:.9}#ytbox:hover{opacity:1}
 </style>
 </head>
 <body>
@@ -511,14 +537,16 @@ const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const OPT=(()=>{try{return JSON.parse(localStorage.getItem('wuwa-opt'))||{}}catch(e){return {}}})();OPT.speed=OPT.speed||1;if(OPT.sfx==null)OPT.sfx=1;
+if(OPT.vol==null)OPT.vol=.7;if(OPT.mini==null)OPT.mini=true;
+const VOLV=()=>OPT.mute?0.0001:Math.max(.0001,OPT.vol);
 const saveOpt=()=>{try{localStorage.setItem('wuwa-opt',JSON.stringify(OPT))}catch(e){}};
 const sleep=ms=>window.FAST?Promise.resolve():new Promise(r=>setTimeout(r,ms/OPT.speed));
 /* 효과음: 파일 없이 WebAudio로 합성 */
 let AC=null;
 function ac(){if(!AC)AC=new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}
-function tone(f,dur,type,g,f2,t0=0){const a=ac(),t=a.currentTime+t0,o=a.createOscillator(),v=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);v.gain.setValueAtTime(g*.6,t);v.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(v).connect(a.destination);o.start(t);o.stop(t+dur)}
+function tone(f,dur,type,g,f2,t0=0){const a=ac(),t=a.currentTime+t0,o=a.createOscillator(),v=a.createGain();o.type=type;o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);v.gain.setValueAtTime(g*.6*VOLV(),t);v.gain.exponentialRampToValueAtTime(.001,t+dur);o.connect(v).connect(a.destination);o.start(t);o.stop(t+dur)}
 function noise(dur,g,freq,t0=0){const a=ac(),t=a.currentTime+t0,b=a.createBuffer(1,a.sampleRate*dur,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
-  const n=a.createBufferSource(),f=a.createBiquadFilter(),v=a.createGain();n.buffer=b;f.type='bandpass';f.frequency.value=freq;v.gain.setValueAtTime(g*.6,t);v.gain.exponentialRampToValueAtTime(.001,t+dur);n.connect(f).connect(v).connect(a.destination);n.start(t)}
+  const n=a.createBufferSource(),f=a.createBiquadFilter(),v=a.createGain();n.buffer=b;f.type='bandpass';f.frequency.value=freq;v.gain.setValueAtTime(g*.6*VOLV(),t);v.gain.exponentialRampToValueAtTime(.001,t+dur);n.connect(f).connect(v).connect(a.destination);n.start(t)}
 const SFX={
   hit:()=>{noise(.12,.55,1200);tone(160,.12,'square',.18,70)},
   crit:()=>{noise(.22,.7,700);tone(110,.25,'sawtooth',.25,40);tone(880,.08,'square',.08,440)},
@@ -537,23 +565,38 @@ const SFX={
 /* 배경음: assets/bgm/<장면>.mp3 가 있으면 반복 재생 (없으면 조용히 넘어감) */
 if(OPT.bgm==null)OPT.bgm=1;
 const BGM={el:null,key:null};
-function bgmScene(){if(!S)return 'title';if(S.screen==='combat')return S.c&&S.c.kind==='boss'?'boss':'battle';return ['over','win'].includes(S.screen)?S.screen:'map'}
+function bgmScene(){if(!S)return 'title';if(['over','win'].includes(S.screen))return S.screen;if(S.screen==='combat')return S.c&&S.c.kind==='boss'?'boss'+S.act:'battle_'+regionArt();return 'map_'+regionArt()}
 function playBgm(){
   const k=OPT.bgm?bgmScene():null;if(k===BGM.key)return;BGM.key=k;
   const old=BGM.el;if(old){old.animate([{opacity:1},{opacity:0}],600);let v=old.volume;const t=setInterval(()=>{v-=.05;if(v<=0){clearInterval(t);old.pause()}else old.volume=v},40)}
   if(!k){BGM.el=null;ytStop();return}
-  ytStop();const a=new Audio(`assets/bgm/${k}.mp3`);a.loop=true;a.volume=.35;a.onerror=()=>{if(BGM.key===k)ytPlay(k)};BGM.el=a;a.play().catch(()=>{});
+  ytStop();const a=new Audio(`assets/bgm/${k}.mp3`);a.loop=true;a.volume=OPT.mute?0:.5*OPT.vol;a.onerror=()=>{if(BGM.key===k)ytPlay(k)};BGM.el=a;a.play().catch(()=>{});
 }
 /* 로컬 mp3가 없으면 명조 공식 유튜브 OST를 임베드 플레이어로 재생 (다운로드 아님, 플레이어는 화면에 보이게 유지) */
-const YT_DEFAULT={title:'nl_vdjf-jM0',map:'9SbIrO0alEE',battle:'mzxfhQHot9Q',boss:'PA4BWeuLdto',win:'nl_vdjf-jM0',over:'9SbIrO0alEE'};
+const YT_DEFAULT={title:'nl_vdjf-jM0',win:'dSy11_e7NF4',over:'wGnPLE_SGw0',boss0:'bNS2ozFgCVA',boss1:'suvkUU54CNA',
+  map_coast:'1zORiYv3VmU',battle_coast:'Yr1RlcoqXTg',map_forest:'DrjZLUFlW7Q',battle_forest:'jyc8iS1-rj8',
+  map_spire:'Y0yo_cdQP7s',battle_spire:'La24P92A3rM',map_lahai:'wiXzbkjuJao',battle_lahai:'Lixpftlm0Eo'};
+const YT_NAME={'nl_vdjf-jM0':'Saving Light',dSy11_e7NF4:'Come To Light',wGnPLE_SGw0:'I Question My Fate',bNS2ozFgCVA:'Oaths Unbent',suvkUU54CNA:'To the Finale',
+  '1zORiYv3VmU':"There's No Moonlight This Night",Yr1RlcoqXTg:'Against the Tide',DrjZLUFlW7Q:'The Sound of Lost Joy','jyc8iS1-rj8':'Leaping Waves!',
+  Y0yo_cdQP7s:'A Story in a Loop',La24P92A3rM:'Endless Pulse',wiXzbkjuJao:'Unfinished Journey',Lixpftlm0Eo:'Catch Me If You Can'};
 const ytId=k=>(OPT.yt&&OPT.yt[k])||YT_DEFAULT[k];
 function ytStop(){const b=document.getElementById('ytbox');if(b)b.remove()}
+function ytCmd(func,args){const f=document.querySelector('#ytbox iframe');if(f)f.contentWindow.postMessage(JSON.stringify({event:'command',func,args:args||[]}),'*')}
+function applyVol(){if(BGM.el&&BGM.el.src)BGM.el.volume=OPT.mute?0:.5*OPT.vol;ytCmd(OPT.mute?'mute':'unMute');ytCmd('setVolume',[Math.round(OPT.vol*60)]);
+  const b=document.getElementById('ytbox');if(b){b.querySelector('.mute').textContent=OPT.mute?'🔇':'🔊';b.querySelector('input').value=OPT.vol}}
+function setVol(v){OPT.vol=+v;OPT.mute=false;saveOpt();applyVol()}
+function toggleMute(){OPT.mute=!OPT.mute;saveOpt();applyVol()}
 function ytPlay(k){
   const id=ytId(k);if(!id)return;ytStop();
   const b=document.createElement('div');b.id='ytbox';
-  b.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&loop=1&playlist=${id}&enablejsapi=1&controls=1&playsinline=1" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="배경음"></iframe><button onclick="OPT.bgm=0;saveOpt();BGM.key=null;ytStop()" title="배경음 끄기">✕</button>`;
+  if(OPT.mini)b.className='mini';
+  b.innerHTML=`<div class="mp-head"><span class="mp-disc">♪</span><div class="mp-t"><small>NOW PLAYING · 명조 OST</small><b>${YT_NAME[id]||'명조 OST'}</b></div>
+    <button class="mute" onclick="toggleMute()" title="음소거">${OPT.mute?'🔇':'🔊'}</button>
+    <input type="range" min="0" max="1" step="0.05" value="${OPT.vol}" oninput="setVol(this.value)" aria-label="음량">
+    <button onclick="OPT.mini=!OPT.mini;saveOpt();this.closest('#ytbox').classList.toggle('mini')" title="접기">▾</button></div>
+    <iframe src="https://www.youtube.com/embed/${id}?autoplay=1&loop=1&playlist=${id}&enablejsapi=1&controls=0&playsinline=1&modestbranding=1&rel=0" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="배경음"></iframe>`;
   document.body.appendChild(b);
-  b.querySelector('iframe').onload=e=>setTimeout(()=>e.target.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[35]}),'*'),800);
+  b.querySelector('iframe').onload=()=>setTimeout(applyVol,900);
 }
 function setYt(){const k=bgmScene();const v=prompt(`「${k}」 장면에 틀 유튜브 링크(또는 영상 ID). 비우면 기본 곡으로 돌아가요.`,ytId(k));if(v==null)return;
   const m=v.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)||v.match(/^([\w-]{11})$/);OPT.yt=OPT.yt||{};if(m)OPT.yt[k]=m[1];else delete OPT.yt[k];saveOpt();BGM.key=null;playBgm()}
@@ -1577,18 +1620,31 @@ function selectHTML(){
   </div>`;
 }
 function helpHTML(){
-  return `<div class="title">
+  const demo=mk('rov_s');const dc=cardHTML(demo).replace('class="card','class="card demo');
+  const node=k=>`<div class="lg" style="--c:${NODE[k].c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg>${nodeImg(k)}</i><b>${NODE[k].l}</b><span>${NODE_TIP[k]}</span></div>`;
+  const tile=id=>`<div class="hp-av" style="--c:${CH[id].color};${artStyle(id)}"></div>`;
+  return `<div class="title help">
     <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
     <h2>플레이 방법</h2>
-    <div class="howto">
-      · 처음에는 <b>공명자 한 명</b>으로 시작합니다. 탑을 오르며 <b>✚ 영입</b> 지점과 사건에서 동료를 만나 최대 3명까지 파티를 꾸려요.<br>
-      · 카드를 <b>끌어서</b> 사용합니다. 공격 카드는 적에게, 스킬 카드는 무대 위로 끌어다 놓으세요. 우클릭이나 ESC로 취소할 수 있어요.<br>
-      · 매 턴 에너지 3. <b>출전 중이 아닌 공명자의 카드는 비용 +1</b>. 카드 보상은 파티에 있는 공명자의 카드만 나와요.<br>
-      · 카드를 쓰면 <b>협주 에너지</b>(3칸)와 <b>공명 해방 게이지</b>(5칸)가 찹니다. 협주 에너지가 가득 찬 채 대기 중인 공명자를 클릭해 교체하면 <b>협주 → 변주</b>가 발동해요.<br>
-      · 적의 공격은 출전 중인 공명자가 받습니다. 적 머리 위의 아이콘으로 다음 행동을 미리 볼 수 있어요.<br>
-      · 일반 전투에는 <b>잔상</b>, 정예에는 강력한 잔상, 각 구역 꼭대기에는 <b>명식</b>이 기다립니다. 정예·명식을 쓰러뜨리면 <b>에코</b>를 흡수해요.<br>
-      · 지도에 있을 때마다 <b>자동 저장</b>되어 타이틀의 <b>이어하기</b>로 계속할 수 있어요.
-    </div>
+    <section class="hs"><small class="eng">STEP 1 · 목표</small><h3>탑 꼭대기의 명식을 쓰러뜨리세요</h3>
+      <p>공명자 <b>한 명</b>으로 시작해 지도를 따라 위로 올라가요. <b>✚ 영입</b>에서 동료를 만나 최대 <b>3명</b>까지 파티를 꾸려요. 2구역 꼭대기의 명식을 쓰러뜨리면 승리!</p></section>
+    <section class="hs"><small class="eng">STEP 2 · 카드 읽는 법</small><h3>카드를 끌어서 사용해요</h3>
+      <div class="hs-row">${dc}<ol class="callout">
+        <li><b class="k">①</b> 왼쪽 위 숫자 = <b>에너지 비용</b>. 매 턴 에너지 3이 채워져요.</li>
+        <li><b class="k">②</b> 이름 아래 그림 = 소유 공명자의 스킬. 오른쪽 아래 얼굴이 주인이에요.</li>
+        <li><b class="k">③</b> 가운데 글 = 효과. 노란 키워드에 마우스를 올리면 설명이 떠요.</li>
+        <li><b class="k">④</b> <b>공격 카드</b>는 적에게, <b>스킬 카드</b>는 무대 위로 끌어다 놓아요. 숫자키 <kbd>1</kbd>~<kbd>9</kbd>로도 쓸 수 있어요.</li>
+        <li><b class="k">⑤</b> 출전 중이 아닌 공명자의 카드는 <b>비용 +1</b> (빨간 숫자).</li></ol></div></section>
+    <section class="hs"><small class="eng">STEP 3 · 적의 다음 행동</small><h3>적 머리 위 아이콘을 보고 대비하세요</h3>
+      <div class="hs-icons"><div><span class="in-atk">${ICON.atk}</span> <b>공격</b> 숫자만큼 피해. 보호막으로 막아요.</div><div><span class="in-def">${ICON.def}</span> <b>방어</b> 적이 보호막을 얻어요.</div>
+        <div><span class="in-buf">${ICON.buf}</span> <b>강화</b> 적의 힘이 올라가요.</div><div><span class="in-deb">${ICON.deb}</span> <b>약화</b> 디버프나 상태이상 카드를 넣어요.</div></div></section>
+    <section class="hs"><small class="eng">STEP 4 · 협주 → 변주</small><h3>교체 타이밍이 핵심이에요</h3>
+      <div class="flow">${tile('aem')}<div class="fa"><b>협주 에너지 ■■■</b><span>카드 3장 사용</span></div>${tile('sk')}<div class="fa"><b>교체!</b><span>대기 공명자 클릭</span></div><div class="burst">협주 + 변주<br><small>두 스킬 연속 발동</small></div></div>
+      <p>공격은 <b>출전 중인 공명자</b>만 받아요. 다친 공명자는 뒤로 빼 주세요. 해방 게이지(5칸)가 차면 <b>공명 해방</b> 버튼이 떠요.</p></section>
+    <section class="hs"><small class="eng">STEP 5 · 지도</small><h3>길을 골라 올라가세요</h3><div class="hs-nodes">${['battle','elite','event','rest','shop','treasure','recruit'].map(node).join('')}</div></section>
+    <section class="hs"><small class="eng">STEP 6 · 단축키</small><h3>편하게 플레이하기</h3>
+      <div class="hs-icons"><div><kbd>1</kbd>~<kbd>9</kbd> 카드 사용 (마우스 올린 적 대상)</div><div><kbd>E</kbd> / <kbd>Enter</kbd> 턴 종료</div><div><kbd>Esc</kbd> 일시정지 · 음량 · 전투 속도</div><div>우클릭 · <kbd>Esc</kbd> 카드 끌기 취소</div></div>
+      <p class="dim">지도에 있을 때마다 자동 저장돼요. 타이틀의 <b>이어하기</b>로 계속하세요.</p></section>
   </div>`;
 }
 /* ============ 영입 ============ */
@@ -1991,6 +2047,7 @@ function modalHTML(){
         <button class="choice" onclick="OPT.speed=OPT.speed===1?2:1;saveOpt();render()"><b>전투 속도 ×${OPT.speed}</b><small>적 턴·연출 대기 시간을 줄여요</small></button>
         <button class="choice" onclick="OPT.sfx=OPT.sfx?0:1;saveOpt();render()"><b>효과음 ${OPT.sfx?'켜짐':'꺼짐'}</b></button>
         <button class="choice" onclick="OPT.bgm=OPT.bgm?0:1;saveOpt();render()"><b>배경음 ${OPT.bgm?'켜짐':'꺼짐'}</b><small>명조 공식 OST(유튜브) · assets/bgm의 mp3가 있으면 우선</small></button>
+        <div class="choice" style="display:flex;align-items:center;gap:10px"><b style="flex:1">전체 음량</b><button class="btn" onclick="toggleMute();render()">${OPT.mute?'🔇 음소거됨':'🔊'}</button><input type="range" min="0" max="1" step="0.05" value="${OPT.vol}" oninput="setVol(this.value)" style="accent-color:#e9d9a6"></div>
         <button class="choice" onclick="setYt()"><b>지금 장면 배경음 바꾸기</b><small>유튜브 링크를 붙여 넣으세요</small></button>
         <button class="choice" onclick="toTitle()"><b>저장하고 타이틀로</b><small>${inMap?'지금 위치가 저장돼요.':'진행 중인 전투·사건은 저장되지 않고, 마지막 지도 위치부터 이어해요.'}</small></button>
         <button class="choice" onclick="abandonRun()"><b>이번 판 포기</b><small>저장을 지우고 타이틀로 돌아가요.</small></button>
