@@ -496,6 +496,10 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .card .hk{position:absolute;top:-9px;right:-7px;z-index:4;width:20px;height:20px;display:grid;place-items:center;font-size:11px;font-weight:900;background:#0b1024;color:var(--wu-acc,#e9d9a6);border:1px solid #556}
 .endturn small{font-size:10px;opacity:.7;margin-left:4px}
 .card .wait{right:16px}
+#ytbox{position:fixed;left:10px;bottom:10px;z-index:95;width:200px;height:113px;box-shadow:0 0 0 1px #4a5aa8;background:#000;opacity:.85}
+#ytbox:hover{opacity:1}
+#ytbox iframe{width:100%;height:100%;border:0}
+#ytbox button{position:absolute;top:-10px;right:-10px;width:22px;height:22px;border-radius:50%;border:1px solid #888;background:#111;color:#fff;font-size:11px}
 </style>
 </head>
 <body>
@@ -537,9 +541,22 @@ function bgmScene(){if(!S)return 'title';if(S.screen==='combat')return S.c&&S.c.
 function playBgm(){
   const k=OPT.bgm?bgmScene():null;if(k===BGM.key)return;BGM.key=k;
   const old=BGM.el;if(old){old.animate([{opacity:1},{opacity:0}],600);let v=old.volume;const t=setInterval(()=>{v-=.05;if(v<=0){clearInterval(t);old.pause()}else old.volume=v},40)}
-  if(!k){BGM.el=null;return}
-  const a=new Audio(`assets/bgm/${k}.mp3`);a.loop=true;a.volume=.35;a.onerror=()=>{};BGM.el=a;a.play().catch(()=>{});
+  if(!k){BGM.el=null;ytStop();return}
+  ytStop();const a=new Audio(`assets/bgm/${k}.mp3`);a.loop=true;a.volume=.35;a.onerror=()=>{if(BGM.key===k)ytPlay(k)};BGM.el=a;a.play().catch(()=>{});
 }
+/* 로컬 mp3가 없으면 명조 공식 유튜브 OST를 임베드 플레이어로 재생 (다운로드 아님, 플레이어는 화면에 보이게 유지) */
+const YT_DEFAULT={title:'nl_vdjf-jM0',map:'9SbIrO0alEE',battle:'mzxfhQHot9Q',boss:'PA4BWeuLdto',win:'nl_vdjf-jM0',over:'9SbIrO0alEE'};
+const ytId=k=>(OPT.yt&&OPT.yt[k])||YT_DEFAULT[k];
+function ytStop(){const b=document.getElementById('ytbox');if(b)b.remove()}
+function ytPlay(k){
+  const id=ytId(k);if(!id)return;ytStop();
+  const b=document.createElement('div');b.id='ytbox';
+  b.innerHTML=`<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&loop=1&playlist=${id}&enablejsapi=1&controls=1&playsinline=1" allow="autoplay; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="배경음"></iframe><button onclick="OPT.bgm=0;saveOpt();BGM.key=null;ytStop()" title="배경음 끄기">✕</button>`;
+  document.body.appendChild(b);
+  b.querySelector('iframe').onload=e=>setTimeout(()=>e.target.contentWindow.postMessage(JSON.stringify({event:'command',func:'setVolume',args:[35]}),'*'),800);
+}
+function setYt(){const k=bgmScene();const v=prompt(`「${k}」 장면에 틀 유튜브 링크(또는 영상 ID). 비우면 기본 곡으로 돌아가요.`,ytId(k));if(v==null)return;
+  const m=v.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)||v.match(/^([\w-]{11})$/);OPT.yt=OPT.yt||{};if(m)OPT.yt[k]=m[1];else delete OPT.yt[k];saveOpt();BGM.key=null;playBgm()}
 addEventListener('pointerdown',()=>{if(BGM.el&&BGM.el.paused)BGM.el.play().catch(()=>{})});
 function sfx(k,delay){if(window.FAST||!OPT.sfx)return;const go=()=>{try{SFX[k]()}catch(e){}};delay?setTimeout(go,delay/OPT.speed):go()}
 addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button'))sfx('click')});
@@ -1973,7 +1990,8 @@ function modalHTML(){
         <button class="choice" onclick="toggleFS()"><b>전체 화면</b></button>
         <button class="choice" onclick="OPT.speed=OPT.speed===1?2:1;saveOpt();render()"><b>전투 속도 ×${OPT.speed}</b><small>적 턴·연출 대기 시간을 줄여요</small></button>
         <button class="choice" onclick="OPT.sfx=OPT.sfx?0:1;saveOpt();render()"><b>효과음 ${OPT.sfx?'켜짐':'꺼짐'}</b></button>
-        <button class="choice" onclick="OPT.bgm=OPT.bgm?0:1;saveOpt();render()"><b>배경음 ${OPT.bgm?'켜짐':'꺼짐'}</b><small>assets/bgm 폴더의 mp3를 재생해요</small></button>
+        <button class="choice" onclick="OPT.bgm=OPT.bgm?0:1;saveOpt();render()"><b>배경음 ${OPT.bgm?'켜짐':'꺼짐'}</b><small>명조 공식 OST(유튜브) · assets/bgm의 mp3가 있으면 우선</small></button>
+        <button class="choice" onclick="setYt()"><b>지금 장면 배경음 바꾸기</b><small>유튜브 링크를 붙여 넣으세요</small></button>
         <button class="choice" onclick="toTitle()"><b>저장하고 타이틀로</b><small>${inMap?'지금 위치가 저장돼요.':'진행 중인 전투·사건은 저장되지 않고, 마지막 지도 위치부터 이어해요.'}</small></button>
         <button class="choice" onclick="abandonRun()"><b>이번 판 포기</b><small>저장을 지우고 타이틀로 돌아가요.</small></button>
         ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>${inMap?'지금 위치를 저장하고 종료해요.':'마지막 지도 위치부터 이어할 수 있어요.'}</small></button>`:''}

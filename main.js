@@ -38,6 +38,10 @@ const template = [
 ];
 
 app.whenReady().then(() => {
+  // 유튜브 임베드는 file:// 페이지에서 Referer가 없으면 재생을 거부해서 헤더를 채워 줍니다.
+  require('electron').session.defaultSession.webRequest.onBeforeSendHeaders({ urls: ['*://*.youtube.com/*', '*://*.youtube-nocookie.com/*', '*://*.googlevideo.com/*'] }, (d, cb) => {
+    d.requestHeaders.Referer = 'https://wuwa-spire.local/'; cb({ requestHeaders: d.requestHeaders });
+  });
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
   createWindow();
   app.on('activate', () => {
