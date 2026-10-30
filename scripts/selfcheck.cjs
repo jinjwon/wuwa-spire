@@ -14,6 +14,12 @@ const CHECKS = {
     const B=spawn('levia');return a&&b&&c2&&B.vibMax===22})()`,
   map_focus: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';render();await new Promise(r=>setTimeout(r,800));const n=document.querySelector('.mnode.avail').getBoundingClientRect();return n.top>=0&&n.bottom<=innerHeight})()`,
   help_new_systems: `(()=>{goMenu('help');const t=document.body.innerText;return t.includes('에코 스킬')&&t.includes('공진')})()`,
+  new_cards_weapons: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
+    const c=S.c;c.energy=3;const T=alive()[0];T.hp=T.maxHp=500;
+    T.block=0;const x=mk('any_overload');c.hand.push(x);const h=T.hp;playCard(x.uid,T);const xOk=c.energy===0&&h-T.hp===12;
+    c.energy=3;const r=mk('any_focus');c.hand.push(r);c.busy=false;await endTurn();const retOk=S.c.hand.some(y=>y.uid===r.uid);
+    S.weapons={aem:'w_blade'};c.energy=3;c.weak=0;c.amp=0;T.vuln=0;T.block=0;T.ur=0;const a=mk('aem_a');c.hand.push(a);const h2=T.hp;playCard(a.uid,T);const wOk=h2-T.hp===8;
+    const art=procArt('any_chain').startsWith('data:image/svg');return xOk&&retOk&&wOk&&art})()`,
 };
 const only = process.argv.slice(2);
 (async () => {
