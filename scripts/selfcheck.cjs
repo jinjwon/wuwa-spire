@@ -1,5 +1,7 @@
 // 게임 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 중에 `node scripts/selfcheck.cjs`
 const CHECKS = {
+  records: `(()=>{const o=localStorage.getItem(REC_KEY),n=loadRecords().length;newGame('aem',0);S.screen='map';addRecord('lose');addRecord('lose');
+    const L=loadRecords(),ok=L.length===Math.min(n+1,50)&&L[0].r==='lose'&&L[0].team[0]==='aem';o?localStorage.setItem(REC_KEY,o):localStorage.removeItem(REC_KEY);return ok})()`,
   card_body_visible: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,1800));
     const t=document.querySelector('#hand .card .tx').getBoundingClientRect();return t.bottom<=innerHeight})()`,
   hand10_badges: `(async()=>{while(S.c.hand.length<10)S.c.hand.push(mk('aem_a'));render();await new Promise(r=>setTimeout(r,1500));

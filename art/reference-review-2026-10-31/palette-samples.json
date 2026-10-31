@@ -1,0 +1,69 @@
+{
+  "method": "기준 이미지 원본 픽셀 추출값; 공식 지정값 아님",
+  "source": "https://wutheringwaves.kurogames.com/static4.0/assets/rover2-70f2c27c.png",
+  "samples": [
+    {
+      "label": "머리",
+      "x": 590,
+      "y": 155,
+      "hex": "#5a5e5c",
+      "alpha": 255
+    },
+    {
+      "label": "상의",
+      "x": 550,
+      "y": 345,
+      "hex": "#3b3d3c",
+      "alpha": 255
+    },
+    {
+      "label": "장화",
+      "x": 630,
+      "y": 880,
+      "hex": "#4c504e",
+      "alpha": 255
+    },
+    {
+      "label": "허리 천",
+      "x": 553,
+      "y": 480,
+      "hex": "#bcbebc",
+      "alpha": 255
+    },
+    {
+      "label": "은회색 머리끝",
+      "x": 615,
+      "y": 254,
+      "hex": "#dfdede",
+      "alpha": 255
+    },
+    {
+      "label": "피부",
+      "x": 595,
+      "y": 307,
+      "hex": "#ffecdc",
+      "alpha": 255
+    },
+    {
+      "label": "금속 장식",
+      "x": 585,
+      "y": 185,
+      "hex": "#998c79",
+      "alpha": 255
+    },
+    {
+      "label": "검 청색 발광",
+      "x": 596,
+      "y": 620,
+      "hex": "#6190d8",
+      "alpha": 255
+    },
+    {
+      "label": "눈",
+      "x": 577,
+      "y": 203,
+      "hex": "#8a786c",
+      "alpha": 255
+    }
+  ]
+}

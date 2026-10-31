@@ -1,6 +1,6 @@
 {
   "name": "wuwa-spire",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 (개인용)",
   "main": "main.js",
   "author": "jinjwon",
@@ -13,7 +13,8 @@
   },
   "devDependencies": {
     "electron": "^33.2.1",
-    "electron-builder": "^25.1.8"
+    "electron-builder": "^25.1.8",
+    "sharp": "^0.33.5"
   },
   "build": {
     "appId": "com.jinjwon.wuwaspire",

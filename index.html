@@ -46,13 +46,15 @@ h1,h2,h3{margin:0}
 .titlescr{position:relative;flex:1;min-height:calc(100vh - 24px);border-radius:20px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:28px;isolation:isolate;text-align:center;padding:40px 16px 56px}
 .t-logo h1{font-size:clamp(46px,8vw,96px);letter-spacing:8px;margin:8px 0 4px;background:linear-gradient(90deg,#c9b8ff,#ffe9a8 50%,#ff9a7a);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 4px 26px rgba(255,215,140,.4));animation:tglow 4s ease-in-out infinite}
 @keyframes tglow{50%{filter:drop-shadow(0 4px 40px rgba(200,180,255,.6))}}
-.t-sub{letter-spacing:6px;font-size:12px;color:var(--dim)}
-.t-en{font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:4px;color:#cfd6ff;opacity:.85}
+.t-logo{position:relative;padding:18px 48px;background:radial-gradient(ellipse at center,rgba(8,10,28,.72) 0%,rgba(8,10,28,.45) 55%,transparent 75%)}
+.t-sub{letter-spacing:6px;font-size:12px;color:#c9d0ee;text-shadow:0 1px 6px #000}
+.t-en{font-family:Georgia,'Times New Roman',serif;font-style:italic;letter-spacing:4px;color:#e6eaff;text-shadow:0 2px 10px #000,0 0 18px rgba(120,140,255,.5)}
 .t-party{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 .t-party .tp{width:clamp(46px,6.5vw,72px);aspect-ratio:1;border-radius:50%;border:2px solid var(--c);background-color:#0c1126;box-shadow:0 0 20px -4px var(--c);animation:idle 3.2s ease-in-out infinite;display:grid;place-items:center;font-weight:800}
-.t-menu{display:flex;flex-direction:column;gap:10px;width:min(330px,100%)}
-.t-menu button{padding:13px 18px;border-radius:12px;font-size:17px;font-weight:800;background:rgba(22,29,58,.78);border:1px solid #4a5aa8;backdrop-filter:blur(4px);transition:.15s}
-.t-menu button:hover{border-color:var(--gold);transform:translateX(4px)}
+.t-menu{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:min(420px,100%)}
+.t-menu button.main{grid-column:1/-1;font-size:20px;padding:16px 18px}
+.t-menu button{padding:11px 14px;border-radius:12px;font-size:15px;font-weight:800;background:rgba(22,29,58,.78);border:1px solid #4a5aa8;backdrop-filter:blur(4px);transition:.15s}
+.t-menu button:hover{border-color:var(--gold);transform:translateY(-2px)}
 .t-menu button.main{background:linear-gradient(180deg,#8a6a1c,#5e4612);border-color:var(--gold)}
 .t-menu small{display:block;font-size:11px;font-weight:400;color:#e8dcb8;margin-top:3px}
 .t-foot{position:absolute;bottom:14px;left:16px;right:16px;font-size:11px;color:var(--dim)}
@@ -576,6 +578,13 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .tut b{display:block;font-size:17px;margin:2px 0 6px}.tut p{margin:0 0 12px;line-height:1.55;color:#dfe5ff;font-size:13.5px}.tut div{text-align:right}
 .lhud:has(.echobtn[style*="none"])::before{top:-6px}
 .wpn{cursor:help}
+
+.rec-sum{display:flex;gap:12px;margin:8px 0 18px;flex-wrap:wrap}
+.rec-sum div{flex:1;min-width:120px;padding:12px 16px;border:1px solid var(--line,#3a4256);border-radius:10px;background:rgba(255,255,255,.04)}
+.rec-sum b{display:block;font-size:22px}.rec-sum small{opacity:.7}
+.rec{display:grid;grid-template-columns:52px 120px 70px 1fr auto 180px;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
+.rec-team{display:flex;gap:4px}.rec-team .hp-av{width:30px;height:30px}
+@media(max-width:720px){.rec{grid-template-columns:52px 1fr;}}
 </style>
 </head>
 <body>
@@ -1308,7 +1317,13 @@ function hurtParty(d,e){
   if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
   if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
-function lose(){sfx('lose');S.c.busy=false;S.screen='over';clearSave();render()}
+// 게임 기록: 판이 끝날 때(패배·승리·포기) 한 줄씩 저장, 최근 50판 유지
+const REC_KEY='wuwa-records';
+function loadRecords(){try{return JSON.parse(localStorage.getItem(REC_KEY))||[]}catch(e){return []}}
+function addRecord(r){if(!S||S._rec)return;S._rec=1;const L=loadRecords();
+  L.unshift({t:Date.now(),r,d:S.diff,team:[...S.team],act:S.act,floor:S.floor,kills:S.stats.kills,deck:S.deck.length,echoes:S.echoes.length});
+  try{localStorage.setItem(REC_KEY,JSON.stringify(L.slice(0,50)))}catch(e){}}
+function lose(){sfx('lose');S.c.busy=false;S.screen='over';addRecord('lose');clearSave();render()}
 function winCombat(){
   sfx('win');const c=S.c;const kind=c.kind;
   let gold=kind==='boss'?rnd(90,110):kind==='elite'?rnd(32,42):rnd(14,22);if(has('charm'))gold=Math.round(gold*1.5);
@@ -1338,7 +1353,7 @@ function afterReward(){
     if(S.act===0){S.act=1;S.pos=null;S.path=[];pickVariant();S.map=genMap();S.fights=0;
       T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*DF().heal))});
       S.healNote=Math.round(DF().heal*100);openAncient();return;
-    }else{S.screen='win';clearSave()}
+    }else{S.screen='win';addRecord('win');clearSave()}
   }else S.screen='map';
   render();
 }
@@ -1695,7 +1710,7 @@ function render(){
   if(!$('#screen'))app.innerHTML='<div id="topbar"></div><div id="screen"></div><div id="modal"></div>';
   $('#topbar').innerHTML=S?topBar():'';
   const scr=$('#screen');
-  if(!S)scr.innerHTML=MENU==='select'?selectHTML():MENU==='help'?helpHTML():titleHTML();
+  if(!S)scr.innerHTML=MENU==='select'?selectHTML():MENU==='help'?helpHTML():MENU==='records'?recordsHTML():titleHTML();
   else if(S.screen==='combat'){const cur=scr.querySelector('.combat');if(!cur||cur.dataset.cid!=S.c.id||S.c.rebuild){HAND_SEEN=cur&&cur.dataset.cid==S.c.id?new Set(S.c.hand.map(x=>x.uid)):new Set();scr.innerHTML=buildCombat();S.c.rebuild=false}updateCombat()}
   else scr.innerHTML={map:mapHTML,ancient:ancientHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
@@ -1712,12 +1727,12 @@ function clearSave(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
 function continueRun(){const o=loadSave();if(!o)return;S=o;S.screen='map';S._scrolled=false;UID=Math.max(UID,...S.deck.map(c=>c.uid))+1;render()}
 function goMenu(m){S=null;MENU=m;render();window.scrollTo(0,0)}
 function toTitle(){
-  if(S&&!confirm('게임을 중단하면 이번 판은 끝나요. 타이틀로 갈까요?'))return;
+  if(S&&!['over','win'].includes(S.screen)){if(!confirm('게임을 중단하면 이번 판은 끝나요. 타이틀로 갈까요?'))return;addRecord('quit')}
   clearSave();goMenu('title');
 }
 const IS_APP=/Electron/.test(navigator.userAgent);
 function openPause(){if(!S)return;S.modal={kind:'pause'};render()}
-function abandonRun(){if(!confirm('이번 판을 포기할까요? 저장된 진행도 사라져요.'))return;clearSave();goMenu('title')}
+function abandonRun(){if(!confirm('이번 판을 포기할까요? 저장된 진행도 사라져요.'))return;addRecord('quit');clearSave();goMenu('title')}
 function quitGame(){if(S&&!confirm('게임을 종료하면 이번 판은 끝나요. 종료할까요?'))return;window.close()}
 addEventListener('keydown',e=>{
   if(e.key!=='Escape'||DRAG)return;
@@ -1735,6 +1750,7 @@ function titleHTML(){
       ${sv?`<button class="main" onclick="continueRun()">이어하기<small>${ACTS[sv.act].name} · ${sv.floor}층 · ${sv.team.map(id=>CH[id].name).join(', ')}</small></button>`:''}
       <button class="${sv?'':'main'}" onclick="${sv?`if(confirm('새 게임을 시작하면 저장된 진행이 사라져요. 계속할까요?')){clearSave();goMenu('select')}`:`goMenu('select')`}">새 게임</button>
       <button onclick="goMenu('help')">플레이 방법</button>
+      <button onclick="goMenu('records')">게임 기록</button>
       <button onclick="toggleFS()">전체 화면</button>
       <button onclick="toggleRover()">방랑자 외형: ${ROVER_SKIN==='M'?'남성':'여성'}</button>
       ${IS_APP?`<button onclick="quitGame()">게임 종료</button>`:''}
@@ -1758,6 +1774,23 @@ function selectHTML(){
     <div class="diffs">${DIFF.map((x,i)=>`<button class="diff ${SEL_DIFF===i?'on':''}" onclick="SEL_DIFF=${i};render()"><b>${x.n}</b><small>${x.d}</small></button>`).join('')}</div>
     <div class="dim">나머지 동료는 탑을 오르며 ✚ 영입 지점과 사건에서 만나요 (최대 3명)</div>
     <div class="party-intro">${ALL.map(id=>charCardHTML(id,`newGame('${id}')`,'이 공명자로 시작')).join('')}</div>
+  </div>`;
+}
+function recordsHTML(){
+  const L=loadRecords(),W=L.filter(x=>x.r==='win').length,best=L.reduce((m,x)=>Math.max(m,x.act*100+x.floor),-1);
+  const RL={win:['승리','#ffd36b'],lose:['패배','#ff7a7a'],quit:['중단','#9aa4b8']};
+  const row=x=>`<div class="rec"><b style="color:${RL[x.r][1]}">${RL[x.r][0]}</b>
+    <span>${new Date(x.t).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
+    <span>${(DIFF[x.d]||DIFF[0]).n}</span><span>${ACTS[x.act]?ACTS[x.act].name:''} · ${x.floor}층</span>
+    <span class="rec-team">${x.team.map(id=>`<i class="hp-av" title="${CH[id].name}" style="--c:${CH[id].color};${artStyle(id)}"></i>`).join('')}</span>
+    <span class="dim">처치 ${x.kills} · 덱 ${x.deck} · 에코 ${x.echoes}</span></div>`;
+  return `<div class="title help">
+    <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
+    <h2>게임 기록</h2>
+    <div class="rec-sum"><div><b>${L.length}</b><small>플레이</small></div><div><b>${W}</b><small>승리</small></div>
+      <div><b>${L.length?Math.round(W/L.length*100):0}%</b><small>승률</small></div>
+      <div><b>${best<0?'-':(Math.floor(best/100)+1)+'구역 '+best%100+'층'}</b><small>최고 도달</small></div></div>
+    ${L.length?L.map(row).join(''):'<p class="dim">아직 기록이 없어요. 탑에 올라 첫 기록을 남겨 보세요.</p>'}
   </div>`;
 }
 function helpHTML(){
