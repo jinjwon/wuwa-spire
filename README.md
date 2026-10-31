@@ -1,55 +1,117 @@
-# 명조: 첨탑의 메아리
+<div align="center">
 
-명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크입니다. 슬레이 더 스파이어의 시스템을 명조의 협주·변주와 에코 흡수 시스템에 맞게 옮겼어요.
+# 첨탑의 메아리 · Echoes of the Spire
 
-> 개인 학습·플레이용 비공개 프로토타입입니다. 명조와 관련 캐릭터의 권리는 Kuro Games에 있습니다.
+**명조: 워더링 웨이브 × 슬레이 더 스파이어** 팬메이드 덱빌딩 로그라이크
 
-## 설치해서 플레이하기 (윈도우 · 맥)
+[![최신 버전](https://img.shields.io/github/v/release/jinjwon/wuwa-spire?label=%EC%B5%9C%EC%8B%A0%20%EB%B2%84%EC%A0%84&color=c9a24a)](../../releases/latest)
+![Windows](https://img.shields.io/badge/Windows-지원-4a5aa8)
+![macOS](https://img.shields.io/badge/macOS-지원-4a5aa8)
 
-저장소의 **Releases**에서 최신 버전 파일을 받으세요.
+<img src="docs/img/title.jpg" width="820" alt="타이틀 화면">
 
-| OS | 파일 | 설명 |
-|---|---|---|
-| 윈도우 | `SpireOfEchoes-x.y.z-win-setup.exe` | 설치형 |
-| 윈도우 | `SpireOfEchoes-x.y.z-win-portable.exe` | 설치 없이 바로 실행 |
-| 맥 (Apple 실리콘, M1 이후) | `SpireOfEchoes-x.y.z-mac-arm64.dmg` | |
-| 맥 (인텔) | `SpireOfEchoes-x.y.z-mac-x64.dmg` | |
+</div>
 
-개인용 빌드라 코드 서명이 없어서, 처음 실행할 때 보안 경고가 떠요.
+> 개인 학습·플레이용 비공개 프로토타입이에요. 명조와 모든 캐릭터의 권리는 Kuro Games에 있어요.
 
-- **윈도우**: "Windows의 PC 보호" 창이 뜨면 **추가 정보 → 실행**을 누르세요.
-- **맥**: dmg를 열고 앱을 응용 프로그램 폴더로 옮긴 뒤, 터미널에서 아래 명령을 한 번 실행하세요. 그다음부터는 그냥 열면 돼요.
-  ```bash
-  xattr -cr "/Applications/Spire of Echoes.app"
-  ```
+---
 
-캐릭터와 잔상 이미지는 위키에서 불러오기 때문에 **인터넷 연결이 필요해요**. 로그라이크라 중간 저장은 없고, 끝난 판은 타이틀의 **게임 기록**에서 볼 수 있어요.
+## 🎮 3분 만에 시작하기
 
-## 브라우저로 플레이하기
+### 1. 파일 받기
 
-`index.html`을 브라우저로 열어도 똑같이 플레이할 수 있어요.
+[**Releases → 최신 버전**](../../releases/latest) 맨 아래 **Assets**에서 내 컴퓨터에 맞는 파일 하나만 받으세요.
 
-## 새 버전 배포하기
+| 내 컴퓨터 | 받을 파일 |
+|---|---|
+| 윈도우 (설치해서 쓰기) | `SpireOfEchoes-x.y.z-win-setup.exe` |
+| 윈도우 (설치 없이 바로) | `SpireOfEchoes-x.y.z-win-portable.exe` |
+| 맥 · Apple 실리콘 (M1~M4) | `SpireOfEchoes-x.y.z-mac-arm64.dmg` |
+| 맥 · 인텔 | `SpireOfEchoes-x.y.z-mac-x64.dmg` |
 
-`package.json`의 `version`을 올린 뒤 같은 번호로 태그를 올리면, GitHub Actions가 윈도우·맥 설치 파일을 빌드해서 Releases에 올려요.
+> 맥 종류 확인: 화면 왼쪽 위 Apple 메뉴 → **이 Mac에 관하여** → "칩"이 Apple M이면 arm64, Intel이면 x64.
+
+### 2. 실행하기
+
+<details open>
+<summary><b>윈도우</b></summary>
+
+1. 받은 `.exe`를 더블클릭해요.
+2. 파란 **"Windows의 PC 보호"** 창이 뜨면 **추가 정보 → 실행**을 눌러요. (코드 서명이 없는 개인 빌드라 처음 한 번 떠요)
+
+</details>
+
+<details open>
+<summary><b>맥</b></summary>
+
+1. `.dmg`를 열고 **Spire of Echoes** 아이콘을 **응용 프로그램** 폴더로 끌어다 놓아요.
+2. **터미널**을 열고 아래 한 줄을 붙여 넣은 뒤 Enter. (처음 한 번만)
+
+   ```bash
+   xattr -cr "/Applications/Spire of Echoes.app"
+   ```
+
+3. 응용 프로그램에서 **Spire of Echoes**를 열어요.
+
+</details>
+
+> 🌐 배경음악은 공식 유튜브 OST를 불러와서 **인터넷 연결**이 있으면 좋아요. 없어도 게임은 돼요.
+
+---
+
+## 🕹️ 조작법
+
+| 하고 싶은 것 | 방법 |
+|---|---|
+| 카드 사용 | 카드를 **끌어서** 적(공격) 또는 무대(스킬)에 놓기 · 숫자키 `1`~`9` |
+| 턴 종료 | **턴 종료** 버튼 · `E` |
+| 에코 스킬 | 에너지 위 마름모 버튼 · `Q` |
+| 공명자 교체 | 대기 중인 공명자 클릭 |
+| 일시정지 · 메뉴 | `Esc` |
+
+처음이라면 타이틀의 **플레이 방법**에 그림 설명이 있어요.
+
+---
+
+## ✨ 게임 소개
+
+<img src="docs/img/combat.jpg" width="820" alt="전투 화면">
+
+- **공명자 7명** — 방랑자 · 에이메스 · 린네 · 모니에 · 치사(라하이로이) · 파수인 · 카멜리아(검은해안)
+- **한 명으로 시작** — 탑을 오르며 동료를 영입해 최대 3인 파티
+- **협주 → 변주** — 카드 3장으로 협주 에너지를 채우고 교체하면 두 스킬이 연속 발동
+- **공진 파괴** — 진동 게이지를 채우면 적이 한 턴 무력화, 받는 피해 +50%
+- **에코 · 무기** — 정예·명식에게서 에코를 흡수하고, 무기를 장착해 빌드를 완성
+- **적** — 잔상이 일반·정예로, 명식(레비아탄 · 알레프-원의 창조물)이 보스로 등장
+- **로그라이크** — 중간 저장 없음. 끝난 판은 타이틀 **게임 기록**에서 승률·최고 기록 확인
+- **난이도** — 보통 · 어려움 · 악몽
+
+<img src="docs/img/map.jpg" width="820" alt="지도 화면">
+
+---
+
+## 🛠️ 개발자용
+
+<details>
+<summary>로컬 실행 · 빌드 · 배포</summary>
 
 ```bash
-git tag v0.1.1 && git push origin v0.1.1
+npm install
+npm start            # 실행
+npm run dist:mac     # 맥 빌드
+npm run dist:win     # 윈도우 빌드
 ```
 
-로컬에서 실행하거나 빌드하려면 `npm install` 후 `npm start`(실행), `npm run dist:mac` 또는 `npm run dist:win`(빌드)을 쓰세요.
+브라우저로 `index.html`을 열어도 플레이할 수 있어요.
 
-## 구성
+**배포**: `package.json`의 `version`을 올리고 같은 번호로 태그를 올리면 GitHub Actions가 Releases에 설치 파일을 올려요.
 
-- **공명자 7명**: 방랑자, 에이메스·린네·모니에·치사(라하이로이), 파수인·카멜리아(검은해안)
-- **영입**: 한 명으로 시작해 탑을 오르며 동료를 영입해 최대 3인 파티를 꾸려요.
-- **전투**: 카드를 끌어 적에게 놓아 사용하는 슬더스식 조작. 협주 → 변주 교체, 공명 해방, 메카스카우트 형태 전환이 있어요.
-- **탑**: 2구역 분기형 지도. 전투, 정예, 사건, 휴식, 상점, 보급 노드로 구성돼요.
-- **적**: 실제 잔상(경파·거랑·노도·해일급)이 일반 몹과 정예로, 명식(레비아탄, 알레프-원의 창조물)이 보스로 나와요.
-- **보상**: 정예와 명식을 쓰러뜨리면 에코를 흡수해요.
-- **난이도**: 보통 · 어려움 · 악몽. 적은 덱에 상태이상(잡음·오염)을 넣고, 정예는 고유 특성(분노·반격 장갑·과충전 등), 명식은 페이즈 변화와 잔상 소환을 써요.
-- **연출**: 공명자는 전신 일러스트로 무대에 서서 숨쉬고 돌진하며, 잔상은 떠다니다 기를 모아 공격해요. 키워드 툴팁, 드로우·버리기 애니메이션, 턴 배너가 있어요.
+```bash
+git tag v0.7.1 && git push origin v0.7.1
+```
 
-## 이미지 교체
+**자가 점검**: `npx electron . --remote-debugging-port=9334` 실행 중 `node scripts/selfcheck.cjs`
 
-`assets/` 폴더에 도트 스프라이트를 넣으면 자동으로 적용돼요. 규칙은 [assets/README.md](assets/README.md)를 보세요.
+**이미지 교체**: `assets/`에 도트를 넣으면 자동 적용돼요. 규칙은 [assets/README.md](assets/README.md). 원작 색 보정은 `node scripts/recolor.cjs <캐릭터id>` (원본은 `art/backup-recolor/`).
+
+</details>
