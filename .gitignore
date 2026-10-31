@@ -3,3 +3,4 @@ node_modules/
 dist/
 assets/bgm/*.mp3
 art/reference-review-*/references/
+art/card-gen/
