@@ -1,6 +1,6 @@
 {
   "name": "wuwa-spire",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 (개인용)",
   "main": "main.js",
   "author": "jinjwon",
@@ -63,10 +63,29 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "artifactName": "SpireOfEchoes-${version}-win-setup.${ext}"
+      "artifactName": "SpireOfEchoes-${version}-win-setup.${ext}",
+      "createDesktopShortcut": "always",
+      "createStartMenuShortcut": true,
+      "shortcutName": "Spire of Echoes",
+      "runAfterFinish": true
     },
     "portable": {
       "artifactName": "SpireOfEchoes-${version}-win-portable.${ext}"
+    },
+    "dmg": {
+      "title": "Spire of Echoes",
+      "contents": [
+        {
+          "x": 140,
+          "y": 160
+        },
+        {
+          "x": 400,
+          "y": 160,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
     }
   }
 }
