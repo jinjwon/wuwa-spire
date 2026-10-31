@@ -71,21 +71,6 @@
     },
     "portable": {
       "artifactName": "SpireOfEchoes-${version}-win-portable.${ext}"
-    },
-    "dmg": {
-      "title": "Spire of Echoes",
-      "contents": [
-        {
-          "x": 140,
-          "y": 160
-        },
-        {
-          "x": 400,
-          "y": 160,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
     }
   }
 }
