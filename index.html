@@ -579,12 +579,50 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .lhud:has(.echobtn[style*="none"])::before{top:-6px}
 .wpn{cursor:help}
 
-.rec-sum{display:flex;gap:12px;margin:8px 0 18px;flex-wrap:wrap}
-.rec-sum div{flex:1;min-width:120px;padding:12px 16px;border:1px solid var(--line,#3a4256);border-radius:10px;background:rgba(255,255,255,.04)}
-.rec-sum b{display:block;font-size:22px}.rec-sum small{opacity:.7}
-.rec{display:grid;grid-template-columns:52px 120px 70px 1fr auto 180px;gap:12px;align-items:center;padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.08)}
-.rec-team{display:flex;gap:4px}.rec-team .hp-av{width:30px;height:30px}
-@media(max-width:720px){.rec{grid-template-columns:52px 1fr;}}
+.records{max-width:980px}
+.rec-head{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;margin-bottom:6px}
+.rec-head .backbtn{justify-self:start;position:static}.rec-head h2{margin:0}.rec-clear{justify-self:end;font-size:13px;opacity:.75}.rec-clear:hover{opacity:1;border-color:#ff7a7a}
+.rec-sum{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:14px 0 18px}
+.rec-sum>div{padding:14px 18px;border:1px solid rgba(140,160,255,.25);border-radius:12px;background:linear-gradient(180deg,rgba(40,50,100,.45),rgba(20,24,48,.6))}
+.rec-sum small{display:block;opacity:.7;font-size:12px;letter-spacing:1px}.rec-sum b{display:block;font-size:26px;margin-top:4px}.rec-sum b i{font-style:normal;font-size:14px;opacity:.7;margin-left:2px}
+.rec-sum .bar{height:4px;border-radius:2px;background:rgba(255,255,255,.1);margin-top:8px;overflow:hidden}.rec-sum .bar i{display:block;height:100%;background:linear-gradient(90deg,#ffd36b,#ffb347)}
+.rec-tabs{display:flex;gap:6px;margin-bottom:10px}
+.rec-tabs button{padding:7px 14px;border-radius:999px;border:1px solid rgba(140,160,255,.3);background:rgba(20,24,48,.6);font-size:13px}
+.rec-tabs button.on{background:#c9a24a;border-color:#ffd36b;color:#1a1408;font-weight:800}.rec-tabs small{opacity:.7;margin-left:2px}
+.rec-list{display:flex;flex-direction:column;gap:8px}
+.rec{display:grid;grid-template-columns:96px 1.1fr 1.6fr 1.2fr 104px;gap:14px;align-items:center;padding:12px 16px;border-radius:12px;background:rgba(20,24,48,.65);border:1px solid rgba(140,160,255,.15);border-left:4px solid #9aa4b8;transition:.15s}
+.rec:hover{border-color:rgba(140,160,255,.4);background:rgba(30,36,70,.75)}
+.rec.win{border-left-color:#ffd36b}.rec.lose{border-left-color:#ff7a7a}
+.rec-res{display:flex;flex-direction:column;gap:2px}.rec-res span{font-size:16px}.rec-res b{font-size:15px}
+.rec.win .rec-res b{color:#ffd36b}.rec.lose .rec-res b{color:#ff7a7a}.rec.quit .rec-res b{color:#b8c0d4}
+.rec-res em{font-style:normal;font-size:10px;padding:1px 6px;border-radius:6px;background:#c9a24a;color:#1a1408;font-weight:800;width:max-content}
+.rec-main b{display:block;font-size:16px}.rec-main small{opacity:.65;font-size:12px}
+.rec-team{display:flex;gap:10px}.rec-team span{display:flex;flex-direction:column;align-items:center;gap:2px}.rec-team small{font-size:10px;opacity:.75}
+.rec-team .hp-av{width:34px;height:34px}
+.rec-stat{display:flex;gap:12px;font-size:12px;opacity:.85}.rec-stat b{font-size:14px}
+.rec-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.rec-meta small{opacity:.6;font-size:12px}
+.rec-diff{font-size:11px;padding:2px 8px;border-radius:6px;border:1px solid #6b7bd0;color:#b8c4ff}.rec-diff.d1{border-color:#ffb347;color:#ffcf8a}.rec-diff.d2{border-color:#ff6b6b;color:#ff9a9a}
+.rec-empty{text-align:center;padding:48px 20px;border:1px dashed rgba(140,160,255,.3);border-radius:14px}.rec-empty>div{font-size:40px}.rec-empty b{display:block;font-size:18px;margin:8px 0}
+.rec-none{text-align:center;padding:24px}
+@media(max-width:760px){.rec-sum{grid-template-columns:1fr 1fr}.rec{grid-template-columns:80px 1fr;}.rec-team,.rec-stat{grid-column:2}.rec-meta{grid-column:1/-1;flex-direction:row;justify-content:space-between}}
+
+/* ===== HUD v2: 슬더스 배치(좌 에너지·뽑을 더미 / 우 버린 더미) + 명조 스킬 버튼식 원형 링, 회전 없음 ===== */
+.lhud::before{content:none}
+.energy{clip-path:none;border-radius:50%;width:80px;height:80px;position:relative;color:#fff6dc;font-size:20px;letter-spacing:.5px;
+  background:radial-gradient(circle at 50% 45%,rgba(233,200,110,.32),rgba(14,18,40,.92) 62%);box-shadow:inset 0 0 0 1px rgba(233,217,166,.55);text-shadow:0 1px 4px #000}
+.energy::before{content:'';position:absolute;inset:-7px;border-radius:50%;pointer-events:none;
+  background:conic-gradient(#e9c86e calc(var(--ep,1)*360deg),rgba(233,217,166,.14) 0);
+  -webkit-mask:radial-gradient(circle,transparent 63%,#000 64%,#000 69%,transparent 70%);mask:radial-gradient(circle,transparent 63%,#000 64%,#000 69%,transparent 70%);transition:background .25s}
+.energy::after{content:'';position:absolute;inset:-12px;border-radius:50%;border:1px solid rgba(233,217,166,.18);pointer-events:none}
+.lhud .energy{filter:none}
+.energy.zero{filter:none;color:#8890a8;background:radial-gradient(circle,rgba(30,34,56,.9),rgba(10,12,26,.95))}
+.pile{clip-path:none;width:50px;height:64px;border-radius:6px;background:linear-gradient(170deg,rgba(40,52,110,.95),rgba(14,18,42,.95));
+  box-shadow:inset 0 0 0 1px rgba(170,190,255,.45),4px -4px 0 -1px rgba(30,38,80,.9),4px -4px 0 0 rgba(170,190,255,.25);color:#fff;font-size:17px;text-shadow:0 1px 3px #000}
+.pile.disc{background:linear-gradient(170deg,rgba(100,40,62,.95),rgba(36,14,28,.95));box-shadow:inset 0 0 0 1px rgba(255,170,190,.4),-4px -4px 0 -1px rgba(60,24,40,.9),-4px -4px 0 0 rgba(255,170,190,.22)}
+.pile:hover{box-shadow:inset 0 0 0 1.5px #e9d9a6,4px -4px 0 -1px rgba(30,38,80,.9),4px -4px 0 0 rgba(233,217,166,.4)}
+.pile small{bottom:-17px;letter-spacing:.5px}
+.echobtn{clip-path:none;border-radius:50%;width:50px;height:50px;background:radial-gradient(circle,rgba(110,80,210,.55),rgba(20,16,50,.95) 70%);box-shadow:inset 0 0 0 1px rgba(190,170,255,.6),0 0 0 4px rgba(14,18,40,.6),0 0 0 5px rgba(190,170,255,.2)}
+.echobtn b{border-radius:50%}
 </style>
 </head>
 <body>
@@ -1776,21 +1814,32 @@ function selectHTML(){
     <div class="party-intro">${ALL.map(id=>charCardHTML(id,`newGame('${id}')`,'이 공명자로 시작')).join('')}</div>
   </div>`;
 }
+let REC_F='all';
+function clearRecords(){if(!confirm('게임 기록을 모두 지울까요? 되돌릴 수 없어요.'))return;try{localStorage.removeItem(REC_KEY)}catch(e){}render()}
+function recDate(t){const d=new Date(t),n=new Date(),day=86400000,dd=Math.floor((new Date(n.toDateString())-new Date(d.toDateString()))/day);
+  const hm=d.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});return dd===0?'오늘 '+hm:dd===1?'어제 '+hm:dd<7?dd+'일 전':d.toLocaleDateString('ko-KR',{month:'long',day:'numeric'})}
 function recordsHTML(){
-  const L=loadRecords(),W=L.filter(x=>x.r==='win').length,best=L.reduce((m,x)=>Math.max(m,x.act*100+x.floor),-1);
-  const RL={win:['승리','#ffd36b'],lose:['패배','#ff7a7a'],quit:['중단','#9aa4b8']};
-  const row=x=>`<div class="rec"><b style="color:${RL[x.r][1]}">${RL[x.r][0]}</b>
-    <span>${new Date(x.t).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span>
-    <span>${(DIFF[x.d]||DIFF[0]).n}</span><span>${ACTS[x.act]?ACTS[x.act].name:''} · ${x.floor}층</span>
-    <span class="rec-team">${x.team.map(id=>`<i class="hp-av" title="${CH[id].name}" style="--c:${CH[id].color};${artStyle(id)}"></i>`).join('')}</span>
-    <span class="dim">처치 ${x.kills} · 덱 ${x.deck} · 에코 ${x.echoes}</span></div>`;
-  return `<div class="title help">
-    <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
-    <h2>게임 기록</h2>
-    <div class="rec-sum"><div><b>${L.length}</b><small>플레이</small></div><div><b>${W}</b><small>승리</small></div>
-      <div><b>${L.length?Math.round(W/L.length*100):0}%</b><small>승률</small></div>
-      <div><b>${best<0?'-':(Math.floor(best/100)+1)+'구역 '+best%100+'층'}</b><small>최고 도달</small></div></div>
-    ${L.length?L.map(row).join(''):'<p class="dim">아직 기록이 없어요. 탑에 올라 첫 기록을 남겨 보세요.</p>'}
+  const L=loadRecords(),W=L.filter(x=>x.r==='win').length,score=x=>x.act*100+x.floor,best=L.reduce((m,x)=>score(x)>score(m)?x:m,L[0]);
+  const RL={win:['승리','win','🏆'],lose:['패배','lose','✖'],quit:['중단','quit','⏸']};
+  const F=[['all','전체',L.length],['win','승리',W],['lose','패배',L.filter(x=>x.r==='lose').length],['quit','중단',L.filter(x=>x.r==='quit').length]];
+  const V=REC_F==='all'?L:L.filter(x=>x.r===REC_F);
+  const row=x=>{const[lb,cls,ic]=RL[x.r];return `<div class="rec ${cls}">
+    <div class="rec-res"><span>${ic}</span><b>${lb}</b>${x===best?'<em>최고 기록</em>':''}</div>
+    <div class="rec-main"><b>${x.act+1}구역 · ${x.floor}층</b><small>${ACTS[x.act]?ACTS[x.act].name.replace(/^\d구역 · /,''):''}</small></div>
+    <div class="rec-team">${x.team.map(id=>`<span><i class="hp-av" style="--c:${CH[id].color};${artStyle(id)}"></i><small>${CH[id].name}</small></span>`).join('')}</div>
+    <div class="rec-stat"><span>처치 <b>${x.kills}</b></span><span>덱 <b>${x.deck}</b></span><span>에코 <b>${x.echoes}</b></span></div>
+    <div class="rec-meta"><span class="rec-diff d${x.d}">${(DIFF[x.d]||DIFF[0]).n}</span><small>${recDate(x.t)}</small></div></div>`};
+  return `<div class="title help records">
+    <div class="rec-head"><button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button><h2>게임 기록</h2>
+      ${L.length?`<button class="btn rec-clear" onclick="clearRecords()">기록 지우기</button>`:'<span></span>'}</div>
+    <div class="rec-sum">
+      <div><small>플레이</small><b>${L.length}<i>판</i></b></div>
+      <div><small>승리</small><b>${W}<i>회</i></b></div>
+      <div class="rate"><small>승률</small><b>${L.length?Math.round(W/L.length*100):0}<i>%</i></b><div class="bar"><i style="width:${L.length?W/L.length*100:0}%"></i></div></div>
+      <div><small>최고 도달</small><b>${best?`${best.act+1}구역 ${best.floor}<i>층</i>`:'-'}</b></div></div>
+    ${L.length?`<div class="rec-tabs">${F.map(([k,n,c])=>`<button class="${REC_F===k?'on':''}" onclick="REC_F='${k}';render()">${n} <small>${c}</small></button>`).join('')}</div>
+      <div class="rec-list">${V.length?V.map(row).join(''):'<p class="dim rec-none">이 조건의 기록이 없어요.</p>'}</div>`
+    :`<div class="rec-empty"><div>🗼</div><b>아직 기록이 없어요</b><p class="dim">탑에 올라 첫 기록을 남겨 보세요. 승리·패배·중단한 판이 모두 여기에 쌓여요.</p><button class="btn main" onclick="goMenu('select')">새 게임 시작</button></div>`}
   </div>`;
 }
 function helpHTML(){
@@ -1992,7 +2041,7 @@ function updateCombat(){
   const eb2=$('#echobtn');if(eb2){const id=S.mainEcho,sk=id&&ECHO_SKILL[id];eb2.style.display=sk?'':'none';
     if(sk){eb2.innerHTML=`<i>${ECHO[id].i}</i>${c.echoCd>0?`<b>${c.echoCd}</b>`:'<em>Q</em>'}`;eb2.classList.toggle('cd',c.echoCd>0);eb2.disabled=c.busy||c.echoCd>0;
       eb2.dataset.tip=`<b>에코 스킬 · ${sk.n}</b><br>${sk.tx}<br>쿨다운 ${sk.cd}턴${c.echoCd>0?` · ${c.echoCd}턴 남음`:' · 사용 가능 (Q)'}`}}
-  const en=$('#energy');en.textContent=`${c.energy}/${maxE}`;en.dataset.tip='<b>에너지</b><br>카드를 쓰는 데 필요해요. 매 턴 다시 채워져요.';en.classList.toggle('zero',c.energy===0);
+  const en=$('#energy');en.textContent=`${c.energy}/${maxE}`;en.dataset.tip='<b>에너지</b><br>카드를 쓰는 데 필요해요. 매 턴 다시 채워져요.';en.classList.toggle('zero',c.energy===0);en.style.setProperty('--ep',Math.min(1,c.energy/maxE));
   $('#pdraw').innerHTML=`${c.draw.length}<small>뽑을 카드</small>`;$('#pdisc').innerHTML=`${c.discard.length}<small>버린 카드</small>`;
   const eb=$('#endbtn');eb.disabled=c.busy;eb.classList.toggle('glow',!c.busy&&!c.hand.some(canPlay));
   $('#stlog').innerHTML=c.log.slice(-3).map(l=>`<div>${l}</div>`).join('');
