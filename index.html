@@ -1758,20 +1758,21 @@ function render(){
   playBgm();
 }
 let MENU='title';
-const SAVE_KEY='wuwa-spire-save-v2';
-function saveRun(){return;try{const o={...S,c:null,ev:null,modal:null,reward:null,shop:null,screen:'map'};localStorage.setItem(SAVE_KEY,JSON.stringify(o))}catch(e){}}
-function loadSave(){return null;try{const t=localStorage.getItem(SAVE_KEY);return t?JSON.parse(t):null}catch(e){return null}}
+const SAVE_KEY='wuwa-spire-save-v3'; // 지도에 있을 때마다 자동 저장. 전투 중 나가면 직전 지도부터 이어함
+function saveRun(){try{const o={...S,c:null,ev:null,modal:null,reward:null,shop:null,screen:'map'};localStorage.setItem(SAVE_KEY,JSON.stringify(o))}catch(e){}}
+function loadSave(){try{const t=localStorage.getItem(SAVE_KEY);return t?JSON.parse(t):null}catch(e){return null}}
 function clearSave(){try{localStorage.removeItem(SAVE_KEY)}catch(e){}}
 function continueRun(){const o=loadSave();if(!o)return;S=o;S.screen='map';S._scrolled=false;UID=Math.max(UID,...S.deck.map(c=>c.uid))+1;render()}
 function goMenu(m){S=null;MENU=m;render();window.scrollTo(0,0)}
+function saveQuit(){if(S&&S.screen==='map')saveRun();goMenu('title')}
 function toTitle(){
-  if(S&&!['over','win'].includes(S.screen)){if(!confirm('게임을 중단하면 이번 판은 끝나요. 타이틀로 갈까요?'))return;addRecord('quit')}
+  if(S&&!['over','win'].includes(S.screen)){if(!confirm('이번 판을 포기할까요? 저장된 진행이 사라져요.'))return;addRecord('quit')}
   clearSave();goMenu('title');
 }
 const IS_APP=/Electron/.test(navigator.userAgent);
 function openPause(){if(!S)return;S.modal={kind:'pause'};render()}
 function abandonRun(){if(!confirm('이번 판을 포기할까요? 저장된 진행도 사라져요.'))return;addRecord('quit');clearSave();goMenu('title')}
-function quitGame(){if(S&&!confirm('게임을 종료하면 이번 판은 끝나요. 종료할까요?'))return;window.close()}
+function quitGame(){if(S&&S.screen==='map')saveRun();window.close()}
 addEventListener('keydown',e=>{
   if(e.key!=='Escape'||DRAG)return;
   if(S&&S.modal){closeModal();return}
@@ -1872,7 +1873,7 @@ function helpHTML(){
       <p style="flex:1">체력 바 아래 <b>노란 바</b>가 진동 게이지예요. 공격 한 번에 1, 협주→변주·공명 해방은 3씩 차요. 가득 차면 <b>공진 파괴</b> — 적은 다음 행동을 건너뛰고, 그동안 받는 피해가 50% 늘어나요. 보스는 게이지가 더 커요.</p></div></section>
     <section class="hs"><small class="eng">STEP 8 · 단축키</small><h3>편하게 플레이하기</h3>
       <div class="hs-icons"><div><kbd>1</kbd>~<kbd>9</kbd> 카드 사용 (마우스 올린 적 대상)</div><div><kbd>E</kbd> / <kbd>Enter</kbd> 턴 종료</div><div><kbd>Q</kbd> 에코 스킬</div><div><kbd>Esc</kbd> 일시정지 · 음량 · 전투 속도</div><div>우클릭 · <kbd>Esc</kbd> 카드 끌기 취소</div></div>
-      <p class="dim">로그라이크라 중간 저장이 없어요. 게임을 중단하거나 쓰러지면 처음부터 다시 오르세요.</p></section>
+      <p class="dim">지도에 있을 때마다 자동 저장돼요. 타이틀의 <b>이어하기</b>로 계속하고, 쓰러지면 처음부터 다시 올라요.</p></section>
   </div>`;
 }
 /* ============ 영입 ============ */
@@ -2299,8 +2300,9 @@ function modalHTML(){
         <button class="choice" onclick="OPT.bgm=OPT.bgm?0:1;saveOpt();render()"><b>배경음 ${OPT.bgm?'켜짐':'꺼짐'}</b><small>명조 공식 OST(유튜브) · assets/bgm의 mp3가 있으면 우선</small></button>
         <div class="choice" style="display:flex;align-items:center;gap:10px"><b style="flex:1">전체 음량</b><button class="btn" onclick="toggleMute();render()">${OPT.mute?'🔇 음소거됨':'🔊'}</button><input type="range" min="0" max="1" step="0.05" value="${OPT.vol}" oninput="setVol(this.value)" style="accent-color:#e9d9a6"></div>
         <button class="choice" onclick="setYt()"><b>지금 장면 배경음 바꾸기</b><small>유튜브 링크를 붙여 넣으세요</small></button>
-        <button class="choice" onclick="toTitle()"><b>게임 중단</b><small>이번 판을 끝내고 타이틀로 돌아가요. 로그라이크라 중간 저장은 없어요.</small></button>
-        ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>이번 판을 끝내고 앱을 닫아요.</small></button>`:''}
+        <button class="choice" onclick="saveQuit()"><b>저장하고 타이틀로</b><small>${inMap?'지금 지도 위치에서':'직전 지도 위치에서'} 이어할 수 있어요.</small></button>
+        <button class="choice" onclick="toTitle()"><b>이번 판 포기</b><small>저장을 지우고 판을 끝내요. 게임 기록에 '중단'으로 남아요.</small></button>
+        ${IS_APP?`<button class="choice" onclick="quitGame()"><b>게임 종료</b><small>앱을 닫아요. 진행은 ${inMap?'지금 지도 위치에':'직전 지도 위치에'} 저장돼 있어요.</small></button>`:''}
       </div></div></div>`}
   if(m.kind==='pile')return `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box"><h2>${m.title}</h2>
       <div class="cards" style="margin-top:14px">${m.list.map(c=>cardHTML(c)).join('')||'<p class="dim">비어 있음</p>'}</div>

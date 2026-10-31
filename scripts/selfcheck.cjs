@@ -1,5 +1,7 @@
 // 게임 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 중에 `node scripts/selfcheck.cjs`
 const CHECKS = {
+  save_continue: `(()=>{const o=localStorage.getItem(SAVE_KEY);newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';S.gold=321;render();saveQuit();continueRun();
+    const ok=S&&S.screen==='map'&&S.gold===321;o?localStorage.setItem(SAVE_KEY,o):localStorage.removeItem(SAVE_KEY);return ok})()`,
   records: `(()=>{const o=localStorage.getItem(REC_KEY),n=loadRecords().length;newGame('aem',0);S.screen='map';addRecord('lose');addRecord('lose');
     const L=loadRecords(),ok=L.length===Math.min(n+1,50)&&L[0].r==='lose'&&L[0].team[0]==='aem';o?localStorage.setItem(REC_KEY,o):localStorage.removeItem(REC_KEY);return ok})()`,
   card_body_visible: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,1800));
