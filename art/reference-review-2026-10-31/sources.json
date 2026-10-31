@@ -1,0 +1,65 @@
+[
+  {
+    "id": "rov",
+    "name": "방랑자",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/rover2-70f2c27c.png",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/방랑자(명조: 워더링 웨이브)",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "aem",
+    "name": "에이메스",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/aimisi-eb60fae0.webp",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/에이메스",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "sk",
+    "name": "파수인",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/shorekeeper-36913543.png",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/파수인",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "lyn",
+    "name": "린네",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/linnai-468d7ecc.webp",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/린네(명조: 워더링 웨이브)",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "mor",
+    "name": "모니에",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/moning-dbe1c28d.webp",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/모니에",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "chi",
+    "name": "치사",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/qianxiao-63525a92.webp",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/치사(명조: 워더링 웨이브)",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  },
+  {
+    "id": "cam",
+    "name": "카멜리아",
+    "official_page": "https://wutheringwaves.kurogames.com/en/main/#resonators",
+    "official_image": "https://wutheringwaves.kurogames.com/static4.0/assets/camellya-ef2698c7.png",
+    "official_status": "공식 페이지 캐릭터 목록 및 이미지 주소 확인; 방랑자 외 시각 분석은 각 캐릭터 차례에 수행",
+    "namuwiki_attempted_url": "https://namu.wiki/w/카멜리아(명조: 워더링 웨이브)",
+    "namuwiki_status": "미확인: 웹 도구 접속 실패; 브라우저 사이트 안전 정책 제한. 문서 존재·내용 확정 불가"
+  }
+]
