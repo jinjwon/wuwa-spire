@@ -36,22 +36,19 @@
 <details open>
 <summary><b>윈도우</b></summary>
 
-1. 받은 `.exe`를 더블클릭해요.
-2. 파란 **"Windows의 PC 보호"** 창이 뜨면 **추가 정보 → 실행**을 눌러요. (코드 서명이 없는 개인 빌드라 처음 한 번 떠요)
+1. `win-setup.exe`를 실행해 설치해요. 끝나면 **바탕화면 아이콘**과 **시작 메뉴**가 생기고 게임이 바로 켜져요.
+2. 파란 **"Windows의 PC 보호"** 창이 뜨면 **추가 정보 → 실행**을 눌러요. (처음 한 번만)
 
 </details>
 
 <details open>
 <summary><b>맥</b></summary>
 
-1. `.dmg`를 열고 **Spire of Echoes** 아이콘을 **응용 프로그램** 폴더로 끌어다 놓아요.
-2. **터미널**을 열고 아래 한 줄을 붙여 넣은 뒤 Enter. (처음 한 번만)
+1. `.dmg`를 열고 **Spire of Echoes** 아이콘을 **Applications** 폴더로 끌어다 놓아요.
+2. 응용 프로그램에서 **Spire of Echoes**를 열어요. "확인되지 않은 개발자" 창이 뜨면 **완료**를 눌러요.
+3. **시스템 설정 → 개인정보 보호 및 보안** 맨 아래의 **그래도 열기**를 누르고 한 번 더 확인해요. (처음 한 번만)
 
-   ```bash
-   xattr -cr "/Applications/Spire of Echoes.app"
-   ```
-
-3. 응용 프로그램에서 **Spire of Echoes**를 열어요.
+<sub>그래도 안 열리면 터미널에서 `xattr -cr "/Applications/Spire of Echoes.app"` 를 한 번 실행하세요.</sub>
 
 </details>
 
