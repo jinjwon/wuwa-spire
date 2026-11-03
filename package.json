@@ -1,6 +1,6 @@
 {
   "name": "wuwa-spire",
-  "version": "0.7.4",
+  "version": "0.8.0",
   "description": "명조: 워더링 웨이브 팬메이드 덱빌딩 로그라이크 (개인용)",
   "main": "main.js",
   "author": "jinjwon",
@@ -22,6 +22,7 @@
     "artifactName": "SpireOfEchoes-${version}-${os}-${arch}.${ext}",
     "files": [
       "main.js",
+      "preload.js",
       "index.html",
       "assets/**/*",
       "!assets/README.md"
