@@ -726,6 +726,34 @@ body{background:var(--bg)}
 .endturn.glow{box-shadow:0 0 18px rgba(230,211,163,.55)!important}
 /* 희귀 카드 = 5성 금 테 (명조 등급색) */
 .card.rare{box-shadow:0 0 0 1.5px var(--r5),0 0 14px rgba(255,200,61,.35)}
+
+/* ===== 도트 모션 v2 — 계단식(steps) 움직임으로 도트 느낌 유지하면서 생동감 ===== */
+/* 대기: 4프레임 숨쉬기(눌림·늘어남) + 살짝 흔들림, 유닛마다 박자 다르게 */
+.unit .fig:has(.sprite){animation:pxIdle 1.8s steps(4,end) infinite;animation-delay:var(--dl,0s)}
+@keyframes pxIdle{0%{transform:none}25%{transform:translateY(-2px) scale(.99,1.015)}50%{transform:translateY(-3px) scale(.985,1.025) rotate(-.6deg)}75%{transform:translateY(-1px) scale(1.01,.99)}100%{transform:none}}
+.unit.enemy.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite;animation-delay:var(--dl,0s)}
+@keyframes pxHover{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+.unit .shadow{animation:pxShadow 1.8s steps(4,end) infinite;animation-delay:var(--dl,0s)}
+@keyframes pxShadow{50%{transform:scaleX(.9);opacity:.75}}
+/* 출전 중 공명자: 전투 자세(앞으로 살짝 기울고 빠른 박자) */
+.unit.party.s0 .fig:has(.sprite){animation:pxReady 1.2s steps(4,end) infinite}
+@keyframes pxReady{0%,100%{transform:rotate(1deg)}50%{transform:translateY(-3px) scale(.99,1.02) rotate(2deg)}}
+/* 체력 30% 이하: 거친 숨(빠르고 낮게) */
+.unit.party.hurt .fig:has(.sprite){animation:pxPant .6s steps(2,end) infinite}
+@keyframes pxPant{50%{transform:translateY(2px) scale(1.02,.97) rotate(3deg)}}
+/* 다음 행동이 공격인 적: 힘을 모으며 앞으로 기욺(예고) */
+.unit.enemy.charging .fig:has(.sprite){animation:pxCharge 1s steps(4,end) infinite}
+@keyframes pxCharge{0%,100%{transform:rotate(-2deg)}50%{transform:translateX(-4px) scale(1.03,.97) rotate(-4deg)}}
+/* 맞을 때: 흰색 번쩍 2프레임 + 뒤로 밀렸다 돌아옴(계단식) */
+.unit .body.hit .sprite{animation-play-state:paused}
+.body.hit .fig{animation:pxHit .36s steps(4,end)!important}
+@keyframes pxHit{0%{filter:brightness(6) saturate(0)}25%{filter:brightness(6) saturate(0);transform:translateX(-10px) scale(1.04,.94)}50%{filter:none;transform:translateX(-6px)}75%{transform:translateX(-2px)}100%{transform:none}}
+.enemy .body.hit .fig{animation-name:pxHitE!important}
+@keyframes pxHitE{0%{filter:brightness(6) saturate(0)}25%{filter:brightness(6) saturate(0);transform:translateX(10px) scale(1.04,.94)}50%{filter:none;transform:translateX(6px)}75%{transform:translateX(2px)}100%{transform:none}}
+/* 막을 때: 몸을 웅크림 */
+.body.block .fig{animation:pxGuard .35s steps(3,end)!important}
+@keyframes pxGuard{40%{transform:scale(1.05,.92) translateY(2px)}100%{transform:none}}
+@media(prefers-reduced-motion:reduce){.unit .fig:has(.sprite),.unit .shadow,.body.hit .fig,.body.block .fig{animation:none!important}}
 </style>
 </head>
 <body>
@@ -2349,7 +2377,7 @@ function updateCombat(){
   const maxE=3+(S.bonusE||0)+(has('levia')?1:0);
   T_().forEach(id=>{
     const el=$('#u-'+id);const p=S.party[id];const slot=order.indexOf(id);const front=slot===0;
-    el.className=`unit party s${slot} ${p.down?'down':''} ${!front&&!p.down&&!c.busy&&!c.tgt?'swappable':''}`;
+    el.className=`unit party s${slot} ${p.down?'down':''} ${!p.down&&p.hp<=p.maxHp*.3?'hurt':''} ${!front&&!p.down&&!c.busy&&!c.tgt?'swappable':''}`;
     const sp=el.querySelector('.sprite');
     if(sp&&sp.dataset.art!==artKey(id)){clearTimeout(sp._restore);resetSprite(sp,id)}
     const sw=el.querySelector('.swaptag');const ready=c.conc[c.active]>=3;
@@ -2381,7 +2409,7 @@ function updateCombat(){
   });
   c.enemies.forEach(e=>{
     const el=$('#e-'+e.uid);const d=EN[e.id];
-    el.classList.toggle('dead',e.dead);el.classList.toggle('tgtable',!!c.tgt&&!e.dead);
+    el.classList.toggle('dead',e.dead);el.classList.toggle('charging',!e.dead&&!c.ending&&!!(e.move&&e.move.d)&&!(e.broken>0));el.classList.toggle('tgtable',!!c.tgt&&!e.dead);
     setHP(el,e.hp,e.maxHp,e.block);
     let vb=el.querySelector('.vib');if(!vb){vb=document.createElement('div');vb.className='vib';el.querySelector('.hpb').after(vb);vb.innerHTML='<i></i>'}
     vb.querySelector('i').style.width=(e.broken>0?100:e.vib/e.vibMax*100)+'%';vb.classList.toggle('broken',e.broken>0);
