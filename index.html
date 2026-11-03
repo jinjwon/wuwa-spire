@@ -707,6 +707,25 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 /* 배너: 명조식 가로 띠 + 위아래 아이보리 선 */
 .banner{border:none;border-radius:0;left:0;right:0;transform:translateY(-50%);width:100%;text-align:center;background:linear-gradient(90deg,transparent,rgba(10,13,26,.92) 25%,rgba(10,13,26,.92) 75%,transparent);
   box-shadow:inset 0 1px 0 var(--wu-acc-dim),inset 0 -1px 0 var(--wu-acc-dim);letter-spacing:4px;color:var(--wu-ink)}
+
+/* ===== WuWa UI v3 (2026-11-03) — 남색 → 무채색 차콜, 주요 버튼은 샴페인 채움. 규칙은 DESIGN.md ===== */
+:root{--bg:#0b0c0f;--bg2:#15171c;--panel:#16181d;--panel2:#1e2128;--line:rgba(255,255,255,.14);--text:#eceae4;--dim:#9b9a94;
+  --wu-panel:rgba(12,13,16,.86);--wu-panel2:rgba(28,30,36,.9);--wu-line:rgba(255,255,255,.16);--wu-ink:#eceae4;--wu-sub:#9b9a94;
+  --wu-acc:#e6d3a3;--wu-acc-dim:rgba(230,211,163,.35);--wu-glow:0 0 14px rgba(230,211,163,.3);
+  --wu-fill:linear-gradient(180deg,#f1e4bf,#d9c48e);--wu-on-fill:#17150f;--r5:#ffc83d;--r4:#b48cff}
+body{background:var(--bg)}
+.top{background:linear-gradient(90deg,rgba(10,11,14,.94),rgba(20,22,27,.88))}
+.box{background:linear-gradient(160deg,rgba(24,26,31,.97),rgba(11,12,15,.97))}
+.btn,.choice,.rw,.t-menu button{background:var(--wu-panel2);border:none;box-shadow:inset 0 0 0 1px var(--wu-line)}
+.t-menu button{border-radius:0;clip-path:var(--wu-cut-s);backdrop-filter:blur(4px)}
+.t-menu button:hover,.btn:hover:not(:disabled),.choice:hover:not(:disabled){box-shadow:inset 0 0 0 1px var(--wu-acc)}
+/* 주요 행동 = 샴페인 채움 + 어두운 글자 (명조 확인 버튼 느낌) */
+.btn.primary,.t-menu button.main,.endturn{background:var(--wu-fill)!important;color:var(--wu-on-fill)!important;box-shadow:none!important;text-shadow:none}
+.endturn small,.t-menu button.main small{color:rgba(23,21,15,.7)!important}
+.endturn:disabled{filter:grayscale(1) brightness(.55)}
+.endturn.glow{box-shadow:0 0 18px rgba(230,211,163,.55)!important}
+/* 희귀 카드 = 5성 금 테 (명조 등급색) */
+.card.rare{box-shadow:0 0 0 1.5px var(--r5),0 0 14px rgba(255,200,61,.35)}
 </style>
 </head>
 <body>
@@ -2043,7 +2062,7 @@ function cardHTML(card,o={}){
   const sel=inCombat&&S.c.tgt&&S.c.tgt.uid===card.uid;
   const tipText=kwTip(cardText(card)+(d.ex?' 소멸':'')+(d.pw?' 파워':'')+(waiting?' 대기 +1':''));
   const canMerge=inCombat&&!S.c.busy&&mergeable(card)&&S.c.hand.find(x=>x.id===card.id&&!x.fu&&x.up===card.up)===card;
-  return `<div class="card t-${d.t} ${off?'off':''} ${sel?'sel':''} ${card.fu?'fused':''}" data-card="${card.uid}"${tipAttr(tipText)} style="--c:${col};${o.style||''}" ${o.click?`onclick="${o.click}"`:''} ${o.down?`onpointerdown="${o.down}"`:''}>
+  return `<div class="card t-${d.t} ${d.r?'rare':''} ${off?'off':''} ${sel?'sel':''} ${card.fu?'fused':''}" data-card="${card.uid}"${tipAttr(tipText)} style="--c:${col};${o.style||''}" ${o.click?`onclick="${o.click}"`:''} ${o.down?`onpointerdown="${o.down}"`:''}>
     ${d.unplay?'':`<div class="cost ${waiting?'up':''}">${cost}</div>`}
     ${waiting?'<div class="wait">대기 +1</div>':''}
     <div class="nm ${card.up?'u':''}">${card.fu?'융합 ':''}${d.n}${card.up?'+':''}</div>
