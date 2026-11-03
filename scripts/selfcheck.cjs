@@ -1,6 +1,9 @@
 // 게임 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 중에 `node scripts/selfcheck.cjs`
 const CHECKS = {
   _noluck: `(()=>{window.NOLUCK=1;return true})()`,
+  card_combo: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
+    const c=S.c;const T=alive()[0];T.hp=T.maxHp=500;T.block=0;c.energy=9;const b=c.block;['aem_s','aem_s','aem_s'].forEach(id=>{const x=mk(id);c.hand.push(x);playCard(x.uid,T)});
+    return c.seq.length===0&&c.log.some(l=>l.includes('화음'))&&c.energy===10})()`,
   act3_volume: `(()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.act=1;S.pos={r:ROWS,i:0};S.reward={cards:[]};afterReward();const a=S.act===2&&S.screen==='ancient';
     const B=spawn('ender'),X=spawn('tick_x');const art=artOf('tick_x')===ARTS.tick;
     return a&&B.maxHp>=390&&X.maxHp>EN.tick.hp[1]&&art&&ACTS.length===3&&EVENTS.length>=20&&Object.keys(ECHO).length>=45&&Object.keys(POT).length>=15})()`,
@@ -40,7 +43,7 @@ const CHECKS = {
   echo_skill: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';gainEcho('crown');enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
     const T=alive()[0],h=T.hp;useEcho(T);const ok1=T.hp<h&&S.c.echoCd===3;const h2=T.hp;useEcho(T);const ok2=T.hp===h2;
     S.c.busy=false;startTurn();const ok3=S.c.echoCd===2;S.c.enemies.forEach(e=>{e.dead=true});let ok4=true;try{useEcho()}catch(e){ok4=false}return ok1&&ok2&&ok3&&ok4})()`,
-  vibration: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
+  vibration: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,800));
     const T=alive()[0];addVib(T,T.vibMax);const a=T.broken===1&&T.vib===0;addVib(T,T.vibMax);const b=T.broken===1&&T.vib===0;
     const hp=S.party[S.c.active].hp;await endTurn();const c2=S.party[S.c.active].hp===hp&&T.broken===0;
     const B=spawn('levia');return a&&b&&c2&&B.vibMax===22})()`,

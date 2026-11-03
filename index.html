@@ -314,6 +314,15 @@ body.dragging .hand .card{pointer-events:none}
 .unit.enemy.af-shell .fig{filter:drop-shadow(0 0 10px #7fd8ff) brightness(1.1)}
 .unit.enemy.boss.twin{--w:clamp(130px,18vw,210px)}
 .st.afx{font-weight:800}
+#stage{--ph:clamp(220px,44vh,440px);--pw:clamp(110px,16vw,200px)}
+#stage .unit.enemy{--w:clamp(120px,min(18vw,26vh),230px)}#stage .unit.enemy.elite{--w:clamp(150px,min(23vw,30vh),290px)}#stage .unit.enemy.boss{--w:clamp(200px,min(32vw,44vh),420px)}
+#stage .unit.enemy.af-giant{--w:clamp(165px,21vw,270px)}#stage .unit.enemy.boss.twin{--w:clamp(180px,23vw,300px)}
+/* 손패 양끝 카드가 화면 아래로 살짝 걸치는 연출 때문에 전투 중엔 페이지 스크롤 막음 */
+html:has(.combat),body:has(.combat){overflow:hidden}
+@media (max-height:760px){#stage .unit.enemy:not(.minion){margin-bottom:-7vh}}
+.seqbar{position:absolute;left:14px;top:12px;z-index:30;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:12px;background:rgba(10,14,31,.82);border:1px solid var(--line);font-size:13px}
+.seqbar i{font-style:normal;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;border:1px dashed rgba(255,255,255,.25);opacity:.5}
+.seqbar i.on{opacity:1;border:1px solid var(--gold);color:var(--gold);background:rgba(255,215,94,.1)}.seqbar small{opacity:.8;margin-left:4px}
 .unit.enemy .uhud{max-width:min(170px,13vw)}.unit.enemy.boss .uhud{max-width:260px}
 .unit.enemy .sts{gap:2px}.unit.enemy .st{font-size:10.5px;padding:1px 5px}
 .unit.enemy:hover{z-index:20}
@@ -1075,9 +1084,9 @@ const randPot=()=>pick(Object.keys(POT));
 /* ============ 상태 ============ */
 let S;
 const DIFF=[
-  {n:'보통',d:'처음 해 보는 사람을 위한 난이도. 적 체력·피해 95%, 구역을 넘어갈 때 75% 회복해요.',hp:.95,add:0,mul:.95,heal:.75,elite:0},
-  {n:'어려움',d:'슬레이 더 스파이어 기본 난이도에 가까워요. 정예는 힘 +1로 시작하고, 구역 사이 회복은 50%예요.',hp:1,add:0,mul:1,heal:.5,elite:1},
-  {n:'악몽',d:'적 체력·피해 115%에 추가 피해 +1, 정예는 힘 +2. 덱에 「잔향 노이즈」 저주를 안고 시작해요.',hp:1.15,add:1,mul:1.15,heal:.35,elite:2,curse:1},
+  {n:'보통',d:'적 체력·피해 110%, 추가 피해 +1, 정예 힘 +1. 구역 사이 회복 50%. 조합과 약제를 써야 편해요.',hp:1.1,add:1,mul:1.1,heal:.5,elite:1},
+  {n:'어려움',d:'적 체력 125%·피해 120%, 추가 피해 +2, 정예 힘 +2. 구역 사이 회복 35%.',hp:1.25,add:2,mul:1.2,heal:.35,elite:2},
+  {n:'악몽',d:'적 체력 140%·피해 135%, 추가 피해 +3, 정예 힘 +3. 회복 25%, 「잔향 노이즈」 저주를 안고 시작해요.',hp:1.4,add:3,mul:1.35,heal:.25,elite:3,curse:1},
 ];
 let SEL_DIFF=1,SEL_ASC=0;
 const ASC_KEY='wuwa-asc-max';const ascMax=()=>{try{return Math.min(10,+localStorage.getItem(ASC_KEY)||0)}catch(e){return 0}};
@@ -1237,6 +1246,23 @@ function showTide(t){if(!t||window.FAST)return;document.querySelectorAll('.tide'
     b.querySelector('.tt').innerHTML=`<small>조수 룰렛</small><span>${t.n}</span><em>${t.tx}</em>`;sfx(t.jp?'jackpot':t.k==='calm'?'tick':'tide');
     if(t.jp){flash('#ffd75e');banner('★ 황금 조수 ★')}},650/OPT.speed);
   setTimeout(()=>b.classList.add('out'),2300/OPT.speed);setTimeout(()=>b.remove(),2800/OPT.speed)}
+/* 카드 조합: 한 턴에 쓴 카드 종류 3장 순서가 레시피와 맞으면 추가 효과. 두 공명자 이상이 섞이면 합주 ×1.5 */
+const RECIPES=[
+  {k:['공격','스킬','공격'],n:'검무',tx:'모든 적에게 6 피해 + 공진 2',f:m=>alive().forEach(e=>{hit(e,Math.round(6*m),{raw:1});addVib(e,2)})},
+  {k:['스킬','공격','스킬'],n:'반격 태세',tx:'보호막 8 + 카드 1장',f:m=>{gainBlock(Math.round(8*m));draw(1)}},
+  {k:['공격','공격','공격'],n:'연타',tx:'무작위 적에게 12 피해',f:m=>{const T=pick(alive());T&&hit(T,Math.round(12*m),{raw:1})}},
+  {k:['스킬','스킬','스킬'],n:'화음',tx:'에너지 +1 + 보호막 4',f:m=>{S.c.energy++;gainBlock(Math.round(4*m))}},
+  {k:['스킬','스킬','공격'],n:'준비된 일격',tx:'모든 적 취약 1 + 8 피해(무작위)',f:m=>{alive().forEach(e=>vuln(e,1));const T=pick(alive());T&&hit(T,Math.round(8*m),{raw:1})}},
+  {k:['공격','공격','스킬'],n:'숨 고르기',tx:'출전 공명자 체력 4 회복 + 협주 +1',f:m=>{heal(S.c.active,Math.round(4*m));gainConc(S.c.active,1)}},
+];
+const TSYM={공격:'공',스킬:'스',파워:'파'};
+function comboCheck(c,d,owner){if(!TSYM[d.t])return;c.seq=[...(c.seq||[]),{t:d.t,o:owner}].slice(-3);if(c.seq.length<3)return;
+  const r=RECIPES.find(r=>r.k.every((t,i)=>c.seq[i].t===t));if(!r)return;const duo=new Set(c.seq.map(x=>x.o)).size>1;
+  c.seq=[];FXDELAY=200;HITSEQ=0;c.cur=owner;r.f(duo?1.5:1);FXDELAY=0;log(`조합 — ${r.n}${duo?' (합주 ×1.5)':''}`);
+  if(!window.FAST){sfx('jackpot');banner(`${duo?'합주 · ':''}${r.n}!`);flash(duo?'#ffd75e':'#7fd8ff')}}
+// 번뜩임: 강화 안 된 카드를 쓸 때 낮은 확률로 덱의 그 카드가 영구 강화 (전투당 1회)
+function epiphany(c,card){if(!LUCK()||c.epi||card.up||CD[card.id].unplay||Math.random()>=.08)return;c.epi=1;card.up=true;const dk=S.deck.find(x=>x.uid===card.uid);if(dk)dk.up=true;
+  log(`번뜩임 — 「${CD[card.id].n}」 영구 강화!`);if(!window.FAST){sfx('merge');banner(`✧ 번뜩임 · ${CD[card.id].n}+`);flash('#e9d9a6')}}
 function combo(c){if(window.FAST||c.cards<3)return;try{tone(500+90*Math.min(c.cards,10),.08,'triangle',.08)}catch(e){}
   const b=document.createElement('div');b.className='combo';b.innerHTML=`<b>${c.cards}</b> COMBO`;document.body.appendChild(b);setTimeout(()=>b.remove(),700)}
 function flash(col){if(window.FAST)return;const f=document.createElement('div');f.className='flash';f.style.setProperty('--fc',col);document.body.appendChild(f);setTimeout(()=>f.remove(),420)}
@@ -1262,7 +1288,7 @@ function startTurn(){
   if(c.field.t>0){gainBlock(c.field.b);heal(c.active,2);c.field.t--}
   if(c.orbit){gainBlock(c.orbit);gainConc(c.active,1)}
   if(c.melody)alive().forEach(e=>fz(e,c.melody));
-  echoHook('ts',c);c.atkN=0;
+  echoHook('ts',c);c.atkN=0;c.seq=[];
   const tide=rollTide();
   draw(5+(c.turn===1&&has('crown')?2:0)+(c.tideDraw||0));
   if(!(c.turn===1&&c.kind==='boss'))turnBanner('플레이어 턴',c.turn>1?`${c.turn}턴`:'');
@@ -1376,7 +1402,7 @@ function playCard(uid,T){
   gainConc(owner,1);gainLib(owner,1);if(WPN(owner,'w_rect'))gainLib(owner,1);
   if(d.pw){}else if(d.ex)c.exhaust.push(card);else c.discard.push(card);
   log(`${CH[owner].name} — ${d.n}${card.up?'+':''}`);
-  onPlayerCard(d);sfx('card');echoHook('play',c);combo(c);
+  onPlayerCard(d);sfx('card');echoHook('play',c);combo(c);comboCheck(c,d,owner);epiphany(c,card);
   afterAction();
 }
 function afterAction(){
@@ -1916,6 +1942,8 @@ function procArt(id){
 }
 const TYPESYM={공격:'⚔',스킬:'◈',파워:'✦',저주:'✕',상태:'⚠'};
 const KW={
+  '카드 조합':'한 턴에 쓴 카드 종류(공=공격, 스=스킬) 3장의 순서가 레시피와 맞으면 추가 효과가 터져요. 두 공명자 이상의 카드가 섞이면 합주로 효과 ×1.5.',
+  '번뜩임':'강화 안 된 카드를 쓸 때 8% 확률(전투당 1번)로 그 카드가 덱에서 영구 강화돼요.',
   '병합':'손에 같은 카드가 2장 있으면 하나로 합쳐 「융합」 카드로 만들어요. 수치 ×1.5, 비용 그대로. 남은 한 장은 이번 전투에서 소멸해요.',
   '치명타':'공격 타격마다 8% 확률로 피해 ×1.75. 조수 룰렛 「행운의 물결」이나 에코로 확률이 오를 수 있어요.',
   '조수 룰렛':'2턴부터 매 턴 시작 때 조수가 굴러요. 해류·만조·역류·소용돌이… 드물게 ★황금 조수 잭팟!',
@@ -2210,7 +2238,7 @@ function buildCombat(){
   const motes=Array.from({length:14},(_,i)=>`<i class="mote" style="left:${(i*71)%100}%;bottom:${10+(i*13)%40}%;animation-delay:${(i*.53)%7}s;background:${S.act?'#e3b8ff':'#bfe6ff'}"></i>`).join('');
   return `<div class="combat" data-cid="${c.id}">
     <div class="stage" id="stage">${battleBackground()}${motes}
-      <div class="stlog" id="stlog"></div><div class="tgthint" id="tgthint"></div>
+      <div class="stlog" id="stlog"></div><div class="seqbar" id="seqbar"></div><div class="tgthint" id="tgthint"></div>
       ${T_().map((id,i)=>`<div class="unit party" id="u-${id}" style="--c:${CH[id].color};--dl:${i*.45}s" onclick="clickUnit('${id}')">
         <div class="swaptag"></div><div class="libwrap"></div>
         <div class="body" data-fx="p-${id}"><div class="fig">${figHTML(id)}</div><div class="shadow"></div></div>
@@ -2289,6 +2317,9 @@ function updateCombat(){
   const en=$('#energy');en.textContent=`${c.energy}/${maxE}`;en.dataset.tip='<b>에너지</b><br>카드를 쓰는 데 필요해요. 매 턴 다시 채워져요.';en.classList.toggle('zero',c.energy===0);en.style.setProperty('--ep',Math.min(1,c.energy/maxE));
   $('#pdraw').innerHTML=`${c.draw.length}<small>뽑을 카드</small>`;$('#pdisc').innerHTML=`${c.discard.length}<small>버린 카드</small>`;
   const eb=$('#endbtn');eb.disabled=c.busy;eb.classList.toggle('glow',!c.busy&&!c.hand.some(canPlay));
+  const sq=c.seq||[];const next=RECIPES.filter(r=>sq.every((x,i)=>r.k[i]===x.t)).map(r=>`${r.k.slice(sq.length).map(t=>TSYM[t]).join('')} ${r.n}`);
+  $('#seqbar').innerHTML=`<b>조합</b>${[0,1,2].map(i=>`<i class="${sq[i]?'on':''}">${sq[i]?TSYM[sq[i].t]:'·'}</i>`).join('')}<small>${next.slice(0,3).join(' · ')}</small>`;
+  $('#seqbar').dataset.tip=`<b>카드 조합</b><br>${KW['카드 조합']}<hr>${RECIPES.map(r=>`${r.k.map(t=>TSYM[t]).join('')} <b>${r.n}</b> — ${r.tx}`).join('<br>')}`;
   $('#stlog').innerHTML=c.log.slice(-3).map(l=>`<div>${l}</div>`).join('');
   $('#tgthint').innerHTML=c.tgt?`대상을 선택하세요 <button class="smallbtn" onclick="S.c.tgt=null;render()">취소</button>`:'';
   renderHand();
