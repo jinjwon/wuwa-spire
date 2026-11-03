@@ -1,6 +1,11 @@
 // 게임 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 중에 `node scripts/selfcheck.cjs`
 const CHECKS = {
   _noluck: `(()=>{window.NOLUCK=1;return true})()`,
+  wuwa_systems: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip','zig'],'battle');await new Promise(r=>setTimeout(r,400));
+    const c=S.c;const [T,U]=c.enemies;T.hp=T.maxHp=500;U.hp=U.maxHp=500;T.block=U.block=0;T.fb=3;c.cur=c.active;applyElem(T,'용융');const boom=T.fb===0&&T.hp===488&&U.hp===496;
+    S.echoes=['snip','fdread'];const s2=son2('용융')&&!son4('용융');
+    c.block=50;const cc=c.conc[c.active];const uh=U.hp;hurtParty(10,U);const dodge=U.hp===uh-3&&c.conc[c.active]===Math.min(3,cc+1);
+    return boom&&s2&&dodge})()`,
   card_combo: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
     const c=S.c;const T=alive()[0];T.hp=T.maxHp=500;T.block=0;c.energy=9;const b=c.block;['aem_s','aem_s','aem_s'].forEach(id=>{const x=mk(id);c.hand.push(x);playCard(x.uid,T)});
     return c.seq.length===0&&c.log.some(l=>l.includes('화음'))&&c.energy===10})()`,

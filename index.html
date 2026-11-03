@@ -107,6 +107,7 @@ h1,h2,h3{margin:0}
 .av{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-weight:800;color:#111;flex:none}
 .tag{font-size:11px;padding:1px 7px;border-radius:999px;background:var(--bg2);border:1px solid var(--line);white-space:nowrap}
 .combat{flex:1;display:flex;flex-direction:column;min-height:calc(100vh - 100px)}
+body:has(.relics) .combat{min-height:calc(100vh - 138px)}
 .stage{position:relative;flex:1;min-height:400px;border-radius:18px;overflow:hidden;border:1px solid var(--line);isolation:isolate;--pw:clamp(84px,13vw,150px)}
 .stage.shake{animation:stshake .35s}
 @keyframes stshake{20%{transform:translate(-6px,3px)}40%{transform:translate(5px,-3px)}60%{transform:translate(-4px,2px)}80%{transform:translate(3px,-1px)}}
@@ -320,6 +321,7 @@ body.dragging .hand .card{pointer-events:none}
 /* 손패 양끝 카드가 화면 아래로 살짝 걸치는 연출 때문에 전투 중엔 페이지 스크롤 막음 */
 html:has(.combat),body:has(.combat){overflow:hidden}
 @media (max-height:760px){#stage .unit.enemy:not(.minion){margin-bottom:-7vh}}
+.sonatas{display:inline-flex;gap:4px;flex-wrap:wrap}.sona{font-size:11px;padding:2px 7px;border-radius:999px;border:1px solid color-mix(in srgb,var(--c) 50%,transparent);color:var(--c);opacity:.65}.sona.on{opacity:1;box-shadow:0 0 8px color-mix(in srgb,var(--c) 45%,transparent);font-weight:800}
 .seqbar{position:absolute;left:14px;top:12px;z-index:30;display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:12px;background:rgba(10,14,31,.82);border:1px solid var(--line);font-size:13px}
 .seqbar i{font-style:normal;width:28px;height:28px;display:grid;place-items:center;border-radius:8px;border:1px dashed rgba(255,255,255,.25);opacity:.5}
 .seqbar i.on{opacity:1;border:1px solid var(--gold);color:var(--gold);background:rgba(255,215,94,.1)}.seqbar small{opacity:.8;margin-left:4px}
@@ -591,7 +593,7 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .bottom{height:226px;margin-top:-44px}
 .hand .card{bottom:8px}
 .hand .card:hover:not(.off),.hand .card.sel{transform:translateX(-50%) translateY(-36px) rotate(0) scale(1.22)!important}
-.stage{min-height:max(360px,calc(100vh - 330px))}
+.stage{min-height:max(330px,calc(100vh - 366px))}
 .card .hk{right:auto;left:22px;top:-11px}
 .hpb{height:18px}.hpb span{font-size:13px;line-height:17px}
 .nametag{font-size:12.5px}.st{font-size:11.5px;padding:2px 7px}
@@ -624,7 +626,7 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .echobtn:not(.cd):not(:disabled){animation:mpulse 1.4s infinite}
 .relic.main{box-shadow:0 0 0 2px #e9d9a6}.relic[onclick]{cursor:pointer}
 .lhud::before{top:64px}
-.relics{flex-basis:auto;order:-1;margin-left:4px}.relic{width:26px;height:26px;font-size:13px}
+.relics{flex-basis:100%;order:10;margin-left:4px;align-items:center;row-gap:4px}.relics .sonatas{margin-left:8px}.relic{width:26px;height:26px;font-size:13px}
 .vib{width:100%;height:6px;margin-top:2px;background:#1a1606;box-shadow:0 0 0 1px #000;cursor:help}
 .vib i{display:block;height:100%;background:linear-gradient(90deg,#c9a22a,#ffe48a);transition:width .25s}
 .vib.broken i{background:#fff;animation:mpulse .6s infinite}
@@ -1017,6 +1019,26 @@ const ECHO={
   e_rain:{n:'비구름',i:'☂',tx:'턴 종료 시 모든 적에게 회절 잔향 1.',te:()=>alive().forEach(e=>fz(e,1))},
   e_wall:{n:'성벽 조각',i:'▦',tx:'턴 종료 시 남은 에너지 1당 보호막 3.',te:c=>{if(c.energy>0)gainBlock(c.energy*3)}},
 };
+/* 명조 ①: 에코 소나타 — 같은 속성 에코를 2개·4개 모으면 세트 효과 */
+const ECHO_EL={tuner:'전도',pendant:'회절',charm:'응결',e_ember:'용융',e_frost:'응결',e_bell:'회절',e_lamp:'용융',e_quill:'기류',e_anchor:'응결',e_coin:'회절',e_clover:'기류',e_dice:'인멸',
+  e_magnet:'전도',e_heart:'용융',e_purse:'회절',e_spike:'인멸',e_vamp:'인멸',e_chain:'전도',e_shell:'응결',e_whet:'용융',e_star:'회절',e_mirror:'회절',e_crown2:'인멸',e_tide:'응결',
+  e_bomb:'용융',e_hourglass:'기류',e_feather:'기류',e_flask:'기류',e_brew:'응결',e_gem:'전도',e_rain:'기류',e_wall:'전도'};
+const echoEl=e=>ECHO_EL[e]||(EN[e]&&EN[e].el);
+const SONATA={
+  용융:{n:'용융의 노래',t2:'용융 공명자의 공격 피해 +2',t4:'용융 폭발을 1 더 쌓아요'},
+  회절:{n:'빛의 노래',t2:'회절 공명자의 공격 피해 +2',t4:'회절 잔향을 1 더 부여해요'},
+  인멸:{n:'어둠의 노래',t2:'인멸 공명자의 공격 피해 +2',t4:'해체를 1 더 부여해요'},
+  응결:{n:'서리의 노래',t2:'매 턴 시작 시 보호막 3',t4:'전투 첫 턴에 모든 적 약화 2'},
+  기류:{n:'바람의 노래',t2:'매 턴 시작 시 협주 에너지 +1',t4:'매 턴 시작 시 카드 1장 더 뽑기'},
+  전도:{n:'번개의 노래',t2:'매 턴 시작 시 공명 해방 게이지 +1',t4:'공명 해방을 쓰면 에너지 +1'},
+};
+const sonata=el=>S.echoes.filter(e=>echoEl(e)===el).length;
+const son2=el=>sonata(el)>=2,son4=el=>sonata(el)>=4;
+/* 명조 ②: 속성 이상 상태 — 공격 카드가 출전 공명자 속성의 상태를 대상에게 쌓음 */
+function applyElem(T,el){if(!T||T.dead)return;const n=1+(son4(el)?1:0);
+  if(el==='회절')fz(T,n);else if(el==='인멸')unravel(T,n);
+  else if(el==='용융'){T.fb=(T.fb||0)+n;pop(T,`용융 폭발 ${T.fb}/4`,'info');
+    if(T.fb>=4){T.fb=0;const own=S.c.cur;sfx('boom');if(!window.FAST)flash(EL.용융);log(`${EN[T.id].n} — 용융 폭발!`);dmgEnemy(T,12,true,'burst');alive().forEach(e=>e!==T&&dmgEnemy(e,4,true,'burst'));S.c.cur=own}}}
 const echoHook=(k,...a)=>S.echoes.forEach(e=>ECHO[e]&&ECHO[e][k]&&ECHO[e][k](...a));
 const TREASURE_ECHO=['tuner','pendant','charm','gulp','vjun','fdread','hoar','zig',...Object.keys(ECHO).filter(k=>k.startsWith('e_'))];
 const has=id=>S.echoes.includes(id);
@@ -1289,8 +1311,10 @@ function startTurn(){
   if(c.orbit){gainBlock(c.orbit);gainConc(c.active,1)}
   if(c.melody)alive().forEach(e=>fz(e,c.melody));
   echoHook('ts',c);c.atkN=0;c.seq=[];
+  if(son2('응결'))gainBlock(3);if(son4('응결')&&c.turn===1)alive().forEach(e=>{e.weak+=2});
+  if(son2('기류'))gainConc(c.active,1);if(son2('전도'))gainLib(c.active,1);
   const tide=rollTide();
-  draw(5+(c.turn===1&&has('crown')?2:0)+(c.tideDraw||0));
+  draw(5+(c.turn===1&&has('crown')?2:0)+(c.tideDraw||0)+(son4('기류')?1:0));
   if(!(c.turn===1&&c.kind==='boss'))turnBanner('플레이어 턴',c.turn>1?`${c.turn}턴`:'');
   render();if(tide)setTimeout(()=>showTide(tide),500/OPT.speed);
 }
@@ -1396,7 +1420,7 @@ function playCard(uid,T){
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
   c.curCard=card;if(atk)c.atkN=(c.atkN||0)+1;
   if(card.ench==='echo'&&!card.echoed){card.echoed=1;c.hand.push({...card,uid:UID++,ench:null})}
-  d.p(vals(card),T,card);FXDELAY=0;c.calcNow=0;c.curCard=null;
+  d.p(vals(card),T,card);if(atk&&T&&!T.dead&&alive().includes(T))applyElem(T,CH[owner].el);FXDELAY=0;c.calcNow=0;c.curCard=null;
   if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
   (c.played=c.played||new Set()).add(owner);
   gainConc(owner,1);gainLib(owner,1);if(WPN(owner,'w_rect'))gainLib(owner,1);
@@ -1443,6 +1467,7 @@ function gainLib(id,n){S.c.lib[id]=Math.min(5,S.c.lib[id]+n)}
 function hit(T,base,o={}){
   if(!T||T.dead)return;const c=S.c;let d=base+(c.curCard&&c.curCard.ench==='sharp'&&!o.raw?3:0);
   if(!o.raw)d+=(WPN(c.cur,'w_blade')?2:0)+(c.cur==='aem'&&c.mecha?3:0)+(has('fdread')?1:0)+(has('dreamless')?2:0)+((c.cur==='aem'||c.cur==='mor')&&has('snip')?2:0)+(c.cur==='cam'?c.bloom:0)+(c.cur==='lyn'?Math.floor(c.paint/2):0)+c.calcNow;
+  if(!o.raw&&CH[c.cur]&&son2(CH[c.cur].el))d+=2;
   d+=T.ur||0;if(!o.raw&&has('e_whet')&&c.atkN===1&&c.curCard)d+=5;
   let m=1;if(c.amp>0)m*=1.3;if(c.weak>0)m*=.75;if(T.vuln>0)m*=1.5;if(T.broken>0)m*=1.5;
   const cr=!o.raw&&rollCrit();if(cr){m*=has('e_dice')?2.25:1.75;if(has('e_vamp'))heal(c.active,2);const dl=FXDELAY+HITSEQ*110;pop(T,'치명타!','crit');sfx('critx',dl);if(!window.FAST)setTimeout(()=>{flash('#fff3c4');shakeStage(true);hitStop(140)},dl/OPT.speed)}
@@ -1522,7 +1547,7 @@ function clickLib(){
   if(LIB_TG[id]&&alive().length>1){c.tgt={kind:'lib'};return render()}
   doLib(alive()[0]);
 }
-function doLib(T){
+function doLib(T){if(son4('전도')&&S.c)S.c.energy++;
   const c=S.c;const id=c.active;c.lib[id]=0;c.cur=id;
   cutIn(id);anim('u-'+id,id==='sk'?'cast':'ult',520);FXDELAY=id==='sk'?600:880;HITSEQ=0;
   if(id==='rov'){hit(T,22);fz(T,6)}
@@ -1566,7 +1591,7 @@ async function endTurn(){sfx('end');
     if(e.affix==='regen'&&!e.dead&&e.hp<e.maxHp){const h=Math.min(5,e.maxHp-e.hp);e.hp+=h;pop(e,`+${h}`,'heal');render();await sleep(150)}
     const pv=EN[e.id].pv;if(pv&&pv.k==='metal'&&!e.dead){e.block+=pv.v;pop(e,`+${pv.v} 방어`,'blk');render();await sleep(150)}
   }
-  c.enemies.forEach(e=>{if(!e.dead){e.vuln=Math.max(0,e.vuln-1);e.weak=Math.max(0,e.weak-1);e.ur=Math.max(0,e.ur-1);setIntent(e)}});
+  c.dodge=0;c.enemies.forEach(e=>{if(!e.dead){e.vuln=Math.max(0,e.vuln-1);e.weak=Math.max(0,e.weak-1);e.ur=Math.max(0,e.ur-1);setIntent(e)}});
   c.cards=0;
   c.busy=false;startTurn();
 }
@@ -1577,7 +1602,10 @@ function hurtParty(d,e){
   const p=S.party[c.active];
   if(e)vfx('claw','u-'+c.active,{c:EL[EN[e.id].el]||'#ff5d6c',big:d>=15});
   sfx(rest>0?'hurt':'block',FXDELAY);if(rest>0){hitStop(rest>=15?100:50);if(rest>=12){shakeStage(rest>=20);flash('rgba(255,60,80,.5)')}}
-  if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}else{pop('party','막음','blk');anim('u-'+c.active,'block')}
+  if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}
+  else{pop('party',e&&ab>0?'완벽 회피!':'막음','blk');anim('u-'+c.active,'block');
+    // 명조 ③: 적 공격을 보호막으로 전부 막으면 완벽 회피 → 반격 3 + 협주 +1 (턴당 최대 3회)
+    if(e&&ab>0&&!e.dead&&(c.dodge=(c.dodge||0)+1)<=3){const own=c.cur;c.cur=c.active;dmgEnemy(e,3,true,'burst');gainConc(c.active,1);c.cur=own;if(!window.FAST){sfx('critx');flash('#bfe6ff')}}}
   if(p.hp<=0){p.hp=0;p.down=true;log(`${CH[c.active].name} 기절!`);const nx=T_().find(id=>!S.party[id].down);if(nx){c.active=nx;c.cur=nx;banner(`${CH[nx].name} 긴급 출전`)}}
 }
 // 게임 기록: 판이 끝날 때(패배·승리·포기) 한 줄씩 저장, 최근 50판 유지
@@ -1942,6 +1970,10 @@ function procArt(id){
 }
 const TYPESYM={공격:'⚔',스킬:'◈',파워:'✦',저주:'✕',상태:'⚠'};
 const KW={
+  '용융 폭발':'용융 공명자의 공격으로 쌓여요. 4가 되면 터져서 그 적에게 12, 다른 적에게 4 피해.',
+  '속성 이상':'공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → 용융 폭발.',
+  '완벽 회피':'적 공격을 보호막으로 전부 막으면 완벽 회피! 그 적에게 반격 3 피해 + 협주 에너지 +1 (턴당 3번까지).',
+  '소나타':'같은 속성 에코를 2개 모으면 2세트, 4개면 4세트 효과. 상단 속성 칩에 마우스를 올리면 보여요.',
   '카드 조합':'한 턴에 쓴 카드 종류(공=공격, 스=스킬) 3장의 순서가 레시피와 맞으면 추가 효과가 터져요. 두 공명자 이상의 카드가 섞이면 합주로 효과 ×1.5.',
   '번뜩임':'강화 안 된 카드를 쓸 때 8% 확률(전투당 1번)로 그 카드가 덱에서 영구 강화돼요.',
   '병합':'손에 같은 카드가 2장 있으면 하나로 합쳐 「융합」 카드로 만들어요. 수치 ×1.5, 비용 그대로. 남은 한 장은 이번 전투에서 소멸해요.',
@@ -2008,7 +2040,7 @@ function topBar(){
     ${S.screen!=='map'?`<button class="btn" style="padding:5px 12px" onclick="showMap()">지도</button>`:''}
     <button class="btn" style="padding:5px 12px" onclick="showDeck()">덱 ${S.deck.length}</button>
     <button class="btn" style="padding:5px 12px" title="일시정지" onclick="openPause()">☰</button>
-    ${S.echoes.length?`<div class="relics">${S.echoes.map(e=>`<span class="relic ${S.mainEcho===e?'main':''}" ${ECHO_SKILL[e]?`onclick="equipEcho('${e}')"`:''}${tipAttr(`<b>${ECHO[e].n}</b><br>${ECHO[e].tx}${ECHO_SKILL[e]?`<hr><b>에코 스킬 · ${ECHO_SKILL[e].n}</b> (쿨다운 ${ECHO_SKILL[e].cd}턴)<br>${ECHO_SKILL[e].tx}<br>${S.mainEcho===e?'주 에코로 장착 중':'클릭해서 주 에코로 장착'}`:''}`)}>${ECHO[e].i}</span>`).join('')}</div>`:''}
+    ${S.echoes.length?`<div class="relics">${S.echoes.map(e=>`<span class="relic ${S.mainEcho===e?'main':''}" ${ECHO_SKILL[e]?`onclick="equipEcho('${e}')"`:''}${tipAttr(`<b>${ECHO[e].n}</b> <span style="color:${EL[echoEl(e)]||'#ccc'}">${echoEl(e)||''}</span><br>${ECHO[e].tx}${ECHO_SKILL[e]?`<hr><b>에코 스킬 · ${ECHO_SKILL[e].n}</b> (쿨다운 ${ECHO_SKILL[e].cd}턴)<br>${ECHO_SKILL[e].tx}<br>${S.mainEcho===e?'주 에코로 장착 중':'클릭해서 주 에코로 장착'}`:''}`)}>${ECHO[e].i}</span>`).join('')}<div class="sonatas">${Object.keys(SONATA).filter(el=>sonata(el)).map(el=>{const n=sonata(el),z=SONATA[el];return `<span class="sona ${n>=2?'on':''}" style="--c:${EL[el]}"${tipAttr(`<b>${z.n}</b> (${el} 에코 ${n}개)<br>${n>=2?'✔':'○'} 2세트: ${z.t2}<br>${n>=4?'✔':'○'} 4세트: ${z.t4}`)}>${el} ${n}</span>`}).join('')}</div></div>`:''}
   </div>`;
 }
 function render(){
@@ -2141,6 +2173,11 @@ function helpHTML(){
     <section class="hs"><small class="eng">STEP 7 · 공진</small><h3>진동 게이지를 채워 공진 파괴</h3>
       <div class="hs-row"><div style="width:220px"><div class="hpb" style="position:relative"><i class="cur" style="width:70%"></i><span>48 / 70</span></div><div class="vib"><i style="width:80%"></i></div></div>
       <p style="flex:1">체력 바 아래 <b>노란 바</b>가 진동 게이지예요. 공격 한 번에 1, 협주→변주·공명 해방은 3씩 차요. 가득 차면 <b>공진 파괴</b> — 적은 다음 행동을 건너뛰고, 그동안 받는 피해가 50% 늘어나요. 보스는 게이지가 더 커요.</p></div></section>
+    <section class="hs"><small class="eng">STEP 8 · 명조의 전투</small><h3>속성 이상 · 완벽 회피 · 에코 소나타</h3>
+      <p><b>속성 이상</b> — 공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → <b>용융 폭발</b>(4 쌓이면 터져서 12 + 주변 4).</p>
+      <p><b>완벽 회피</b> — 적 공격을 보호막으로 전부 막으면 반격 3 피해 + 협주 에너지 +1 (턴당 3번).</p>
+      <p><b>에코 소나타</b> — 같은 속성 에코를 2개·4개 모으면 세트 효과. 상단 속성 칩에 마우스를 올려 확인해요.</p>
+      <p><b>카드 조합</b> — 한 턴에 쓴 카드 3장의 순서(공·스)가 맞으면 추가 효과. 다른 공명자 카드가 섞이면 합주 ×1.5.</p></section>
     <section class="hs"><small class="eng">STEP 8 · 단축키</small><h3>편하게 플레이하기</h3>
       <div class="hs-icons"><div><kbd>1</kbd>~<kbd>9</kbd> 카드 사용 (마우스 올린 적 대상)</div><div><kbd>E</kbd> / <kbd>Enter</kbd> 턴 종료</div><div><kbd>Q</kbd> 에코 스킬</div><div><kbd>Esc</kbd> 일시정지 · 음량 · 전투 속도</div><div>우클릭 · <kbd>Esc</kbd> 카드 끌기 취소</div></div>
       <p class="dim">지도에 있을 때마다 자동 저장돼요. 타이틀의 <b>이어하기</b>로 계속하고, 쓰러지면 처음부터 다시 올라요.</p></section>
@@ -2306,7 +2343,7 @@ function updateCombat(){
     const inf=el.querySelector('.intentf');inf.innerHTML=e.dead||c.ending?'':intentHTML(e);inf.dataset.tip=e.dead?'':`<b>${e.move.n}</b><br>${intentTitle(e).split(': ')[1]||''}`;
     el.querySelector('.nametag').innerHTML=`<b>${d.n}</b> · ${d.g}`;
     const s=[];if(e.str)s.push(stc(`힘 ${e.str}`,'var(--gold)','힘'));if(e.vuln)s.push(stc(`취약 ${e.vuln}`,'#ffb36b','취약'));
-    if(e.weak)s.push(stc(`약화 ${e.weak}`,'','약화'));if(e.fz)s.push(stc(`잔향 ${e.fz}`,EL.회절,'회절 잔향'));if(e.ur)s.push(stc(`해체 ${e.ur}`,'#9aa8ff','해체'));
+    if(e.weak)s.push(stc(`약화 ${e.weak}`,'','약화'));if(e.fz)s.push(stc(`잔향 ${e.fz}`,EL.회절,'회절 잔향'));if(e.ur)s.push(stc(`해체 ${e.ur}`,'#9aa8ff','해체'));if(e.fb)s.push(stc(`폭발 ${e.fb}/4`,EL.용융,'용융 폭발'));
     if(e.affix)s.unshift(`<span class="st afx" style="color:${AFFIX[e.affix].c}"${tipAttr(`<b>변이 · ${AFFIX[e.affix].n}</b><br>${AFFIX[e.affix].tx}`)}>${AFFIX[e.affix].i}${AFFIX[e.affix].n}</span>`);
     const pv=d.pv;if(pv&&!(pv.k==='enrage'&&e.p2))s.unshift(stc(pv.n+(pv.k==='static'?` ${4-(S.c.cards||0)%4}`:''),'#ff9ab0',pv.n,pv.tx));
     el.querySelector('.sts').innerHTML=s.join('');
