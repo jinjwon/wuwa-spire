@@ -122,6 +122,8 @@ git tag v0.7.1 && git push origin v0.7.1
 
 **자가 점검**: `npx electron . --remote-debugging-port=9334` 실행 중 `node scripts/selfcheck.cjs`
 
+**디자인 규칙**: [DESIGN.md](DESIGN.md) (명조풍 토큰·부품)
+
 **이미지 교체**: `assets/`에 도트를 넣으면 자동 적용돼요. 규칙은 [assets/README.md](assets/README.md). 원작 색 보정은 `node scripts/recolor.cjs <캐릭터id>` (원본은 `art/backup-recolor/`).
 
 </details>

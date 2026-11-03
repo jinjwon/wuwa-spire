@@ -680,6 +680,33 @@ kbd{display:inline-block;padding:1px 6px;border:1px solid #6b78b8;border-bottom-
 .pile small{bottom:-17px;letter-spacing:.5px}
 .echobtn{clip-path:none;border-radius:50%;width:50px;height:50px;background:radial-gradient(circle,rgba(110,80,210,.55),rgba(20,16,50,.95) 70%);box-shadow:inset 0 0 0 1px rgba(190,170,255,.6),0 0 0 4px rgba(14,18,40,.6),0 0 0 5px rgba(190,170,255,.2)}
 .echobtn b{border-radius:50%}
+
+/* ===== WuWa UI v2 (2026-11-03) — 명조풍 통일 레이어. 규칙은 DESIGN.md ===== */
+:root{--wu-panel:rgba(10,13,26,.88);--wu-panel2:rgba(22,28,52,.9);--wu-ink:#eef0f7;--wu-sub:#9aa3c4;--wu-acc-dim:rgba(233,217,166,.35);--wu-glow:0 0 14px rgba(233,217,166,.28);--cut-s:6px;
+  --wu-cut-s:polygon(var(--cut-s) 0,100% 0,100% calc(100% - var(--cut-s)),calc(100% - var(--cut-s)) 100%,0 100%,0 var(--cut-s))}
+/* 칩·배지: 알약 → 잘린 모서리 */
+.chip,.st,.sona,.mergeb,.mpbadge,.seqbar,.tide,.asc,.combo{border-radius:0!important;clip-path:var(--wu-cut-s)}
+.chip{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px var(--wu-line);color:var(--wu-ink)}
+.st{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px var(--wu-line)}
+.sona{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c) 45%,transparent)}
+/* 약제 슬롯: 원 → 마름모(명조 퀵슬롯 느낌) */
+.pot{border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:none;background:radial-gradient(circle,color-mix(in srgb,var(--c) 30%,transparent),var(--wu-panel) 70%);box-shadow:none}
+.pot.empty{clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:rgba(190,215,255,.08);border:none}
+/* 조합 막대·조수 룰렛·멀티 배지: 같은 패널 */
+.seqbar,.mpbadge{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px var(--wu-line)}
+.seqbar b{font-size:10px;letter-spacing:3px;color:var(--wu-acc)}
+.seqbar i{border-radius:0;clip-path:var(--wu-cut-s);border:none;box-shadow:inset 0 0 0 1px var(--wu-line)}
+.seqbar i.on{box-shadow:inset 0 0 0 1px var(--wu-acc);color:var(--wu-acc);background:rgba(233,217,166,.1)}
+.tide{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px var(--wu-line),0 8px 30px rgba(0,0,0,.5)}
+.tide small{color:var(--wu-acc)}.tide .reel{border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);border:none;background:var(--wu-panel2)}
+.tide.ok{box-shadow:inset 0 0 0 1px var(--wu-acc),var(--wu-glow)}.tide.ok .reel{color:var(--wu-acc)}
+.asc{background:var(--wu-panel);border:none;box-shadow:inset 0 0 0 1px var(--wu-line)}.asc.on{box-shadow:inset 0 0 0 1px var(--wu-acc),var(--wu-glow);color:var(--wu-acc)}
+.mergeb{background:var(--wu-panel2);border:none;box-shadow:inset 0 0 0 1px var(--wu-acc);color:var(--wu-acc);animation:none}
+.card.fused{box-shadow:0 0 0 2px var(--wu-acc),var(--wu-glow)}
+.combo{background:var(--wu-panel);padding:4px 14px;color:var(--wu-acc);text-shadow:none}
+/* 배너: 명조식 가로 띠 + 위아래 아이보리 선 */
+.banner{border:none;border-radius:0;left:0;right:0;transform:translateY(-50%);width:100%;text-align:center;background:linear-gradient(90deg,transparent,rgba(10,13,26,.92) 25%,rgba(10,13,26,.92) 75%,transparent);
+  box-shadow:inset 0 1px 0 var(--wu-acc-dim),inset 0 -1px 0 var(--wu-acc-dim);letter-spacing:4px;color:var(--wu-ink)}
 </style>
 </head>
 <body>
