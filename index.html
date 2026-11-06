@@ -792,6 +792,11 @@ body.incombat .hand .card{bottom:34px}
 body.incombat .lhud{left:22px;bottom:24px}body.incombat .rhud{right:22px;bottom:24px}
 body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @media(prefers-reduced-motion:reduce){.intentf,.energy.pulse{animation:none}}
+/* 번뜩임 */
+.card.epi{box-shadow:0 0 0 2px #ffe9a8,0 0 22px 6px rgba(255,214,120,.75);animation:epiglow 1.2s ease-in-out infinite}
+@keyframes epiglow{50%{box-shadow:0 0 0 2px #fff4cf,0 0 34px 12px rgba(255,214,120,.95)}}
+.epis{display:flex;gap:10px;margin-top:14px}.epis .choice{flex:1;min-height:88px}.epx{color:#ffe08a}
+@media(prefers-reduced-motion:reduce){.card.epi{animation:none}}
 </style>
 </head>
 <body>
@@ -1025,8 +1030,8 @@ const CD={
 };
 const REWARD_POOL=Object.keys(CD).filter(k=>!CD[k].start&&(CD[k].o!=='any'||CD[k].pool||CD[k].duo));
 const inPool=k=>{const d=CD[k];return d.duo?d.duo.every(x=>S.team.includes(x)):d.o==='any'||S.team.includes(d.o)};
-const vals=card=>{const d=CD[card.id],V={};for(const k in d.v||{}){const x=d.v[k][card.up?1:0];V[k]=card.fu&&typeof x==='number'?Math.ceil(x*1.5):x}return V};
-const cardText=card=>CD[card.id].tx(vals(card));
+const vals=card=>{const d=CD[card.id],V={};for(const k in d.v||{}){const x=d.v[k][card.up?1:0];V[k]=card.fu&&typeof x==='number'?Math.ceil(x*1.5):x;if(card.ep==='sharp'&&typeof V[k]==='number')V[k]=Math.ceil(V[k]*1.3)}return V};
+const cardText=card=>CD[card.id].tx(vals(card))+(card.ep?` <b class="epx">✧ ${EPI[card.ep].tx}</b>`:'');
 
 /* ============ 적 ============
  d:피해 h:타수 b:방어 s:힘 w:약화(파티) */
@@ -1394,9 +1399,22 @@ function comboCheck(c,d,owner){if(!TSYM[d.t])return;c.seq=[...(c.seq||[]),{t:d.t
   const r=RECIPES.find(r=>r.k.every((t,i)=>c.seq[i].t===t));if(!r)return;const duo=new Set(c.seq.map(x=>x.o)).size>1;
   c.seq=[];FXDELAY=200;HITSEQ=0;c.cur=owner;r.f(duo?1.5:1);FXDELAY=0;log(`조합 — ${r.n}${duo?' (합주 ×1.5)':''}`);
   if(!window.FAST){sfx('jackpot');banner(`${duo?'합주 · ':''}${r.n}!`);flash(duo?'#ffd75e':'#7fd8ff')}}
-// 번뜩임: 강화 안 된 카드를 쓸 때 낮은 확률로 덱의 그 카드가 영구 강화 (전투당 1회)
-function epiphany(c,card){if(!LUCK()||c.epi||card.up||CD[card.id].unplay||Math.random()>=.08)return;c.epi=1;card.up=true;const dk=S.deck.find(x=>x.uid===card.uid);if(dk)dk.up=true;
-  log(`번뜩임 — 「${CD[card.id].n}」 영구 강화!`);if(!window.FAST){sfx('merge');banner(`✧ 번뜩임 · ${CD[card.id].n}+`);flash('#e9d9a6')}}
+// 번뜩임(카오스 제로 나이트메어식): 턴 시작에 손패 한 장이 빛나고, 그 카드를 쓰면 효과 3개 중 하나를 골라 덱의 카드를 영구히 바꾼다 (전투당 1회, 카드당 1회)
+const EPI={
+  sharp:{n:'예리한 공명',tx:'수치 +30%',ok:d=>Object.values(d.v||{}).some(x=>Array.isArray(x))},
+  light:{n:'가벼운 선율',tx:'비용 -1',ok:d=>d.c!=='X'&&Math.max(...[d.c].flat())>0},
+  draw:{n:'잔향 연쇄',tx:'사용 시 카드 1장',f:()=>draw(1)},
+  conc:{n:'협주 고조',tx:'사용 시 협주 +1',f:o=>gainConc(o,1)},
+  lib:{n:'해방 공명',tx:'사용 시 해방 +1',f:o=>gainLib(o,1)},
+  guard:{n:'공명 방벽',tx:'사용 시 보호막 4',f:()=>gainBlock(4)},
+  vib:{n:'진동 증폭',tx:'사용 시 대상 공진 +2',ok:d=>!!d.tg,f:(o,T)=>{if(T&&!T.dead)addVib(T,2)}},
+};
+const epiOptions=d=>{const a=Object.keys(EPI).filter(k=>!EPI[k].ok||EPI[k].ok(d));for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,3)};
+function markEpiphany(c){if(!LUCK()||c.epi||c.epiUid||Math.random()>=.3)return;const x=pick(c.hand.filter(y=>!y.ep&&!CD[y.id].unplay));if(x)c.epiUid=x.uid}
+function pickEpiphany(k){const m=S.modal,c=S.c,card=c.hand.find(x=>x.uid===m.uid);S.modal=null;c.epi=1;c.epiUid=0;
+  card.ep=k;const dk=S.deck.find(x=>x.uid===card.uid);if(dk)dk.ep=k;
+  log(`번뜩임 — 「${CD[card.id].n}」 ${EPI[k].n}`);if(!window.FAST){sfx('merge');banner(`✧ 번뜩임 · ${EPI[k].n}`);flash('#e9d9a6')}
+  playCard(m.uid,m.T)}
 function combo(c){if(window.FAST||c.cards<3)return;try{tone(500+90*Math.min(c.cards,10),.08,'triangle',.08)}catch(e){}
   const b=document.createElement('div');b.className='combo';b.innerHTML=`<b>${c.cards}</b> COMBO`;document.body.appendChild(b);setTimeout(()=>b.remove(),700)}
 function flash(col){if(window.FAST)return;const f=document.createElement('div');f.className='flash';f.style.setProperty('--fc',col);document.body.appendChild(f);setTimeout(()=>f.remove(),420)}
@@ -1426,7 +1444,7 @@ function startTurn(){
   if(son2('응결'))gainBlock(3);if(son4('응결')&&c.turn===1)alive().forEach(e=>{e.weak+=2});
   if(son2('기류'))gainConc(c.active,1);if(son2('전도'))gainLib(c.active,1);
   const tide=rollTide();
-  draw(5+(c.turn===1&&has('crown')?2:0)+(c.tideDraw||0)+(son4('기류')?1:0));
+  draw(5+(c.turn===1&&has('crown')?2:0)+(c.tideDraw||0)+(son4('기류')?1:0));markEpiphany(c);
   if(!(c.turn===1&&c.kind==='boss'))turnBanner('플레이어 턴',c.turn>1?`${c.turn}턴`:'');
   render();if(tide)setTimeout(()=>showTide(tide),500/OPT.speed);
 }
@@ -1504,6 +1522,7 @@ function costOf(card){
   if(d.o!=='any'&&d.o!==S.c.active)k+=1;
   if(card.id==='aem_break'&&S.c.mecha)k-=1;
   if(card.ench==='swift')k-=1;
+  if(card.ep==='light')k-=1;
   return Math.max(0,k);
 }
 function canPlay(card){
@@ -1525,6 +1544,7 @@ function clickEnemy(euid){
 }
 function playCard(uid,T){
   const c=S.c;const idx=c.hand.findIndex(x=>x.uid===uid);const card=c.hand[idx];const d=CD[card.id];
+  if(c.epiUid===uid){S.modal={kind:'epi',uid,T,opts:epiOptions(d)};return render()}
   c.X=costOf(card);c.energy-=c.X;c.hand.splice(idx,1);
   const owner=d.duo?(d.duo.includes(c.active)?c.active:d.duo[0]):d.o==='any'?c.active:d.o;c.cur=owner;c.chain=[...(c.played||[])].some(o=>o!==owner);
   const atk=d.t==='공격';anim('u-'+owner,atk?'atk':d.v?.b?'block':'cast');FXDELAY=atk?170:60;HITSEQ=0;
@@ -1532,13 +1552,13 @@ function playCard(uid,T){
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
   c.curCard=card;if(atk)c.atkN=(c.atkN||0)+1;
   if(card.ench==='echo'&&!card.echoed){card.echoed=1;c.hand.push({...card,uid:UID++,ench:null})}
-  d.p(vals(card),T,card);if(atk&&T&&!T.dead&&alive().includes(T))applyElem(T,CH[owner].el);FXDELAY=0;c.calcNow=0;c.curCard=null;
+  d.p(vals(card),T,card);if(card.ep&&EPI[card.ep].f)EPI[card.ep].f(owner,T);if(atk&&T&&!T.dead&&alive().includes(T))applyElem(T,CH[owner].el);FXDELAY=0;c.calcNow=0;c.curCard=null;
   if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
   (c.played=c.played||new Set()).add(owner);
   gainConc(owner,1);gainLib(owner,1);if(WPN(owner,'w_rect'))gainLib(owner,1);
   if(d.pw){}else if(d.ex)c.exhaust.push(card);else c.discard.push(card);
   log(`${CH[owner].name} — ${d.n}${card.up?'+':''}`);
-  onPlayerCard(d);sfx('card');echoHook('play',c);combo(c);comboCheck(c,d,owner);epiphany(c,card);
+  onPlayerCard(d);sfx('card');echoHook('play',c);combo(c);comboCheck(c,d,owner);
   afterAction();
 }
 function afterAction(){
@@ -2096,7 +2116,7 @@ const KW={
   '완벽 회피':'적 공격을 보호막으로 전부 막으면 완벽 회피! 그 적에게 반격 3 피해 + 협주 에너지 +1 (턴당 3번까지).',
   '소나타':'같은 속성 에코를 2개 모으면 2세트, 4개면 4세트 효과. 상단 속성 칩에 마우스를 올리면 보여요.',
   '카드 조합':'한 턴에 쓴 카드 종류(공=공격, 스=스킬) 3장의 순서가 레시피와 맞으면 추가 효과가 터져요. 두 공명자 이상의 카드가 섞이면 합주로 효과 ×1.5.',
-  '번뜩임':'강화 안 된 카드를 쓸 때 8% 확률(전투당 1번)로 그 카드가 덱에서 영구 강화돼요.',
+  '번뜩임':'손패에서 빛나는 카드를 쓰면 효과 3개 중 하나를 골라 그 카드를 영구히 바꿔요(전투당 1번, 카드당 1번).',
   '병합':'손에 같은 카드가 2장 있으면 하나로 합쳐 「융합」 카드로 만들어요. 수치 ×1.5, 비용 그대로. 남은 한 장은 이번 전투에서 소멸해요.',
   '치명타':'공격 타격마다 8% 확률로 피해 ×1.75. 조수 룰렛 「행운의 물결」이나 에코로 확률이 오를 수 있어요.',
   '조수 룰렛':'2턴부터 매 턴 시작 때 조수가 굴러요. 해류·만조·역류·소용돌이… 드물게 ★황금 조수 잭팟!',
@@ -2131,13 +2151,13 @@ const tipAttr=t=>t?` data-tip="${t.replace(/"/g,'&quot;')}"`:'';
 function stc(label,color,key,extra){return `<span class="st" style="color:${color||'inherit'}"${tipAttr(`<b>${key||label}</b><br>${extra||KW[key||label.replace(/ [+-]?\d+$/,'')]||''}`)}>${label}</span>`}
 function cardHTML(card,o={}){
   const d=CD[card.id];const col=d.o==='any'?'var(--any)':CH[d.o].color;
-  const inCombat=o.combat;const cost=inCombat?costOf(card):(Array.isArray(d.c)?d.c[card.up?1:0]:d.c);
+  const inCombat=o.combat;const cost=inCombat?costOf(card):typeof d.c==='string'?d.c:Math.max(0,(Array.isArray(d.c)?d.c[card.up?1:0]:d.c)-(card.ep==='light'?1:0));
   const waiting=inCombat&&d.o!=='any'&&d.o!==S.c.active;
   const off=inCombat&&!canPlay(card);
   const sel=inCombat&&S.c.tgt&&S.c.tgt.uid===card.uid;
   const tipText=kwTip(cardText(card)+(d.ex?' 소멸':'')+(d.pw?' 파워':'')+(waiting?' 대기 +1':''));
   const canMerge=inCombat&&!S.c.busy&&mergeable(card)&&S.c.hand.find(x=>x.id===card.id&&!x.fu&&x.up===card.up)===card;
-  return `<div class="card t-${d.t} ${d.r?'rare':''} ${off?'off':''} ${sel?'sel':''} ${card.fu?'fused':''}" data-card="${card.uid}"${tipAttr(tipText)} style="--c:${col};${o.style||''}" ${o.click?`onclick="${o.click}"`:''} ${o.down?`onpointerdown="${o.down}"`:''}>
+  return `<div class="card t-${d.t} ${d.r?'rare':''} ${off?'off':''} ${sel?'sel':''} ${card.fu?'fused':''} ${inCombat&&S.c.epiUid===card.uid?'epi':''}" data-card="${card.uid}"${tipAttr(tipText)} style="--c:${col};${o.style||''}" ${o.click?`onclick="${o.click}"`:''} ${o.down?`onpointerdown="${o.down}"`:''}>
     ${d.unplay?'':`<div class="cost ${waiting?'up':''}">${cost}</div>`}
     ${waiting?'<div class="wait">대기 +1</div>':''}
     <div class="nm ${card.up?'u':''}">${card.fu?'융합 ':''}${d.n}${card.up?'+':''}</div>
@@ -2194,6 +2214,7 @@ const IS_APP=/Electron/.test(navigator.userAgent);
 function openPause(){if(!S)return;S.modal={kind:'pause'};render()}
 function quitGame(){if(S&&S.screen==='map')saveRun();window.close()}
 addEventListener('keydown',e=>{
+  if(S&&S.modal&&S.modal.kind==='epi'&&S.modal.opts[e.key-1]){pickEpiphany(S.modal.opts[e.key-1]);return}
   if(e.key!=='Escape'||DRAG)return;
   if(S&&S.modal){closeModal();return}
   if(S)openPause();
@@ -2713,6 +2734,8 @@ function winHTML(){return `<div class="screen"><div class="box" style="text-alig
   <button class="btn gold" onclick="goMenu('select')">다시 오르기</button> <button class="btn" onclick="goMenu('title')">타이틀</button></div></div>`}
 function modalHTML(){
   const m=S.modal;
+  if(m.kind==='epi'){const card=S.c.hand.find(x=>x.uid===m.uid);return `<div class="modal"><div class="box" style="max-width:720px;margin-top:20vh;text-align:center"><small class="eng">EPIPHANY</small><h2>✧ 번뜩임 · ${CD[card.id].n}</h2><p class="dim">이 카드를 영원히 바꿀 공명을 하나 고르세요.</p>
+    <div class="epis">${m.opts.map((k,i)=>`<button class="choice" onclick="pickEpiphany('${k}')"><b>${i+1}. ${EPI[k].n}</b><br>${EPI[k].tx}</button>`).join('')}</div></div></div>`}
   if(m.kind==='deck'){
     const sorted=[...S.deck].sort((a,b)=>ALL.indexOf(CD[a.id].o)-ALL.indexOf(CD[b.id].o));
     return `<div class="modal" onclick="if(event.target===this)closeModal()"><div class="box"><h2>덱 (${S.deck.length}장)</h2>

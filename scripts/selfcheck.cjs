@@ -54,6 +54,11 @@ const CHECKS = {
     const B=spawn('levia');return a&&b&&c2&&B.vibMax===22})()`,
   map_focus: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';render();await new Promise(r=>setTimeout(r,800));const n=document.querySelector('.mnode.avail').getBoundingClientRect();return n.top>=0&&n.bottom<=innerHeight})()`,
   help_new_systems: `(()=>{goMenu('help');const t=document.body.innerText;return t.includes('에코 스킬')&&t.includes('공진')})()`,
+  czn_epiphany: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,300));
+    const c=S.c,T=alive()[0];T.hp=T.maxHp=500;T.block=0;c.energy=5;c.epiUid=0;const a=mk('aem_a');S.deck.push(a);c.hand.push(a);c.epiUid=a.uid;const e=c.energy,h=T.hp;
+    playCard(a.uid,T);const paused=S.modal&&S.modal.kind==='epi'&&S.modal.opts.length===3&&new Set(S.modal.opts).size===3&&c.energy===e&&T.hp===h&&c.hand.includes(a);
+    pickEpiphany('sharp');const once=!S.modal&&c.epi===1&&!c.epiUid&&a.ep==='sharp'&&S.deck.find(x=>x.uid===a.uid).ep==='sharp';const dmg=vals(a).d===Math.ceil(6*1.3)&&h-T.hp>=8;
+    const b=mk('aem_a');b.ep='light';const cost=costOf(b)===0;return paused&&once&&dmg&&cost&&cardText(a).includes('수치 +30%')})()`,
   new_cards_weapons: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
     const c=S.c;c.energy=3;const T=alive()[0];T.hp=T.maxHp=500;
     T.block=0;const x=mk('any_overload');c.hand.push(x);const h=T.hp;playCard(x.uid,T);const xOk=c.energy===0&&h-T.hp===12;
