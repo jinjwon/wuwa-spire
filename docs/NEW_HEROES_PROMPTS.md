@@ -59,3 +59,27 @@ Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckb
 - 배경이 진짜 투명인가(체크무늬가 그려진 가짜 투명 X) — 모션 시트만 해당
 - 8칸 모두 같은 인물·같은 크기·같은 발 높이인가
 - 글자·숫자·테두리가 없는가
+
+---
+
+## 에이메스 재제작 (2026-11-06) — 원작 충실도 우선
+
+기존 에이메스는 원작과 차이가 커서 다시 만든다. **원작 고증은 텍스트보다 참고 이미지가 결정한다.**
+
+생성할 때 첨부 2개(필수):
+1. **원작 공식 캐릭터 이미지**(게임 내 캐릭터 화면/공식 일러스트 캡처, 전신이 보이는 것). 생성 참고용으로만 쓰고 저장소에는 넣지 않는다.
+2. `art/source-v2/hero_san.png` — 도트 화풍·몸 크기·칸 배치 기준.
+
+원작 확인 특징(공개 자료): 분홍 장발, 금색 눈, 머리 위 분홍 헤일로, 스타토치 아카데미 출신, 육체를 잃은 **디지털 유령**(반투명·글리치 반짝임), 아이돌 같은 분위기, 외날개(Monowing) 모티프, 용융 속성, 메카스카우트(엑소스트라이더)와 합체.
+
+저장 파일명: `art/source-v2/hero_aem.png` (4×2), `art/source-v2/cards_aem.png` (2×5, 기존 카드 10장 순서 유지)
+
+### hero_aem.png
+```
+Image 1 is the OFFICIAL character reference: reproduce Aemeath from Wuthering Waves EXACTLY as shown there — same hairstyle and hair accessories, same outfit cut, colors, layers, shoes and weapon. Do not invent or simplify costume parts; when unsure, copy the reference. Image 2 is ONLY the pixel-art style, pixel density, body scale and cell layout reference; do not copy its character. NEW CHARACTER SPRITE ATLAS for a Wuthering Waves fan pixel-art deckbuilder. EXACT 4 columns by 2 rows of equal square cells, whole image 2:1, eight full-body poses of Aemeath: long pink hair, golden eyes, glowing pink halo floating above her head, idol-like cheerful heroine who is a digital ghost (subtle pink glitch sparkles at hair tips and hem), single wing motif. Facing RIGHT. Row1: col1 IDLE light cheerful stance, sword lowered, halo glowing; col2 ANTICIPATION sword drawn back, pink-orange fusion sparks gathering; col3 STRIKE forward slash leaving pink fusion arc; col4 RECOVERY sword flicked down, sparkles fading. Row2: col1 GUARD sword across body with hexagonal pink light barrier; col2 HIT recoil leaning backward, arm guarding face, no gore; col3 CAST hand raised, single luminous pink wing unfolding behind her; col4 ULTIMATE upright release, giant white-and-pink mechascout silhouette forming behind her, wing fully spread, stars bursting. FULL BODY in every cell; each silhouette fits inside central 65% of its cell leaving 17% transparent padding on all sides; keep effects inside the cell. NO touching adjacent cells. Same body scale and consistent foot baseline in every cell; outfit identical in all 8 cells. Authentic chunky 16-bit PIXEL ART not smooth anime painting, crisp dark outline, limited palette. True transparent background (not a drawn checkerboard). No labels, text, grid, border or scenery. This is mechanically cut as 4x2 so precision matters.
+```
+
+### cards_aem.png
+```
+Image 1 is the OFFICIAL character reference: Aemeath's face, hair, halo and outfit must match it exactly. Image 2 is the new pixel hero atlas for consistency. Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 2 columns x 5 rows, 10 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 8:15. Hero identity: Aemeath, long pink hair, golden eyes, pink halo, digital ghost glitch sparkles, single wing motif, sword. Panels in row-major order: 1. Aemeath sweeping pink fusion sword slash; 2. Aemeath ducking behind a hexagonal pink light barrier; 3. Aemeath merging into a white-pink mechascout silhouette; 4. mechascout blade piercing forward with jet trail; 5. three pink star shards converging on an enemy; 6. radiant single mechanical wing unfolding; 7. Aemeath descending in a rain of pink meteors; 8. Aemeath's translucent ghost form glitching beside her real silhouette; 9. giant pink sword breaking a dark cosmic barrier; 10. Aemeath smiling with halo glowing, idol pose under starlight. Every panel UNIQUE, dramatic readable action with strong central focal object, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, dark navy outlines, luminous pink accent. Displays at 150x84 so avoid tiny details; make subjects large. No card frame, no numbers, NO text or typography, no logos, no UI. Professional cohesive game card art.
+```
