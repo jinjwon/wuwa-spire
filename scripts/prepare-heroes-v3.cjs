@@ -19,7 +19,7 @@ const cellOf=(file,c,r,cols,rows)=>rectOf(file,c/cols,r/rows,(c+1)/cols,(r+1)/ro
 async function rectOf(file,x0,y0,x1,y1){
   const m=await sharp(file).metadata(),L=Math.round(x0*m.width)+3,T=Math.round(y0*m.height)+3;
   const {data,info}=await sharp(file).extract({left:L,top:T,width:Math.round(x1*m.width)-L-3,height:Math.round(y1*m.height)-T-3}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
-  clean(data,info.width,info.height,140,400,6000);
+  clean(data,info.width,info.height,140,400,45000);
   return sharp(data,{raw:info}).png().toBuffer().then(b=>sharp(b).trim({threshold:1}).toBuffer({resolveWithObject:true}));
 }
 async function frame(buf,scale){
@@ -50,7 +50,7 @@ async function cards(id,ids,cols=3,rows=3){
     await sharp(file).extract({left:Math.round((i%cols)*w)+6,top:Math.round(Math.floor(i/cols)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
       .resize(144,96,{fit:'cover',kernel:'lanczos3'}).png({palette:true,colours:64,dither:0}).toFile(path.join(out,`cards/${cid}.png`))}
 }
-const HEROES={yin:null,car:'car',aem:null,aemMecha:null};
+const HEROES={yin:null,car:'car',aem:null,aemMecha:null,mor:null,lyn:null,hiy:'hiy'};
 // 기존 7명: 대기·공격 4프레임 = art/source 원본, 방어·피격·시전·해방 = source-v2 heroesA/B (prepare-sprites / prepare-art-v2와 같은 좌표)
 const OLD=[[ 'exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png',[0,.25,.49,.81,1],[0,.26,.51,.745,1],['rov','rovM','aem','sk'],'heroesA',[0,.245,.48,.755,1],[0,.285,.535,.77,1]],
   ['exec-8f038a01-3412-4384-93c2-45eb51ce106e.png',[0,.25,.49,.79,1],[0,.26,.505,.74,1],['lyn','mor','chi','cam'],'heroesB',[0,.245,.48,.755,1],[0,.265,.515,.755,1]]];
@@ -61,7 +61,7 @@ const AEM_CARDS=['aem_a','aem_b','aem_s','aem_dash','aem_shard','aem_wing','aem_
 const CARD_IDS=k=>Array.from({length:9},(_,i)=>`${k}_${i+1}`);
 (async()=>{
   await fs.mkdir(path.join(out,'motion'),{recursive:true});await fs.mkdir(path.join(out,'cards'),{recursive:true});
-  const R=oldRects(),list=(process.argv[3]==='old'?Object.keys(R).filter(id=>id!=='aem'):Object.keys(HEROES)).filter(id=>!process.env.IDS||process.env.IDS.split(',').includes(id));
+  const R=oldRects(),list=(process.argv[3]==='old'?Object.keys(R).filter(id=>!HEROES.hasOwnProperty(id)):Object.keys(HEROES)).filter(id=>!process.env.IDS||process.env.IDS.split(',').includes(id));
   for(const id of list){
     const p=await hero(id,R[id]&&process.argv[3]==='old'?R[id]:null);
     for(const f of p){const {data}=await sharp(f).ensureAlpha().raw().toBuffer({resolveWithObject:true});let v=0;for(let i=3;i<data.length;i+=4)v+=data[i]>0;assert(v>800,`${id}: frame nearly empty`)}

@@ -13,7 +13,7 @@
 
 ## 절차
 1. [CHARACTER_BIBLE.md](../lore/CHARACTER_BIBLE.md)에서 설정과 무기를 확인한다. 없으면 먼저 추가한다.
-2. [HERO_PROMPTS.md](HERO_PROMPTS.md)의 프롬프트에 공식 이미지와 `art/source-v2/hero_yin.png`를 순서대로 첨부해 생성한다.
+2. [HERO_PROMPTS.md](HERO_PROMPTS.md)의 프롬프트에 공식 이미지와 `art/source-v2/hero_mor.png`(승인된 비율 기준)를 순서대로 첨부해 생성한다.
 3. 결과를 `art/source-v2/hero_<id>.png`, `cards_<id>.png`로 저장한다.
 4. `scripts/prepare-heroes-v3.cjs`의 `HEROES`에 id를 넣는다.
 5. `IDS=<id> node scripts/prepare-heroes-v3.cjs preview`로 `art/preview-v3/`에서 먼저 본다.
@@ -32,3 +32,4 @@
 ## 주의
 - `prepare-sprites.cjs`, `prepare-art-v2.cjs`는 새 도트를 덮어쓰므로 막아 두었다. 쓰지 않는다.
 - 공식 이미지는 커밋하지 않는다.
+- 이전 디자인 원본(`art/source/`의 공명자 시트, `heroesA/B`)은 방랑자·파수인·치사·카멜리아 교체가 끝나면 지운다. 그 전에 지우면 재처리가 불가능하다.
