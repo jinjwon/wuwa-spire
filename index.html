@@ -200,17 +200,16 @@ body:has(.relics) .combat{min-height:calc(100vh - 138px)}
 .enemy .body.jab{animation:jabL .22s}
 @keyframes lungeR{0%{transform:none}30%{transform:translateX(26%) translateY(-4%) scale(1.06)}45%{transform:translateX(70%) scale(1.08)}100%{transform:none}}
 @keyframes lungeL{0%{transform:none}30%{transform:translateX(-26%) translateY(-4%) scale(1.06)}45%{transform:translateX(-70%) scale(1.08)}100%{transform:none}}
-@keyframes jabL{50%{transform:translateX(-30%)}}
+
 .body.hit{animation:hitP .4s}
 .enemy .body.hit{animation:hitE .4s}
-@keyframes hitP{0%{filter:brightness(3) saturate(0)}25%{transform:translateX(-12%) rotate(-3deg)}60%{transform:translateX(4%)}100%{transform:none;filter:none}}
-@keyframes hitE{0%{filter:brightness(3) saturate(0)}25%{transform:translateX(10%) rotate(3deg)}60%{transform:translateX(-3%)}100%{transform:none;filter:none}}
+
+
 .body.cast{animation:cast .55s}
 .enemy .body.cast{animation:castE .6s}
 @keyframes cast{40%{transform:translateY(-10%) scale(1.05);filter:brightness(1.5) drop-shadow(0 0 18px var(--c))}}
 @keyframes castE{40%{transform:scale(1.1);filter:brightness(1.4) drop-shadow(0 0 18px var(--c))}}
-.body.ult{animation:ult .9s}
-@keyframes ult{0%{transform:none}25%{transform:translateY(-18%) scale(1.15);filter:brightness(2) drop-shadow(0 0 30px #fff)}45%{transform:translateY(-18%) scale(1.15);filter:brightness(2) drop-shadow(0 0 30px #fff)}65%{transform:translateX(90%) scale(1.1)}100%{transform:none;filter:none}}
+
 .body.block{animation:blockP .35s}
 @keyframes blockP{40%{filter:drop-shadow(0 0 16px #6fb6ff) brightness(1.3);transform:translateX(-4%)}}
 /* 하단 */
@@ -316,7 +315,7 @@ body.dragging .hand .card{pointer-events:none}
 .card.fused .nm{color:#ffe9a8;text-shadow:0 0 8px rgba(255,200,80,.7)}
 .mergeb{position:absolute;top:-16px;left:50%;transform:translateX(-50%);z-index:3;min-height:28px;padding:3px 10px;border-radius:999px;border:1px solid #ffd75e;background:linear-gradient(180deg,#5a3d9a,#2b1d55);color:#ffe9a8;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;animation:mpulse 1.2s infinite}
 .mergeb small{opacity:.7;margin-left:2px}.mergeb:hover{filter:brightness(1.3)}
-@keyframes mpulse{50%{box-shadow:0 0 14px rgba(255,215,94,.7)}}
+
 .unit.enemy.af-giant{--w:clamp(120px,16vw,185px)}
 .unit.enemy.af-gold .fig{filter:sepia(.6) saturate(2.4) hue-rotate(-12deg) brightness(1.15) drop-shadow(0 0 12px #ffd75e);animation:goldglint 1.6s infinite}
 @keyframes goldglint{50%{filter:sepia(.6) saturate(2.4) hue-rotate(-12deg) brightness(1.45) drop-shadow(0 0 22px #ffe9a8)}}
@@ -788,6 +787,8 @@ body.incombat .stage .battle-art{bottom:-170px;top:0;height:auto}
 body.incombat .stage::after{bottom:-170px}
 body.incombat .stage::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:3;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(0,0,0,.55)),linear-gradient(transparent 62%,rgba(4,5,8,.85))}
 body.incombat .bottom{position:absolute;left:0;right:0;bottom:0;margin:0;height:226px}
+body.incombat .hand{left:170px;right:190px}
+body.incombat .hand .card{bottom:34px}
 body.incombat .lhud{left:22px;bottom:24px}body.incombat .rhud{right:22px;bottom:24px}
 body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @media(prefers-reduced-motion:reduce){.intentf,.energy.pulse{animation:none}}
@@ -1955,7 +1956,6 @@ const $=s=>document.querySelector(s);
 let FXQ=[],AQ=[],FXDELAY=0;
 function pop(target,text,cls){FXQ.push({target:typeof target==='string'?target:'e'+target.uid,text,cls,delay:FXDELAY})}
 function anim(key,cls,delay){AQ.push({key,cls,delay:delay??0})}
-function shakeQ(){}
 const ACLS=['atk','jab','hit','cast','ult','block','enter'];
 const MOTION_STATE={atk:'attack',jab:'attack',hit:'hit',cast:'cast',ult:'ultimate',block:'guard',enter:'cast'};
 function resetSprite(sp,id){
@@ -2069,7 +2069,6 @@ function flyCard(uid,T){
 }
 
 /* ============ 렌더 ============ */
-const esc=s=>String(s);
 const cardArt=id=>`assets/cards/${id}.png`;
 /* 새 카드용 오리지널 문양 일러스트(SVG, 카드 id로 결정적 생성) */
 function procArt(id){
@@ -2193,7 +2192,6 @@ function toTitle(){
 }
 const IS_APP=/Electron/.test(navigator.userAgent);
 function openPause(){if(!S)return;S.modal={kind:'pause'};render()}
-function abandonRun(){if(!confirm('이번 판을 포기할까요? 저장된 진행도 사라져요.'))return;addRecord('quit');clearSave();goMenu('title')}
 function quitGame(){if(S&&S.screen==='map')saveRun();window.close()}
 addEventListener('keydown',e=>{
   if(e.key!=='Escape'||DRAG)return;
