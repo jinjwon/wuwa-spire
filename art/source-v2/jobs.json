@@ -188,12 +188,6 @@
     "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-d9592e9b-87ae-4ea7-8730-102ad66d23b0.png"
   },
   {
-    "kind": "mecha",
-    "key": "mecha",
-    "prompt": "Wuthering Waves Aemeath-inspired Mechascout combat form sprite atlas for pixel-art fan deckbuilder. EXACT 4 columns by 2 rows of equal square cells, eight full-body robot poses on transparent background. White and charcoal feminine sleek mechanical combat armor, glowing magenta core, long swept pink energy wings, blade arm, compact aerodynamic silhouette; recognizable as transformation of the pink-haired sword heroine in attached reference, no human face needed. Facing RIGHT. Row1: idle wings folded, anticipation sword drawn back, forward blade strike, recovery. Row2: defensive crossed-arm guard, recoiling hurt, gathering pink energy, ultimate spread energy wings and overhead huge photon blade. Keep SAME body proportions, scale and foot baseline across all cells. Sprite entirely inside central 65% of cell with large transparent padding, never cross cell boundaries. Crisp chunky 16-bit pixels, dark outline, limited pink-white-black palette. No text labels grid or scenery.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-a61e3fe0-1cf1-4bd0-b6f1-3daba69148ee.png"
-  },
-  {
     "key": "cards_rov",
     "cols": 2,
     "rows": 5,
@@ -225,39 +219,6 @@
     "kind": "cards",
     "prompt": "Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 2 columns x 5 rows, 10 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 8:15. Hero identity: female Rover, black ponytail, black gold outfit, straight sword. Use attached hero atlas only as costume and hair reference. Panels in row-major order: 1. gold sword diagonal slash closeup; 2. Rover sidestepping a black blade with golden afterimage; 3. gold soundwave sweeping ruined ground; 4. concentric golden resonance rings multiplying around black target; 5. Rover lunging with brilliant gold blade; 6. gold star-shaped brand burned into shadow monster; 7. Rover bracing sword in wind against violet ruins; 8. three gold sword afterimages striking in rhythm; 9. dark void split by a thin gold crescent; 10. gold notes and a bell orbiting Rover under stars. Every panel UNIQUE, dramatic readable action with strong central focal object, medium closeup or weapon detail, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, strong shape design, dark navy outlines, luminous signature accent. This will display at 150x84 so avoid tiny details; make subjects large and readable. No card frame, no numbers, NO text or typography, no logos, no UI. Do not repeat identical poses. Professional cohesive game card art.",
     "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-c004c108-06f8-4caa-8c80-2d0ac4d6407a.png"
-  },
-  {
-    "key": "cards_aem",
-    "cols": 2,
-    "rows": 5,
-    "ids": [
-      "aem_a",
-      "aem_b",
-      "aem_s",
-      "aem_dash",
-      "aem_shard",
-      "aem_wing",
-      "aem_star",
-      "aem_sync",
-      "aem_break",
-      "aem_ghost"
-    ],
-    "identity": "Aemeath pink-haired girl white black futuristic outfit pink photon sword",
-    "scenes": [
-      "Aemeath sweeping pink sword slash",
-      "Aemeath ducking behind a pink photon shield",
-      "Aemeath merging into white pink winged mecha silhouette",
-      "pink mecha sword piercing forward with jet trail",
-      "three pink star shards converging on an enemy",
-      "radiant pink mechanical wings unfolding",
-      "Aemeath descending in rain of pink meteors",
-      "two synchronized pink-blue circular core displays",
-      "giant pink sword breaking a dark cosmic barrier",
-      "ghostly pink companion silhouette beside Aemeath"
-    ],
-    "kind": "cards",
-    "prompt": "Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 2 columns x 5 rows, 10 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 8:15. Hero identity: Aemeath pink-haired girl white black futuristic outfit pink photon sword. Use attached hero atlas only as costume and hair reference. Panels in row-major order: 1. Aemeath sweeping pink sword slash; 2. Aemeath ducking behind a pink photon shield; 3. Aemeath merging into white pink winged mecha silhouette; 4. pink mecha sword piercing forward with jet trail; 5. three pink star shards converging on an enemy; 6. radiant pink mechanical wings unfolding; 7. Aemeath descending in rain of pink meteors; 8. two synchronized pink-blue circular core displays; 9. giant pink sword breaking a dark cosmic barrier; 10. ghostly pink companion silhouette beside Aemeath. Every panel UNIQUE, dramatic readable action with strong central focal object, medium closeup or weapon detail, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, strong shape design, dark navy outlines, luminous signature accent. This will display at 150x84 so avoid tiny details; make subjects large and readable. No card frame, no numbers, NO text or typography, no logos, no UI. Do not repeat identical poses. Professional cohesive game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-42eb8411-390b-47fa-8922-de1cc1498648.png"
   },
   {
     "key": "cards_sk",

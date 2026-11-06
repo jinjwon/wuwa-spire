@@ -40,14 +40,14 @@ async function hero(id,rects){
   const idleH=(await sharp(cells[0]).metadata()).height,scale=BODY/idleH; // 대기 자세 키 기준으로 전 프레임 동일 배율
   const p=await Promise.all(cells.map(b=>frame(b,scale)));
   await fs.writeFile(path.join(out,`${id}.png`),p[0]);await fs.writeFile(path.join(out,`${id}_idle.png`),p[0]);
-  await strip(`${id}_attack.png`,p.slice(0,4));
+  await strip(`${id}_attack.png`,p.slice(0,4));if(id==='aemMecha')await strip('motion/aemMecha_attack.png',p.slice(0,4));
   for(const [s,k] of [['guard',4],['hit',5],['cast',6],['ultimate',7]])await strip(`motion/${id}_${s}.png`,[p[0],s==='ultimate'?p[6]:p[k],p[k],p[0]]);
   return p;
 }
-async function cards(id,ids){
+async function cards(id,ids,cols=3,rows=3){
   const file=path.join(src,`cards_${id}.png`);
-  for(const [i,cid] of ids.entries()){const m=await sharp(file).metadata(),w=m.width/3,h=m.height/3;
-    await sharp(file).extract({left:Math.round((i%3)*w)+6,top:Math.round(((i/3)|0)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
+  for(const [i,cid] of ids.entries()){const m=await sharp(file).metadata(),w=m.width/cols,h=m.height/rows;
+    await sharp(file).extract({left:Math.round((i%cols)*w)+6,top:Math.round(Math.floor(i/cols)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
       .resize(144,96,{fit:'cover',kernel:'lanczos3'}).png({palette:true,colours:64,dither:0}).toFile(path.join(out,`cards/${cid}.png`))}
 }
 const HEROES={yin:null,san:'san',car:'car',aem:null,aemMecha:null};
@@ -57,6 +57,7 @@ const OLD=[[ 'exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png',[0,.25,.49,.81,1],[
 const oldRects=()=>Object.fromEntries(OLD.flatMap(([a,ax,ay,ids,b,bx,by])=>ids.map((id,r)=>[id,[
   ...[0,1,2,3].map(c=>[path.join(root,'art/source',a),ax[c],ay[r],ax[c+1],ay[r+1]]),
   ...[0,1,2,3].map(c=>[path.join(src,b+'.png'),bx[c],by[r],bx[c+1],by[r+1]])]])));
+const AEM_CARDS=['aem_a','aem_b','aem_s','aem_dash','aem_shard','aem_wing','aem_star','aem_ghost','aem_break','aem_sync'];
 const CARD_IDS=k=>Array.from({length:9},(_,i)=>`${k}_${i+1}`);
 (async()=>{
   await fs.mkdir(path.join(out,'motion'),{recursive:true});await fs.mkdir(path.join(out,'cards'),{recursive:true});
@@ -64,7 +65,7 @@ const CARD_IDS=k=>Array.from({length:9},(_,i)=>`${k}_${i+1}`);
   for(const id of list){
     const p=await hero(id,R[id]&&process.argv[3]==='old'?R[id]:null);
     for(const f of p){const {data}=await sharp(f).ensureAlpha().raw().toBuffer({resolveWithObject:true});let v=0;for(let i=3;i<data.length;i+=4)v+=data[i]>0;assert(v>800,`${id}: frame nearly empty`)}
-    if(!R[id]||process.argv[3]!=='old')try{await fs.access(path.join(src,`cards_${id}.png`));await cards(id,CARD_IDS(id))}catch{console.log(`skip cards_${id}.png (없음)`)}
+    if(!R[id]||process.argv[3]!=='old')try{await fs.access(path.join(src,`cards_${id}.png`));await (id==='aem'?cards(id,AEM_CARDS,2,5):cards(id,CARD_IDS(id)))}catch{console.log(`skip cards_${id}.png (없음)`)}
   }
   console.log('PASS',PREVIEW?'(preview)':'');
 })();
