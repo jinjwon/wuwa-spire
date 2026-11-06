@@ -4,3 +4,5 @@ dist/
 assets/bgm/*.mp3
 art/reference-review-*/references/
 art/card-gen/
+art/preview-v3/
+art/*/references/*official*
