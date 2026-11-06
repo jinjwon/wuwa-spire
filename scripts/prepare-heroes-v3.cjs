@@ -4,7 +4,8 @@
 const sharp=require('sharp'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),src=path.join(root,'art/source-v2');
 const PREVIEW=process.argv[2]==='preview',out=process.env.OUT?path.resolve(root,process.env.OUT):PREVIEW?path.join(root,'art/preview-v3'):path.join(root,'assets');
-const BODY=104,MECHA_BODY=92,CELL=128,FOOT=122;
+// 새 시트는 256px 프레임(화면 1배). old는 원본이 작아 128px(화면 2배) 유지
+const OLD_MODE=process.argv[3]==='old',CELL=OLD_MODE?128:256,BODY=CELL*13/16,MECHA_BODY=CELL*23/32,FOOT=CELL-6*CELL/128;
 // 반투명 글로우 제거 + 작은 잡티 삭제(< minPx), 옆 칸에서 넘어온 좌우 경계 조각 삭제(< edgePx)
 function clean(data,w,h,cut,minPx,edgePx=0){
   for(let i=3;i<data.length;i+=4)data[i]=data[i]<cut?0:255;
@@ -26,8 +27,8 @@ async function frame(buf,scale){
   const m=await sharp(buf).metadata();let w=Math.round(m.width*scale),h=Math.round(m.height*scale);
   // 면적 평균 축소(붓질 노이즈 제거) → 알파 이진화 → 잡티 제거 → 32색 무디더
   let img=await sharp(buf).resize(w,h,{kernel:'lanczos3'}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
-  clean(img.data,w,h,110,6);
-  let png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:32,dither:0}).toBuffer();
+  clean(img.data,w,h,110,6*(CELL/128)**2);
+  let png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:OLD_MODE?32:64,dither:0}).toBuffer();
   // 이펙트가 커서 칸을 넘으면 몸 크기를 유지한 채 가장자리를 자름
   const L=Math.max(0,Math.floor((w-CELL)/2)),T=Math.max(0,h-FOOT);
   if(w>CELL||h>FOOT){png=await sharp(png).extract({left:L,top:T,width:Math.min(w,CELL),height:Math.min(h,FOOT)}).toBuffer();w=Math.min(w,CELL);h=Math.min(h,FOOT)}
