@@ -1,5 +1,7 @@
 # 첨탑의 메아리 도트 에셋 — 2026-10-30
 
+> 2026-11-06부터 공명자 도트 규칙과 절차는 [docs/art/ART_PIPELINE.md](../docs/art/ART_PIPELINE.md)를 따른다. 아래는 초기 제작 기록이다.
+
 OpenAI 내장 `image_gen`으로 생성한 팬아트입니다. 원작 캐릭터·적의 IP는 Kuro Games에 있습니다. 공식 에셋 또는 상업 이용 허락을 의미하지 않습니다.
 
 ## 1차 제작 기록
@@ -34,7 +36,7 @@ OpenAI 내장 `image_gen`으로 생성한 팬아트입니다. 원작 캐릭터·
 Node 환경에 `sharp`와 `playwright`, 로컬 Chrome이 있으면 다음을 실행합니다. 게임 실행에는 이 개발 도구가 필요하지 않습니다.
 
 ```
-node scripts/prepare-sprites.cjs
+node scripts/prepare-heroes-v3.cjs write
 node scripts/check-sprites.cjs
 ```
 

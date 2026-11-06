@@ -80,7 +80,7 @@ Image 1 is the OFFICIAL reference of Aemeath's mechascout (Exostrider) combat fo
 
 ## 비율 통일 재제작 (2026-11-06)
 
-설정은 [CHARACTER_BIBLE.md](CHARACTER_BIBLE.md)를 따른다.
+설정은 [CHARACTER_BIBLE.md](../lore/CHARACTER_BIBLE.md)를 따른다.
 
 대상: 에이메스(비율 수정), 모니에, 린네, 히유키(산화 대체). 에이메스 카드는 현재 그림을 유지한다.
 
