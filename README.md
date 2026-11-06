@@ -124,6 +124,6 @@ git tag v0.7.1 && git push origin v0.7.1
 
 **디자인 규칙**: [DESIGN.md](DESIGN.md) (명조풍 토큰·부품)
 
-**이미지 교체**: `assets/`에 도트를 넣으면 자동 적용돼요. 규칙은 [assets/README.md](assets/README.md). 원작 색 보정은 `node scripts/recolor.cjs <캐릭터id>` (원본은 `art/backup-recolor/`).
+**이미지 교체**: `assets/`에 도트를 넣으면 자동 적용돼요. 규칙은 [assets/README.md](assets/README.md). 원작 색 보정은 `node scripts/recolor.cjs <캐릭터id>` (원본은 `art/backup-recolor/`). 공명자 도트 재처리는 `node scripts/prepare-heroes-v3.cjs write`만 쓰고, 예전 스크립트 2개는 덮어쓰기 방지로 막혀 있어요.
 
 </details>

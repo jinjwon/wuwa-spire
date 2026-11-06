@@ -4,7 +4,7 @@
 const sharp=require('sharp'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),src=path.join(root,'art/source-v2');
 const PREVIEW=process.argv[2]==='preview',out=process.env.OUT?path.resolve(root,process.env.OUT):PREVIEW?path.join(root,'art/preview-v3'):path.join(root,'assets');
-const BODY=104,CELL=128,FOOT=122;
+const BODY=104,MECHA_BODY=92,CELL=128,FOOT=122;
 // 반투명 글로우 제거 + 작은 잡티 삭제(< minPx), 옆 칸에서 넘어온 좌우 경계 조각 삭제(< edgePx)
 function clean(data,w,h,cut,minPx,edgePx=0){
   for(let i=3;i<data.length;i+=4)data[i]=data[i]<cut?0:255;
@@ -37,7 +37,7 @@ const strip=(name,fr)=>sharp({create:{width:CELL*fr.length,height:CELL,channels:
 async function hero(id,rects){
   const file=path.join(src,`hero_${id}.png`);
   const cells=[];for(let i=0;i<8;i++)cells.push((await (rects?rectOf(...rects[i]):cellOf(file,i%4,i>>2,4,2))).data);
-  const idleH=(await sharp(cells[0]).metadata()).height,scale=BODY/idleH; // 대기 자세 키 기준으로 전 프레임 동일 배율
+  const idleH=(await sharp(cells[0]).metadata()).height,scale=(id==='aemMecha'?MECHA_BODY:BODY)/idleH; // 대기 자세 키 기준으로 전 프레임 동일 배율
   const p=await Promise.all(cells.map(b=>frame(b,scale)));
   await fs.writeFile(path.join(out,`${id}.png`),p[0]);await fs.writeFile(path.join(out,`${id}_idle.png`),p[0]);
   await strip(`${id}_attack.png`,p.slice(0,4));if(id==='aemMecha')await strip('motion/aemMecha_attack.png',p.slice(0,4));
@@ -61,7 +61,7 @@ const AEM_CARDS=['aem_a','aem_b','aem_s','aem_dash','aem_shard','aem_wing','aem_
 const CARD_IDS=k=>Array.from({length:9},(_,i)=>`${k}_${i+1}`);
 (async()=>{
   await fs.mkdir(path.join(out,'motion'),{recursive:true});await fs.mkdir(path.join(out,'cards'),{recursive:true});
-  const R=oldRects(),list=(process.argv[3]==='old'?Object.keys(R):Object.keys(HEROES)).filter(id=>!process.env.IDS||process.env.IDS.split(',').includes(id));
+  const R=oldRects(),list=(process.argv[3]==='old'?Object.keys(R).filter(id=>id!=='aem'):Object.keys(HEROES)).filter(id=>!process.env.IDS||process.env.IDS.split(',').includes(id));
   for(const id of list){
     const p=await hero(id,R[id]&&process.argv[3]==='old'?R[id]:null);
     for(const f of p){const {data}=await sharp(f).ensureAlpha().raw().toBuffer({resolveWithObject:true});let v=0;for(let i=3;i<data.length;i+=4)v+=data[i]>0;assert(v>800,`${id}: frame nearly empty`)}
