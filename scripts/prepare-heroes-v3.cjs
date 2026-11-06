@@ -50,7 +50,7 @@ async function cards(id,ids){
     await sharp(file).extract({left:Math.round((i%3)*w)+6,top:Math.round(((i/3)|0)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
       .resize(144,96,{fit:'cover',kernel:'lanczos3'}).png({palette:true,colours:64,dither:0}).toFile(path.join(out,`cards/${cid}.png`))}
 }
-const HEROES={yin:null,san:'san',car:'car'};
+const HEROES={yin:null,san:'san',car:'car',aem:null,aemMecha:null};
 // 기존 7명: 대기·공격 4프레임 = art/source 원본, 방어·피격·시전·해방 = source-v2 heroesA/B (prepare-sprites / prepare-art-v2와 같은 좌표)
 const OLD=[[ 'exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png',[0,.25,.49,.81,1],[0,.26,.51,.745,1],['rov','rovM','aem','sk'],'heroesA',[0,.245,.48,.755,1],[0,.285,.535,.77,1]],
   ['exec-8f038a01-3412-4384-93c2-45eb51ce106e.png',[0,.25,.49,.79,1],[0,.26,.505,.74,1],['lyn','mor','chi','cam'],'heroesB',[0,.245,.48,.755,1],[0,.265,.515,.755,1]]];
