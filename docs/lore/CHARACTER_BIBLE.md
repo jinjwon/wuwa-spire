@@ -8,7 +8,7 @@
 | 에이메스 Aemeath | 용융 | 검 | 로야 부족, 스타토치 아카데미 | 오버클럭으로 엑소스트라이더와 공명하다 육체를 잃음. 방랑자에게만 보이는 디지털 유령. 어린 시절 방랑자를 만남 | Towards the Daybreak, Overture of Departure, Silent Protection | 속성·무기 일치 |
 | 모니에 Mornye | 용융 | 대검 | 우주 탐사 연구회, 스타토치 아카데미 | 엑소스트라이더 공학 교수, 연구소 프로젝트 책임자. 20년 전 방랑자의 지인. 솔라리스 너머 탐사가 꿈 | Critical Protocol, Mass-Energy Equivalence, Convergence, Recursion | 속성·무기 일치 |
 | 린네 Lynae | 회절 | 권총 | 스타토치 예비 과정, 무법 지대 출신 | 전직 용병. 자유를 위해 프락시더스 첩자인 진짜 린네의 신분을 훔침. 하루하루를 즐기는 자유로운 영혼 | Prismatic Overblast, Chromaticity Modeling, Let's Hit the Road! | 속성·무기 일치 |
-| 치사 Chisa | 인멸 | 대검 | 스타토치 아카데미 | 침착한 학생. 모든 것을 분해·분석하지만 끊어질 수 있어 소중한 유대만은 예외 | Moment of Nihility, Sight of Unraveling, Unraveling - Law Zero | 속성·무기 일치 (가위 형태는 미확인) |
+| 치사 Chisa | 인멸 | 대검 | 스타토치 아카데미 | 침착한 학생. 모든 것을 분해·분석하지만 끊어질 수 있어 소중한 유대만은 예외 | Moment of Nihility, Sight of Unraveling, Unraveling - Law Zero | 속성·무기 일치 (공식 이미지에서 가위형 대검 확인) |
 | 카멜리아 Camellya | 인멸 | 검 | 검은 해안 블룸 베어러 | 신입 후보의 전투 시험 담당. 책임을 거부하고 전투의 스릴을 즐김 | Fervor Efflorescent, Vegetative Universe, Everblooming | 속성·무기 일치 |
 | 파수인 Shorekeeper | 회절 | 증폭기 | 검은 해안 | 검은 해안의 수호자 "두 번째 개체". 소노로 구체와 잔상 에너지 결정으로 이뤄진 존재 | End Loop, Astral Chord, Binary Butterfly | 속성·무기 일치 |
 | 음림 Yinlin | 전도 | 증폭기 | 공안국 출신, 강령회 | 뛰어난 순찰관이었으나 직무 정지. 숨은 악을 비밀리에 추적 | Zapstring's Dance, Magnetic Roar, Thundering Wrath, Chameleon Cipher | 미구현 |
