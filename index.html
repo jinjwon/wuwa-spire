@@ -741,20 +741,20 @@ body{background:var(--bg)}
 /* ===== 도트 모션 v2 — 계단식(steps) 움직임으로 도트 느낌 유지하면서 생동감 ===== */
 /* 대기: 4프레임 숨쉬기(눌림·늘어남) + 살짝 흔들림, 유닛마다 박자 다르게 */
 .unit .fig:has(.sprite){animation:pxIdle 1.8s steps(4,end) infinite;animation-delay:var(--dl,0s)}
-@keyframes pxIdle{0%{transform:none}25%{transform:translateY(-2px) scale(.99,1.015)}50%{transform:translateY(-3px) scale(.985,1.025) rotate(-.6deg)}75%{transform:translateY(-1px) scale(1.01,.99)}100%{transform:none}}
+@keyframes pxIdle{0%,100%{transform:none}50%{transform:translateY(-2px)}}
 .unit.enemy.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite;animation-delay:var(--dl,0s)}
-@keyframes pxHover{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-12px) rotate(1.5deg)}}
+@keyframes pxHover{0%,100%{transform:none}50%{transform:translateY(-12px)}}
 .unit .shadow{animation:pxShadow 1.8s steps(4,end) infinite;animation-delay:var(--dl,0s)}
 @keyframes pxShadow{50%{transform:scaleX(.9);opacity:.75}}
 /* 출전 중 공명자: 전투 자세(앞으로 살짝 기울고 빠른 박자) */
 .unit.party.s0 .fig:has(.sprite){animation:pxReady 1.2s steps(4,end) infinite}
-@keyframes pxReady{0%,100%{transform:rotate(1deg)}50%{transform:translateY(-3px) scale(.99,1.02) rotate(2deg)}}
+@keyframes pxReady{0%,100%{transform:none}50%{transform:translateY(-2px)}}
 /* 체력 30% 이하: 거친 숨(빠르고 낮게) */
 .unit.party.hurt .fig:has(.sprite){animation:pxPant .6s steps(2,end) infinite}
-@keyframes pxPant{50%{transform:translateY(2px) scale(1.02,.97) rotate(3deg)}}
+@keyframes pxPant{50%{transform:translateY(2px)}}
 /* 다음 행동이 공격인 적: 힘을 모으며 앞으로 기욺(예고) */
 .unit.enemy.charging .fig:has(.sprite){animation:pxCharge 1s steps(4,end) infinite}
-@keyframes pxCharge{0%,100%{transform:rotate(-2deg)}50%{transform:translateX(-4px) scale(1.03,.97) rotate(-4deg)}}
+@keyframes pxCharge{0%,100%{transform:none}50%{transform:translateX(-4px)}}
 /* 맞을 때: 흰색 번쩍 2프레임 + 뒤로 밀렸다 돌아옴(계단식) */
 .unit .body.hit .sprite{animation-play-state:paused}
 .body.hit .fig{animation:pxHit .36s steps(4,end)!important}
@@ -797,6 +797,16 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @keyframes epiglow{50%{box-shadow:0 0 0 2px #fff4cf,0 0 34px 12px rgba(255,214,120,.95)}}
 .epis{display:flex;gap:10px;margin-top:14px}.epis .choice{flex:1;min-height:88px}.epx{color:#ffe08a}
 @media(prefers-reduced-motion:reduce){.card.epi{animation:none}}
+/* 도트 정수배 표시: 128px 원본을 2배(3배)로만 보여 픽셀을 고르게 유지 */
+#stage{--ph:256px;--px2:256px;--px3:384px}
+#stage .unit.party.s1{--sc:.5}#stage .unit.party.s2{--sc:.5}
+#stage .unit.enemy,#stage .unit.enemy.elite,#stage .unit.enemy.af-giant,#stage .unit.enemy.boss.twin{--w:var(--px2)}
+#stage .unit.enemy.boss{--w:var(--px3)}#stage .unit.enemy.minion{--w:128px}
+.unit.enemy.boss .fig:has(.sprite){animation:pxIdle 1.8s steps(4,end) infinite}
+.unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
+.cutin .img{background-size:512px 512px;background-position:center bottom;image-rendering:pixelated}
+.battle-art img{image-rendering:auto}
+@media(min-height:1200px){#stage{--ph:384px;--px2:384px;--px3:512px}}
 </style>
 </head>
 <body>
