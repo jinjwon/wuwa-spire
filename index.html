@@ -797,16 +797,17 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @keyframes epiglow{50%{box-shadow:0 0 0 2px #fff4cf,0 0 34px 12px rgba(255,214,120,.95)}}
 .epis{display:flex;gap:10px;margin-top:14px}.epis .choice{flex:1;min-height:88px}.epx{color:#ffe08a}
 @media(prefers-reduced-motion:reduce){.card.epi{animation:none}}
-/* 도트 정수배 표시: 128px 원본을 2배(3배)로만 보여 픽셀을 고르게 유지 */
+/* 도트 정수배 표시: 프레임 256px은 1배, 128px은 2배(보스 3배)로만 보여 픽셀을 고르게 유지 */
 #stage{--ph:256px;--px2:256px;--px3:384px}
 #stage .unit.party.s1{--sc:.5}#stage .unit.party.s2{--sc:.5}
 #stage .unit.enemy,#stage .unit.enemy.elite,#stage .unit.enemy.af-giant,#stage .unit.enemy.boss.twin{--w:var(--px2)}
+#stage .unit.enemy:not(.elite):not(.boss):not(.af-giant){--w:192px}
+#stage .unit.enemy:not(.elite):not(.boss):not(.af-giant) .sprite img{image-rendering:auto} /* shortcut: 1.5배라 부드럽게 표시, 적 256px 재제작 후 제거 */
 #stage .unit.enemy.boss{--w:var(--px3)}#stage .unit.enemy.minion{--w:128px}
 .unit.enemy.boss .fig:has(.sprite){animation:pxIdle 1.8s steps(4,end) infinite}
 .unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
 .cutin .img{background-size:512px 512px;background-position:center bottom;image-rendering:pixelated}
 .battle-art img{image-rendering:auto}
-@media(min-height:1200px){#stage{--ph:384px;--px2:384px;--px3:512px}}
 </style>
 </head>
 <body>
@@ -2416,7 +2417,7 @@ function battleBackground(region=regionArt()){
 function enemyPos(n,i,boss,slot){
   if(slot!=null)return slot?[46,44]:[58,14];
   if(boss)return n>1?(i?[86,22]:[66,14]):[74,20];
-  const xs=n===1?[74]:n===2?[64,86]:[58,73,88];const ys=n===3?[22,28,21]:[22,24];
+  const xs=n===1?[74]:n===2?[62,84]:[54,70,86];const ys=n===3?[22,28,21]:[22,24];
   return[xs[i],ys[i]];
 }
 const FLY=['cheron_x','vheron_x','mephis_x','hecate_x','chirp','cruise','cheron','vheron','aix','mephis','hecate','levia','aleph','zig','explorer'];
