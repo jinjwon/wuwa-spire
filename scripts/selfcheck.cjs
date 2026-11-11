@@ -59,6 +59,10 @@ const CHECKS = {
     playCard(a.uid,T);const paused=S.modal&&S.modal.kind==='epi'&&S.modal.opts.length===3&&new Set(S.modal.opts).size===3&&c.energy===e&&T.hp===h&&c.hand.includes(a);
     pickEpiphany('sharp');const once=!S.modal&&c.epi===1&&!c.epiUid&&a.ep==='sharp'&&S.deck.find(x=>x.uid===a.uid).ep==='sharp';const dmg=vals(a).d===Math.ceil(6*1.3)&&h-T.hp>=8;
     const b=mk('aem_a');b.ep='light';const cost=costOf(b)===0;return paused&&once&&dmg&&cost&&cardText(a).includes('수치 +30%')})()`,
+  hiyuki_frost: `(async()=>{newGame('hiy',0);S.ancient=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,800));
+    const T=alive()[0];T.hp=T.maxHp=500;T.block=0;frost(T,3);const a=T.fr===3&&!T.broken;const h=T.hp;frost(T,1);const b=T.fr===0&&T.broken===1&&T.hp<h;
+    const art=await Promise.all(Object.keys(CD).filter(k=>CD[k].o==='hiy').map(k=>new Promise(r=>{const i=new Image();i.onload=()=>r(1);i.onerror=()=>r(0);i.src=cardArt(k)})));
+    return a&&b&&ALL.includes('hiy')&&art.length===9&&art.every(Boolean)&&S.deck.some(x=>CD[x.id].o==='hiy')})()`,
   new_cards_weapons: `(async()=>{newGame('aem',0);S.ancient=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
     const c=S.c;c.energy=3;const T=alive()[0];T.hp=T.maxHp=500;
     T.block=0;const x=mk('any_overload');c.hand.push(x);const h=T.hp;playCard(x.uid,T);const xOk=c.energy===0&&h-T.hp===12;

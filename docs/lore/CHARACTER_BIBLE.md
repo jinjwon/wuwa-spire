@@ -13,7 +13,7 @@
 | 파수인 Shorekeeper | 회절 | 증폭기 | 검은 해안 | 검은 해안의 수호자 "두 번째 개체". 소노로 구체와 잔상 에너지 결정으로 이뤄진 존재 | End Loop, Astral Chord, Binary Butterfly | 속성·무기 일치 |
 | 음림 Yinlin | 전도 | 증폭기 | 공안국 출신, 강령회 | 뛰어난 순찰관이었으나 직무 정지. 숨은 악을 비밀리에 추적 | Zapstring's Dance, Magnetic Roar, Thundering Wrath, Chameleon Cipher | 미구현 |
 | 카르티시아 Cartethyia | 기류 | 검 | 심해 기사단 | 리나시타에서 성녀 플뢰르들리스로 숭배됨. 칭호에서 벗어나 정의로운 방랑 기사로 살기를 바람 | Sword to Carve My Forms, Tempest, Wind's Divine Blessing | 미구현 |
-| 히유키 Hiyuki | 응결 | 검 | 특별 대응대, 플레이밍 사쿠라의 무녀 | 한 세기 넘게 무녀로 봉직. 고향을 지키지 못한 죄책감. 유산 부적 「스즈」로 자신의 "어떤 가능성"을 인지·활용 | Flaming Sakura Blade Art, Everfrost Dominion, Frostedge, Snowlight Blessing | 미구현 |
+| 히유키 Hiyuki | 응결 | 검 | 특별 대응대, 플레이밍 사쿠라의 무녀 | 한 세기 넘게 무녀로 봉직. 고향을 지키지 못한 죄책감. 유산 부적 「스즈」로 자신의 "어떤 가능성"을 인지·활용 | Flaming Sakura Blade Art, Everfrost Dominion, Frostedge, Snowlight Blessing | 구현 |
 
 한국어 소속명은 임시 번역이다. 게임 내 한국어 표기로 확인되면 바꾼다.
 

@@ -899,7 +899,7 @@ const mk=(id,up=false)=>({uid:UID++,id,up});
 
 /* ============ 공명자 ============ */
 const EL={용융:'#ff7a45',회절:'#ffd75e',응결:'#7fd8ff',전도:'#b48cff',기류:'#6fe3b0',인멸:'#e0558a',물리:'#cfc3a6'};
-const ALL=['rov','aem','sk','lyn','mor','chi','cam'];
+const ALL=['rov','aem','sk','lyn','mor','chi','cam','hiy'];
 const T_=()=>S?S.team:ALL;
 const CH={
   rov:{name:'방랑자',el:'회절',color:'#f3d36b',maxHp:64,ini:'방',tag:'주인공',
@@ -935,6 +935,12 @@ const CH={
     outro:'협주 「해체: 제로 법칙」: 모든 적 해체 2, 다음 공명자 체력 4 회복',
     lib:'공명 해방 「허무의 순간」: 모든 적에게 10 피해 + 해체 3, 모든 공명자 5 회복',
     join:'"분석 완료. 당신과 함께 가는 게 가장 합리적인 선택이에요."'},
+  hiy:{name:'히유키',el:'응결',color:'#9fdcff',maxHp:62,ini:'히',tag:'특별 대응대 · 플레이밍 사쿠라의 무녀',
+    desc:'부적 「스즈」를 지닌 무녀 검사. 공격으로 적에게 서리를 쌓고, 서리 4에서 적을 얼려 다음 행동을 끊습니다.',
+    intro:'변주 「설풍」: 무작위 적에게 6 피해, 서리 2',
+    outro:'협주 「눈의 장막」: 보호막 4, 모든 적 서리 1',
+    lib:'공명 해방 「영원한 서리의 영역」: 모든 적에게 12 피해, 서리 3',
+    join:'"…스즈가 울렸어요. 당신과 함께 가라는 뜻이겠죠."'},
   cam:{name:'카멜리아',el:'인멸',color:'#e0405e',maxHp:68,ini:'카',tag:'검은해안 · 블룸 베어러',
     desc:'싸움 그 자체를 즐기는 검은해안의 블룸 베어러. 체력을 깎아 개화를 피우고, 개화만큼 공격이 강해집니다.',
     intro:'변주 「영원한 개화」: 무작위 적에게 9 피해',
@@ -1009,6 +1015,15 @@ const CD={
   chi_bond:{n:'끊어지지 않는 인연',o:'chi',c:1,t:'파워',pw:1,v:{h:[3,4]},tx:V=>`파워: 매 턴 시작 시 출전 공명자 체력 ${V.h} 회복.`,p:V=>{S.c.bond+=V.h}},
   chi_blade:{n:'해체의 시선',o:'chi',c:2,t:'공격',tg:1,v:{d:[10,14]},tx:V=>`피해 ${V.d}. 대상의 해체 수치 ×2 만큼 추가 피해.`,p:(V,T)=>hit(T,V.d+(T.ur||0)*2)},
   // 카멜리아
+  hiy_a:{n:'서리 베기',o:'hiy',c:1,t:'공격',tg:1,v:{d:[6,9]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d),start:1},
+  hiy_b:{n:'빙벽 자세',o:'hiy',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
+  hiy_s:{n:'서릿날 견제',o:'hiy',c:1,t:'스킬',v:{b:[4,6]},tx:V=>`보호막 ${V.b}. 모든 적 서리 1.`,p:V=>{gainBlock(V.b);alive().forEach(e=>frost(e,1))},start:1},
+  hiy_bloom:{n:'얼음꽃 개화',o:'hiy',c:1,t:'공격',v:{d:[5,7]},tx:V=>`모든 적에게 피해 ${V.d}, 서리 1.`,p:V=>alive().forEach(e=>{hit(e,V.d);frost(e,1)})},
+  hiy_edge:{n:'서릿날',o:'hiy',c:0,t:'공격',tg:1,v:{d:[4,6]},tx:V=>`피해 ${V.d}. 서리 1.`,p:(V,T)=>{hit(T,V.d);frost(T,1)}},
+  hiy_suzu:{n:'부적 스즈',o:'hiy',c:[1,0],t:'파워',pw:1,tx:()=>`파워: 턴 시작 시 모든 적 서리 1.`,p:()=>{S.c.suzu++}},
+  hiy_art:{n:'플레이밍 사쿠라 검술',o:'hiy',c:2,t:'공격',tg:1,r:1,v:{d:[4,5]},tx:V=>`피해 ${V.d}×3. 한 번 벨 때마다 서리 1.`,p:(V,T)=>{for(let i=0;i<3;i++){hit(T,V.d);frost(T,1)}}},
+  hiy_shatter:{n:'빙결 분쇄',o:'hiy',c:1,t:'공격',tg:1,v:{d:[5,7],m:[4,5]},tx:V=>`대상의 서리를 모두 써서 피해 ${V.d} + 서리×${V.m}.`,p:(V,T)=>{const n=T&&T.fr||0;if(T)T.fr=0;hit(T,V.d+n*V.m)}},
+  hiy_bless:{n:'설광의 축복',o:'hiy',c:1,t:'스킬',v:{b:[6,8]},tx:V=>`보호막 ${V.b}. 파티 전원 체력 3 회복.`,p:V=>{gainBlock(V.b);T_().forEach(x=>heal(x,3))}},
   cam_a:{n:'일반 공격',o:'cam',c:1,t:'공격',tg:1,v:{d:[7,10]},tx:V=>`피해 ${V.d}.`,p:(V,T)=>hit(T,V.d),start:1},
   cam_b:{n:'회피',o:'cam',c:1,t:'스킬',v:{b:[5,8]},tx:V=>`보호막 ${V.b}.`,p:V=>gainBlock(V.b),start:1},
   cam_s:{n:'피고 지는 왈츠',o:'cam',c:1,t:'공격',tg:1,v:{d:[5,7]},tx:V=>`피해 ${V.d}. 개화 +2. 카멜리아 체력 -1.`,p:(V,T)=>{hit(T,V.d);bloom(2);selfHurt('cam',1)},start:1},
@@ -1164,9 +1179,12 @@ const sonata=el=>S.echoes.filter(e=>echoEl(e)===el).length;
 const son2=el=>sonata(el)>=2,son4=el=>sonata(el)>=4;
 /* 명조 ②: 속성 이상 상태 — 공격 카드가 출전 공명자 속성의 상태를 대상에게 쌓음 */
 function applyElem(T,el){if(!T||T.dead)return;const n=1+(son4(el)?1:0);
-  if(el==='회절')fz(T,n);else if(el==='인멸')unravel(T,n);
+  if(el==='회절')fz(T,n);else if(el==='인멸')unravel(T,n);else if(el==='응결')frost(T,n);
   else if(el==='용융'){T.fb=(T.fb||0)+n;pop(T,`용융 폭발 ${T.fb}/4`,'info');
     if(T.fb>=4){T.fb=0;const own=S.c.cur;sfx('boom');if(!window.FAST)flash(EL.용융);log(`${EN[T.id].n} — 용융 폭발!`);dmgEnemy(T,12,true,'burst');alive().forEach(e=>e!==T&&dmgEnemy(e,4,true,'burst'));S.c.cur=own}}}
+/* 응결 → 서리: 4 쌓이면 빙결 — 8 피해 + 공진 파괴(다음 행동 건너뜀) */
+function frost(T,n){if(!T||T.dead)return;T.fr=(T.fr||0)+n;pop(T,`서리 ${Math.min(4,T.fr)}/4`,'info');
+  if(T.fr>=4){T.fr=0;const own=S.c.cur;sfx('crit');if(!window.FAST)flash(EL.응결);log(`${EN[T.id].n} — 빙결!`);dmgEnemy(T,8,true,'burst');S.c.cur=own;if(!T.dead)addVib(T,T.vibMax)}}
 const echoHook=(k,...a)=>S.echoes.forEach(e=>ECHO[e]&&ECHO[e][k]&&ECHO[e][k](...a));
 const TREASURE_ECHO=['tuner','pendant','charm','gulp','vjun','fdread','hoar','zig',...Object.keys(ECHO).filter(k=>k.startsWith('e_'))];
 const has=id=>S.echoes.includes(id);
@@ -1327,7 +1345,7 @@ function spawn(id){
 function startCombat(ids,kind,fname){
   const lead=T_().find(id=>!S.party[id].down);
   S.c={kind,enemies:ids.map(spawn),draw:(()=>{const a=shuffle(S.deck.map(c=>({...c})));a.sort((x,y)=>(x.ench==='innate')-(y.ench==='innate'));return a})(),discard:[],hand:[],exhaust:[],energy:0,block:0,amp:0,weak:0,
-    field:{t:0,b:0},orbit:0,melody:0,ghost:0,mecha:false,active:lead,conc:Object.fromEntries(T_().map(id=>[id,0])),lib:Object.fromEntries(T_().map(id=>[id,0])),paint:0,bloom:0,calc:0,calcNow:0,nextE:0,hyp:0,bond:0,freeBrush:0,camUni:0,
+    field:{t:0,b:0},orbit:0,melody:0,ghost:0,mecha:false,active:lead,conc:Object.fromEntries(T_().map(id=>[id,0])),lib:Object.fromEntries(T_().map(id=>[id,0])),paint:0,bloom:0,calc:0,calcNow:0,nextE:0,hyp:0,bond:0,freeBrush:0,camUni:0,suzu:0,
     switched:0,turn:0,tgt:null,log:[],busy:false,cur:lead,id:UID++};
   if(kind==='elite'&&S.burn)S.c.enemies.forEach(e=>{e.maxHp=e.hp=Math.round(e.hp*1.25);e.str+=2;e.burn=1});
   twinScale();applyAffixes(kind);S.c.fname=fname;
@@ -1451,6 +1469,7 @@ function startTurn(){
   if(c.field.t>0){gainBlock(c.field.b);heal(c.active,2);c.field.t--}
   if(c.orbit){gainBlock(c.orbit);gainConc(c.active,1)}
   if(c.melody)alive().forEach(e=>fz(e,c.melody));
+  if(c.suzu)alive().forEach(e=>frost(e,c.suzu));
   echoHook('ts',c);c.atkN=0;c.seq=[];
   if(son2('응결'))gainBlock(3);if(son4('응결')&&c.turn===1)alive().forEach(e=>{e.weak+=2});
   if(son2('기류'))gainConc(c.active,1);if(son2('전도'))gainLib(c.active,1);
@@ -1673,6 +1692,7 @@ function outro(id,inc){
   if(id==='mor'){gainBlock(4);c.amp=Math.max(c.amp,1)}
   if(id==='chi'){alive().forEach(e=>unravel(e,2));heal(inc,4)}
   if(id==='cam'){alive().forEach(e=>{e.weak+=1});c.amp=Math.max(c.amp,1)}
+  if(id==='hiy'){gainBlock(4);alive().forEach(e=>frost(e,1))}
 }
 function intro(id){
   const c=S.c;if(!alive().length)return;
@@ -1683,6 +1703,7 @@ function intro(id){
   if(id==='mor')gainBlock(6);
   if(id==='chi'){const T=pick(alive());hit(T,6);unravel(T,2)}
   if(id==='cam')hit(pick(alive()),9);
+  if(id==='hiy'){const T=pick(alive());hit(T,6);frost(T,2)}
 }
 const LIB_TG={rov:1,aem:1,mor:1,cam:1};
 function clickLib(){
@@ -1700,6 +1721,7 @@ function doLib(T){if(son4('전도')&&S.c)S.c.energy++;
   if(id==='mor'){gainBlock(15);hit(T,c.block,{raw:1})}
   if(id==='chi'){alive().forEach(e=>{hit(e,10);unravel(e,3)});T_().forEach(x=>heal(x,5))}
   if(id==='cam'){hit(T,26);bloom(3)}
+  if(id==='hiy')alive().forEach(e=>{hit(e,12);frost(e,3)});
   (LIB_TG[id]?[[T,[0,110,220]]]:alive().map(e=>[e,[60]])).forEach(([e,ts])=>e&&!e.dead&&ts.forEach(t=>vfx(WEAPON[id],'e'+e.uid,{c:CH[id].color,big:1,from:'u-'+id},FXDELAY+t)));
   setTimeout(()=>libFinale(id),FXDELAY);
   FXDELAY=0;alive().forEach(e=>addVib(e,3));gainConc(id,1);
@@ -1890,6 +1912,7 @@ const REST_LINES=[
   ['mor','"휴식도 계산에 넣어야 효율이 나와요. 자, 앉으세요."'],
   ['chi','"상처 부위, 보여 주세요. 금방 정리할게요."'],
   ['cam','"벌써 쉬어? …뭐, 꽃도 물은 마셔야지."'],
+  ['hiy','"잠시 눈을 붙이세요. 경계는 제가 설게요."'],
 ];
 function restHeal(){T_().forEach(id=>{const p=S.party[id];if(p.down){p.down=false;p.hp=1}p.hp=Math.min(p.maxHp,p.hp+Math.round(p.maxHp*(S.asc>=5?.22:.3)))});S.restDone=`모든 공명자가 최대 체력의 ${S.asc>=5?22:30}%를 회복했습니다.`;render()}
 function restUp(){chooseCard(x=>!x.up&&!CD[x.id].unplay,'강화할 카드',x=>{x.up=true;S.restDone=`「${CD[x.id].n}」 강화 완료.`;S.modal=null;render()})}
@@ -2029,7 +2052,7 @@ function flushFx(){
   },a.delay));
 }
 let VQ=[],HITSEQ=0;
-const WEAPON={rov:'sword',aem:'sword',sk:'orb',lyn:'shot',mor:'heavy',chi:'heavy',cam:'sword'};
+const WEAPON={rov:'sword',aem:'sword',sk:'orb',lyn:'shot',mor:'heavy',chi:'heavy',cam:'sword',hiy:'sword'};
 function vfx(type,key,o,delay){VQ.push({type,key,o:o||{},delay:delay??FXDELAY})}
 function centerOf(key){const el=bodyOf(key);if(!el)return null;const r=el.getBoundingClientRect();return{x:r.left+r.width/2,y:r.top+r.height*.45,w:r.width,h:r.height,b:r.bottom}}
 function fxEl(html,cls,x,y,style,life){const d=document.createElement('div');d.className='vfx '+cls;d.innerHTML=html;d.style.left=x+'px';d.style.top=y+'px';if(style)d.setAttribute('style',d.getAttribute('style')+';'+style);$('#fx').appendChild(d);setTimeout(()=>d.remove(),life||700);return d}
@@ -2123,7 +2146,8 @@ function procArt(id){
 const TYPESYM={공격:'⚔',스킬:'◈',파워:'✦',저주:'✕',상태:'⚠'};
 const KW={
   '용융 폭발':'용융 공명자의 공격으로 쌓여요. 4가 되면 터져서 그 적에게 12, 다른 적에게 4 피해.',
-  '속성 이상':'공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → 용융 폭발.',
+  '속성 이상':'공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → 용융 폭발, 응결 → 서리.',
+  '서리':'응결 공명자의 공격으로 쌓여요. 4가 되면 빙결: 그 적에게 8 피해, 다음 행동을 건너뛰고 받는 피해 +50%.',
   '완벽 회피':'적 공격을 보호막으로 전부 막으면 완벽 회피! 그 적에게 반격 3 피해 + 협주 에너지 +1 (턴당 3번까지).',
   '소나타':'같은 속성 에코를 2개 모으면 2세트, 4개면 4세트 효과. 상단 속성 칩에 마우스를 올리면 보여요.',
   '카드 조합':'한 턴에 쓴 카드 종류(공=공격, 스=스킬) 3장의 순서가 레시피와 맞으면 추가 효과가 터져요. 두 공명자 이상의 카드가 섞이면 합주로 효과 ×1.5.',
@@ -2326,7 +2350,7 @@ function helpHTML(){
       <div class="hs-row"><div style="width:220px"><div class="hpb" style="position:relative"><i class="cur" style="width:70%"></i><span>48 / 70</span></div><div class="vib"><i style="width:80%"></i></div></div>
       <p style="flex:1">체력 바 아래 <b>노란 바</b>가 진동 게이지예요. 공격 한 번에 1, 협주→변주·공명 해방은 3씩 차요. 가득 차면 <b>공진 파괴</b> — 적은 다음 행동을 건너뛰고, 그동안 받는 피해가 50% 늘어나요. 보스는 게이지가 더 커요.</p></div></section>
     <section class="hs"><small class="eng">STEP 8 · 명조의 전투</small><h3>속성 이상 · 완벽 회피 · 에코 소나타</h3>
-      <p><b>속성 이상</b> — 공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → <b>용융 폭발</b>(4 쌓이면 터져서 12 + 주변 4).</p>
+      <p><b>속성 이상</b> — 공격 카드를 쓰면 출전 공명자 속성의 상태가 대상에게 쌓여요. 회절 → 회절 잔향, 인멸 → 해체, 용융 → <b>용융 폭발</b>(4 쌓이면 터져서 12 + 주변 4), 응결 → <b>서리</b>(4 쌓이면 빙결: 8 피해 + 공진 파괴).</p>
       <p><b>완벽 회피</b> — 적 공격을 보호막으로 전부 막으면 반격 3 피해 + 협주 에너지 +1 (턴당 3번).</p>
       <p><b>에코 소나타</b> — 같은 속성 에코를 2개·4개 모으면 세트 효과. 상단 속성 칩에 마우스를 올려 확인해요.</p>
       <p><b>카드 조합</b> — 한 턴에 쓴 카드 3장의 순서(공·스)가 맞으면 추가 효과. 다른 공명자 카드가 섞이면 합주 ×1.5.</p></section>
@@ -2495,7 +2519,7 @@ function updateCombat(){
     const inf=el.querySelector('.intentf');inf.innerHTML=e.dead||c.ending?'':intentHTML(e);inf.dataset.tip=e.dead?'':`<b>${e.move.n}</b><br>${intentTitle(e).split(': ')[1]||''}`;
     el.querySelector('.nametag').innerHTML=`<b>${d.n}</b> · ${d.g}`;
     const s=[];if(e.str)s.push(stc(`힘 ${e.str}`,'var(--gold)','힘'));if(e.vuln)s.push(stc(`취약 ${e.vuln}`,'#ffb36b','취약'));
-    if(e.weak)s.push(stc(`약화 ${e.weak}`,'','약화'));if(e.fz)s.push(stc(`잔향 ${e.fz}`,EL.회절,'회절 잔향'));if(e.ur)s.push(stc(`해체 ${e.ur}`,'#9aa8ff','해체'));if(e.fb)s.push(stc(`폭발 ${e.fb}/4`,EL.용융,'용융 폭발'));
+    if(e.weak)s.push(stc(`약화 ${e.weak}`,'','약화'));if(e.fz)s.push(stc(`잔향 ${e.fz}`,EL.회절,'회절 잔향'));if(e.ur)s.push(stc(`해체 ${e.ur}`,'#9aa8ff','해체'));if(e.fb)s.push(stc(`폭발 ${e.fb}/4`,EL.용융,'용융 폭발'));if(e.fr)s.push(stc(`서리 ${e.fr}/4`,EL.응결,'서리'));
     if(e.affix)s.unshift(`<span class="st afx" style="color:${AFFIX[e.affix].c}"${tipAttr(`<b>변이 · ${AFFIX[e.affix].n}</b><br>${AFFIX[e.affix].tx}`)}>${AFFIX[e.affix].i}${AFFIX[e.affix].n}</span>`);
     const pv=d.pv;if(pv&&!(pv.k==='enrage'&&e.p2))s.unshift(stc(pv.n+(pv.k==='static'?` ${4-(S.c.cards||0)%4}`:''),'#ff9ab0',pv.n,pv.tx));
     el.querySelector('.sts').innerHTML=s.join('');
