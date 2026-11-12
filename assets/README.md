@@ -62,6 +62,10 @@ feet aligned to the bottom edge, 16-bit SNES style, limited palette, crisp pixel
 
 GPT가 만든 이미지는 프레임 간격이 정확하지 않을 수 있어요. 그럴 때는 이미지 편집 도구로 프레임을 같은 간격으로 다시 잘라 붙이세요. Aseprite나 Piskel(무료, 웹)을 쓰면 쉬워요.
 
+## 스킬 임팩트
+
+`fx/<spectro|fusion|glacio|electro|aero|havoc>.png`: 속성별 피격 임팩트, 64×64 6프레임. `node scripts/make-vfx.cjs`로 다시 만듭니다(AI 생성 아님).
+
 ## 추가 동작·지도·카드
 
 - `motion/<id>_<state>.png`: guard, hit, cast, ultimate. 적은 enemy 접두사와 attack, cast, hit를 사용합니다.

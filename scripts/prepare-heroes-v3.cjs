@@ -23,10 +23,21 @@ async function rectOf(file,x0,y0,x1,y1){
   clean(data,info.width,info.height,140,400,45000);
   return sharp(data,{raw:info}).png().toBuffer().then(b=>sharp(b).trim({threshold:1}).toBuffer({resolveWithObject:true}));
 }
+// 블록 최빈색 축소: lanczos는 가짜 도트 원본의 윤곽선을 흐리게 섞어서, 블록마다 가장 많은 색 하나를 고른다(v4)
+async function modeResize(buf,w,h){
+  const {data,info}=await sharp(buf).ensureAlpha().raw().toBuffer({resolveWithObject:true}),W=info.width,H=info.height,o=Buffer.alloc(w*h*4);
+  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+    const x0=Math.floor(x*W/w),x1=Math.max(x0+1,Math.floor((x+1)*W/w)),y0=Math.floor(y*H/h),y1=Math.max(y0+1,Math.floor((y+1)*H/h)),m=new Map();let a=0,b=null;
+    for(let yy=y0;yy<y1;yy++)for(let xx=x0;xx<x1;xx++){const i=(yy*W+xx)*4;if(data[i+3]<128)continue;a++;
+      const k=(data[i]>>3)<<10|(data[i+1]>>3)<<5|data[i+2]>>3,e=m.get(k)||[0,0,0,0];e[0]++;e[1]+=data[i];e[2]+=data[i+1];e[3]+=data[i+2];m.set(k,e)}
+    if(a*2<(x1-x0)*(y1-y0))continue;for(const e of m.values())if(!b||e[0]>b[0])b=e;
+    const j=(y*w+x)*4;o[j]=b[1]/b[0];o[j+1]=b[2]/b[0];o[j+2]=b[3]/b[0];o[j+3]=255}
+  return {data:o,info:{width:w,height:h,channels:4}};
+}
 async function frame(buf,scale){
   const m=await sharp(buf).metadata();let w=Math.round(m.width*scale),h=Math.round(m.height*scale);
-  // 면적 평균 축소(붓질 노이즈 제거) → 알파 이진화 → 잡티 제거 → 32색 무디더
-  let img=await sharp(buf).resize(w,h,{kernel:'lanczos3'}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  // 블록 최빈색 축소 → 잡티 제거 → 무디더 감색
+  let img=await modeResize(buf,w,h);
   clean(img.data,w,h,110,6*(CELL/128)**2);
   let png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:OLD_MODE?32:64,dither:0}).toBuffer();
   // 이펙트가 커서 칸을 넘으면 몸 크기를 유지한 채 가장자리를 자름
