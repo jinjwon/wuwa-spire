@@ -4,34 +4,34 @@
     "key": "battle_coast",
     "region": "coast",
     "prompt": "Paint a finished horizontal 16:9 pixel art BATTLE BACKGROUND for a Wuthering Waves fan deckbuilder. Use the TOP landscape in reference for Black Shores geographical identity only, discard all reference text/frame. Authentic chunky hand-placed 16-bit pixel clusters, dark indigo teal palette violet glowing coral mushrooms, mysterious coastal research island, distant angular observatory and geodesic dome on basalt cliff, broken elevated bridges, reflective sea and data mist. Composition: calm dark horizontal basalt fighting platform across bottom 35%, no obstacles on center stage. Distant landmark on upper right, luminous pale horizon, foreground violet flora only at extreme corners. Deliberately limited 48-color feel with readable pixel clusters, NO smooth painted gradients, no UI, no characters, no text, no borders. Atmospheric detailed but middle stage low contrast to preserve sprite readability.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-7c998ec6-63ad-477e-9364-d695ef411cd7.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-7c998ec6-63ad-477e-9364-d695ef411cd7.png"
   },
   {
     "kind": "battle",
     "key": "battle_forest",
     "region": "forest",
     "prompt": "Finished 16:9 pixel art BATTLE BACKGROUND for Wuthering Waves fan deckbuilder. Huanglong Dim Forest / Violet Banyan inspired: gigantic twisting violet banyan roots, teal bioluminescent damp jungle, pale hanging vines, ruined futuristic stone marker among moss, crescent of cool skylight, glowing small violet motes. True chunky 16-bit pixel clusters limited forest teal, indigo, muted purple palette. Bottom 35% clear horizontal mossy stone platform for battle sprites, distant immense banyan off center and atmospheric layers, quiet low contrast center. No characters, no text, no UI, no borders. Visual language post-apocalyptic sci-fi nature, not generic medieval fantasy forest.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-01c05674-545f-4b10-8026-c2423857efdd.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-01c05674-545f-4b10-8026-c2423857efdd.png"
   },
   {
     "kind": "battle",
     "key": "battle_spire",
     "region": "spire",
     "prompt": "Finished 16:9 pixel art BATTLE BACKGROUND for Wuthering Waves fan deckbuilder. Use LOWER Tethys Deep landscape reference for identity only; discard text/frame. Monolithic dark angular scientific spire reaches through enormous concentric stellar data rings. Black Shores underground starfield, blue-purple nebula canopy with a distant crimson vertical data beam, crystalline lavender ground plants, white futuristic walkways. Bottom 35% broad flat dark metallic fighting platform completely clear, luminous stars held in background, foreground tiny crystals only in corners. Cohesive chunky hand-placed 16-bit pixel art, limited 48-color indigo lavender electric cyan coral palette, no smooth painting, no characters or text, no UI, no borders.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-37cd5e87-9a41-457b-afd2-83f90dc9e0a0.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-37cd5e87-9a41-457b-afd2-83f90dc9e0a0.png"
   },
   {
     "kind": "battle",
     "key": "battle_lahai",
     "region": "lahai",
     "prompt": "Finished horizontal 16:9 pixel art BATTLE BACKGROUND for Wuthering Waves fan deckbuilder, use official Lahai-Roi Startorch Academy reference for distinctive huge concentric ivory orbital rings and futuristic academy architecture. Reinterpret a ruined outer academy causeway at sunset: distant white and sage-green domes, colossal interlocking rings against cavernous turquoise sky, amber emergency lights, broken bridge sections, alien violet and rust-orange flora. Bottom 35% continuous flat dark metallic walkway for combat, no central obstacles. True 16-bit pixel art large coherent pixel clusters limited 48-color palette, strong atmospheric depth, readable low-contrast middle. No people no text logos UI borders.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-5ca80838-8d1a-401c-9fc5-b9e86fd55e18.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-5ca80838-8d1a-401c-9fc5-b9e86fd55e18.png"
   },
   {
     "kind": "routes",
     "key": "routes",
     "prompt": "Create one pixel-art OVERWORLD MAP ATLAS for a Wuthering Waves fan Slay-the-Spire-style deckbuilder. EXACTLY FOUR tall rectangular panels side by side, each panel aspect 1:2, whole image 2:1. Equal panels, full bleed, hard vertical boundaries at 25%,50%,75%. Each is a vertical bird's-eye/isometric landscape, bottom is entrance and top distant boss landmark. NO routes, NO nodes, NO UI, NO labels/text; game overlays branching paths later. Leave broad low-detail muted center terrain for readable path overlay. 1st panel BLACK SHORES: indigo sea, basalt islands, violet bioluminescent coral plants, research observatory at top. 2nd panel DIM FOREST: deep teal forest with huge violet banyan, ancient sci-fi stone ruins, top massive roots. 3rd panel TETHYS STAR SPIRE: lavender black crystalline islands, orbital platform staircase, starry void, black angular data tower and red beam at top. 4th panel LAHAI-ROI: sage ivory futuristic academy ruins, enormous orbital rings at top, orange-violet alien foliage and teal channels. Cohesive chunky 16-bit pixel art, restrained 48-color palette per biome, beautiful environmental storytelling at edges, calm central playfield. No characters, symbols or baked interface. Bottom-to-top journey, orthographic oblique world-map view.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-a02ebbe4-a194-425c-aca8-f258b84eb1bf.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-a02ebbe4-a194-425c-aca8-f258b84eb1bf.png"
   },
   {
     "kind": "hero",
@@ -57,7 +57,7 @@
       1
     ],
     "prompt": "Use attached sprites ONLY as character identity, proportions and costume reference. NEW ACTION-POSE ATLAS. Exact 4 columns by 4 rows, square image, sixteen equal square cells. ROW 1 female Rover black ponytail sword gold energy; ROW 2 male Rover short black hair sword gold energy; ROW 3 Aemeath pink long hair pink photon sword; ROW 4 Shorekeeper long blue hair white blue dress butterfly magic. Columns are NEW DIFFERENT states: col1 GUARD defensive crouch weapon across chest (Shorekeeper crystalline shield); col2 HIT recoil leaning backward, arms guarding face, no gore; col3 CAST concentrated energy, hand forward, distinct magic motif (Rover gold sound rings, Aemeath pink wing, Shorekeeper blue butterflies, Lynae neon paint, Mornye hologram, Chisa red threads, Camellya vines); col4 ULTIMATE full dramatic upright release with signature energy halo and lifted weapon. Faces to RIGHT. FULL BODY in every cell; each silhouette fits inside central 65% of its cell leaving 17% transparent padding on all sides. NO touching adjacent cells. All rows same body scale, consistent foot baseline. Authentic chunky 16-bit PIXEL ART not smooth anime painting. Keep hairstyle and outfit locked, crisp dark outline, limited palette. True transparent background. No labels/text/grid/border/scenery. This is mechanically cut as 4x4 so precision matters.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-61b65d6a-09e5-4f93-ab2c-3a389ec7f3a9.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-61b65d6a-09e5-4f93-ab2c-3a389ec7f3a9.png"
   },
   {
     "kind": "hero",
@@ -83,7 +83,7 @@
       1
     ],
     "prompt": "Use attached sprites ONLY as character identity, proportions and costume reference. NEW ACTION-POSE ATLAS. Exact 4 columns by 4 rows, square image, sixteen equal square cells. ROW 1 Lynae blonde headphones black neon-lime outfit dual pistols; ROW 2 Mornye silver hair small black horns white black exosuit broadblade; ROW 3 Chisa black/red long hair black school outfit oversized red scissors; ROW 4 Camellya white/red hair red flowers dark red floral dress vine blade. Columns are NEW DIFFERENT states: col1 GUARD defensive crouch weapon across chest (Shorekeeper crystalline shield); col2 HIT recoil leaning backward, arms guarding face, no gore; col3 CAST concentrated energy, hand forward, distinct magic motif (Rover gold sound rings, Aemeath pink wing, Shorekeeper blue butterflies, Lynae neon paint, Mornye hologram, Chisa red threads, Camellya vines); col4 ULTIMATE full dramatic upright release with signature energy halo and lifted weapon. Faces to RIGHT. FULL BODY in every cell; each silhouette fits inside central 65% of its cell leaving 17% transparent padding on all sides. NO touching adjacent cells. All rows same body scale, consistent foot baseline. Authentic chunky 16-bit PIXEL ART not smooth anime painting. Keep hairstyle and outfit locked, crisp dark outline, limited palette. True transparent background. No labels/text/grid/border/scenery. This is mechanically cut as 4x4 so precision matters.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-8d034233-5fd1-4437-a8ab-9a5b01848586.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-8d034233-5fd1-4437-a8ab-9a5b01848586.png"
   },
   {
     "kind": "enemy",
@@ -118,7 +118,7 @@
       1
     ],
     "prompt": "Use attached Wuthering Waves enemy atlas as exact visual identity reference. Produce NEW motion pose atlas with EXACT SIX columns and 5 rows, equal square cells. Each ROW has TWO creatures in groups of THREE poses. Columns1-3 creature A, columns4-6 creature B. Pose order per triple: ATTACK lunging LEFT claws/beak/weapon extended; CAST charging element with raised head/arms/open wings; HIT flinch recoiling RIGHT, body compressed. Row assignments: row1 Snip Snap red crab / Zig Zag cream gold orb; row2 Tick Tack violet maw / Gulpuff icy blue puffer; row3 Chirpuff mint floating puffer / Vanguard Junrock tall rock golem; row4 Fission Junrock small rock golem / Cruisewing gold moth; row5 Fusion Dreadmane fire wolf / Hoartoise ice turtle. Each FULL creature must fit central 65% of its own cell, huge clear padding, no overlapping cells. All face LEFT. Preserve original creature identity colors and anatomy, consistent scale within triple, consistent ground baseline. Crisp chunky 16-bit pixel art with dark outline and limited colors, transparent background, no text no labels no grid no scenery. Distinct action silhouettes are essential. Output aspect 6:5.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-6a17ec6f-4198-40a8-aa64-48d76cba155b.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-6a17ec6f-4198-40a8-aa64-48d76cba155b.png"
   },
   {
     "kind": "enemy",
@@ -150,7 +150,7 @@
       1
     ],
     "prompt": "Use attached Wuthering Waves enemy atlas as exact visual identity reference. Produce NEW motion pose atlas with EXACT SIX columns and 4 rows, equal square cells. Each ROW has TWO creatures in groups of THREE poses. Columns1-3 creature A, columns4-6 creature B. Pose order per triple: ATTACK lunging LEFT claws/beak/weapon extended; CAST charging element with raised head/arms/open wings; HIT flinch recoiling RIGHT, body compressed. Row assignments: row1 Cyan-Feathered Heron / Violet-Feathered Heron; row2 Havoc Dreadmane purple wolf / Spearback spiked bear; row3 Viridblaze Saurian green lava lizard / Tambourinist spectral drummer; row4 Autopuppet Scout white mechanical walker / Crownless black golden masked winged demon. Each FULL creature must fit central 65% of its own cell, huge clear padding, no overlapping cells. All face LEFT. Preserve original creature identity colors and anatomy, consistent scale within triple, consistent ground baseline. Crisp chunky 16-bit pixel art with dark outline and limited colors, transparent background, no text no labels no grid no scenery. Distinct action silhouettes are essential. Output aspect 6:4.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-43b2011c-0d7b-42ff-b92e-76d2da6f0a01.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-43b2011c-0d7b-42ff-b92e-76d2da6f0a01.png"
   },
   {
     "kind": "enemy",
@@ -185,7 +185,7 @@
       1
     ],
     "prompt": "Use attached Wuthering Waves enemy atlas as exact visual identity reference. Produce NEW motion pose atlas with EXACT SIX columns and 5 rows, equal square cells. Each ROW has TWO creatures in groups of THREE poses. Columns1-3 creature A, columns4-6 creature B. Pose order per triple: ATTACK lunging LEFT claws/beak/weapon extended; CAST charging element with raised head/arms/open wings; HIT flinch recoiling RIGHT, body compressed. Row assignments: row1 Tempest Mephis violet claw demon / Mourning Aix golden winged dragon bird; row2 Nameless Explorer corrupted astronaut / Inferno Rider flaming motorcyclist; row3 Feilian Beringal gorilla / Dreamless white-haired six-winged demon; row4 Bell-Borne Geochelone bronze bell ice turtle / Hecate red black three-face witch; row5 Leviathan white-haired blue-black divine spear woman / Aleph-One black white geometric mech purple singularity core. Each FULL creature must fit central 65% of its own cell, huge clear padding, no overlapping cells. All face LEFT. Preserve original creature identity colors and anatomy, consistent scale within triple, consistent ground baseline. Crisp chunky 16-bit pixel art with dark outline and limited colors, transparent background, no text no labels no grid no scenery. Distinct action silhouettes are essential. Output aspect 6:5.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-d9592e9b-87ae-4ea7-8730-102ad66d23b0.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-d9592e9b-87ae-4ea7-8730-102ad66d23b0.png"
   },
   {
     "key": "cards_rov",
@@ -218,7 +218,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 2 columns x 5 rows, 10 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 8:15. Hero identity: female Rover, black ponytail, black gold outfit, straight sword. Use attached hero atlas only as costume and hair reference. Panels in row-major order: 1. gold sword diagonal slash closeup; 2. Rover sidestepping a black blade with golden afterimage; 3. gold soundwave sweeping ruined ground; 4. concentric golden resonance rings multiplying around black target; 5. Rover lunging with brilliant gold blade; 6. gold star-shaped brand burned into shadow monster; 7. Rover bracing sword in wind against violet ruins; 8. three gold sword afterimages striking in rhythm; 9. dark void split by a thin gold crescent; 10. gold notes and a bell orbiting Rover under stars. Every panel UNIQUE, dramatic readable action with strong central focal object, medium closeup or weapon detail, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, strong shape design, dark navy outlines, luminous signature accent. This will display at 150x84 so avoid tiny details; make subjects large and readable. No card frame, no numbers, NO text or typography, no logos, no UI. Do not repeat identical poses. Professional cohesive game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-c004c108-06f8-4caa-8c80-2d0ac4d6407a.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-c004c108-06f8-4caa-8c80-2d0ac4d6407a.png"
   },
   {
     "key": "cards_sk",
@@ -249,7 +249,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 3 rows, 9 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 12:9. Hero identity: Shorekeeper long pale blue hair white blue flowing dress crystalline butterfly ornaments. Use attached hero atlas only as costume and hair reference. Panels in row-major order: 1. blue crystalline star launched from Shorekeeper hand; 2. Shorekeeper dissolving into blue butterfly trail; 3. blue starfield dome over Black Shores; 4. luminous blue butterfly resting on wounded hand; 5. enormous faceted blue crystal shield; 6. blue sheer crystalline curtain separating a dark monster; 7. intersecting blue golden chaotic orbit diagrams above hand; 8. blue star revolving in endless silver rings; 9. Shorekeeper hands cradling small galaxy with healing butterflies. Every panel UNIQUE, dramatic readable action with strong central focal object, medium closeup or weapon detail, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, strong shape design, dark navy outlines, luminous signature accent. This will display at 150x84 so avoid tiny details; make subjects large and readable. No card frame, no numbers, NO text or typography, no logos, no UI. Do not repeat identical poses. Professional cohesive game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-55ec29e1-43f8-4831-995c-8e39587cd994.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-55ec29e1-43f8-4831-995c-8e39587cd994.png"
   },
   {
     "key": "cards_lyn",
@@ -280,7 +280,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished collectible card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 3 rows, 9 panels, each panel a landscape 4:3 illustration, full bleed, clean straight boundaries; no gaps. Whole image aspect 12:9. Hero identity: Lynae blonde hair headphones black outfit neon lime accents dual pistols. Use attached hero atlas only as costume and hair reference. Panels in row-major order: 1. Lynae sliding and firing dual lime pistols; 2. Lynae dodging sideways neon green afterimage; 3. Lynae swirling neon paint palette in midair; 4. green pink blue paint splashing across dark enemies; 5. multiple prism colored shots from dual pistols; 6. Lynae painting a bright lime energy brushstroke; 7. Lynae scanning battlefield behind green holographic guard; 8. close-up pistol firing lime muzzle burst; 9. wide ruined city wall filled with vibrant geometric paint. Every panel UNIQUE, dramatic readable action with strong central focal object, medium closeup or weapon detail, full scenic colored background. Crisp chunky 16-bit pixel clusters, limited palette, strong shape design, dark navy outlines, luminous signature accent. This will display at 150x84 so avoid tiny details; make subjects large and readable. No card frame, no numbers, NO text or typography, no logos, no UI. Do not repeat identical poses. Professional cohesive game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-52e944e9-5b74-4ef2-ad0c-042503f8b7e6.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-52e944e9-5b74-4ef2-ad0c-042503f8b7e6.png"
   },
   {
     "key": "cards_mor",
@@ -311,7 +311,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 3 rows, equal landscape 4:3 panels, full bleed, straight boundaries and no gaps. Whole image aspect 12:9. Identity: Mornye silver-white hair small dark horns black white research exosuit broadblade. Attached hero atlas is costume reference only. Panels row-major: 1. Mornye swinging white mechanical broadblade; 2. Mornye bracing behind hexagonal amber shield; 3. Mornye analyzing floating amber hologram; 4. gold mass-energy orb compressing steel rubble; 5. spiraling amber orbital force around broadblade; 6. white gauntlet charging brilliant amber capacitor; 7. Mornye activating geometric test field; 8. sleek white gold probe missile launching into stars; 9. Mornye gesturing at orbital diagram hologram. Every panel distinct, dramatic and readable at 150x84, strong central focal action, detailed but simple scenic background, large subject. Crisp chunky 16-bit pixel clusters, limited color ramps, dark navy outlines, luminous accent. Full colored backgrounds. NO text, NO letters/numbers, no logos, no card frames/UI. Cohesive premium game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-3f4ba282-d6fd-4f00-99fc-a62b5d84a61e.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-3f4ba282-d6fd-4f00-99fc-a62b5d84a61e.png"
   },
   {
     "key": "cards_chi",
@@ -342,7 +342,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 3 rows, equal landscape 4:3 panels, full bleed, straight boundaries and no gaps. Whole image aspect 12:9. Identity: Chisa long black hair red tips black school uniform red ribbon oversized red-black scissors sword. Attached hero atlas is costume reference only. Panels row-major: 1. Chisa sweeping red-black scissors sword; 2. Chisa stepping backwards through red thread afterimage; 3. red geometric space breaking into fragments; 4. empty white-black void surrounded by red threads; 5. giant red scissors cutting glowing threads; 6. gentle red waveform circling Chisa open hand; 7. red zero-like ring pinning dark enemy; 8. two hands connected by unbroken glowing red thread; 9. close-up Chisa crimson eye reflected in scissors blade. Every panel distinct, dramatic and readable at 150x84, strong central focal action, detailed but simple scenic background, large subject. Crisp chunky 16-bit pixel clusters, limited color ramps, dark navy outlines, luminous accent. Full colored backgrounds. NO text, NO letters/numbers, no logos, no card frames/UI. Cohesive premium game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-d15a29eb-5651-4ee7-8cc4-ed873dd0d47b.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-d15a29eb-5651-4ee7-8cc4-ed873dd0d47b.png"
   },
   {
     "key": "cards_cam",
@@ -373,7 +373,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 3 rows, equal landscape 4:3 panels, full bleed, straight boundaries and no gaps. Whole image aspect 12:9. Identity: Camellya white hair red ends black red floral dress flower ornaments vine blade. Attached hero atlas is costume reference only. Panels row-major: 1. Camellya sweeping red petal sword slash; 2. Camellya twisting away on curling red vine; 3. Camellya dancing within spiral of red petals; 4. crimson flower stamens exploding into twin blades; 5. red thorn vines binding shadow beast; 6. Camellya palm holding a glowing crimson drop non-gory; 7. massive red camellia opening into burst of petals; 8. Camellya surrounded by wild crimson floral storm; 9. red vines forming a tiny cosmic planet beneath stars. Every panel distinct, dramatic and readable at 150x84, strong central focal action, detailed but simple scenic background, large subject. Crisp chunky 16-bit pixel clusters, limited color ramps, dark navy outlines, luminous accent. Full colored backgrounds. NO text, NO letters/numbers, no logos, no card frames/UI. Cohesive premium game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-9a0c126f-da83-4ac1-89d9-eb75d874db51.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-9a0c126f-da83-4ac1-89d9-eb75d874db51.png"
   },
   {
     "key": "cards_common",
@@ -398,7 +398,7 @@
     ],
     "kind": "cards",
     "prompt": "Finished card ILLUSTRATION atlas for Wuthering Waves pixel-art deckbuilder. EXACT 3 columns x 2 rows, equal landscape 4:3 panels, full bleed, straight boundaries and no gaps. Whole image aspect 12:6. Identity: no named hero, symbolic magical objects from Wuthering Waves. Attached hero atlas is costume reference only. Panels row-major: 1. gold cyan tuning fork resonating within circular sound waves; 2. shell-shaped gold coins thrown as sparkling projectiles; 3. broken black resonance crystal emitting violet discordant waves; 4. gray violet static interference shards obscuring a cracked signal orb; 5. corrupted orange violet crystal leaking dark miasma no gore; 6. small luminous supply chest and blue resonance beacon on dark background. Every panel distinct, dramatic and readable at 150x84, strong central focal action, detailed but simple scenic background, large subject. Crisp chunky 16-bit pixel clusters, limited color ramps, dark navy outlines, luminous accent. Full colored backgrounds. NO text, NO letters/numbers, no logos, no card frames/UI. Cohesive premium game card art.",
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-ddc49bc5-f6a8-4b81-a20a-50188868026d.png"
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-ddc49bc5-f6a8-4b81-a20a-50188868026d.png"
   },
   {
     "kind": "icons",
@@ -415,7 +415,7 @@
       "recruit",
       "boss"
     ],
-    "original": "/Users/gimjin-won/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-1746345a-6274-4aa2-b6a8-9e7bdb19a4c6.png",
+    "original": "~/.codex/generated_images/01a18c23-4334-7a12-a4fe-a4456f3c9a58/exec-1746345a-6274-4aa2-b6a8-9e7bdb19a4c6.png",
     "prompt": "4x2 transparent pixel icon atlas: crossed swords, horned skull, cyan question mark, campfire; coin pouch, chest, hooded recruit with plus, violet singularity. Chunky pixels, dark outlines, centered, no labels."
   }
 ]
