@@ -3,7 +3,7 @@
 const sharp=require('sharp'),fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),out=path.join(root,process.argv[2]==='preview'?'art/preview-v3/fx':'assets/fx');
 const N=64,F=6,C=N/2;
-// 팔레트: 외곽(어두움)·중간·밝음·하이라이트. 속성 색은 index.html의 EL과 맞춤
+// 팔레트: 외곽(어두움)·중간·밝음·하이라이트. 속성 색은 src/js/data.js의 EL과 맞춤
 const PAL={
   회절:['#8a5a12','#ffb627','#ffd75e','#fffbe0'],
   용융:['#7a1d0e','#e8471c','#ff9a3d','#fff1b0'],
