@@ -8,6 +8,7 @@
 | 캐릭터 서사·무기·소속·세계관 용어 | [lore/CHARACTER_BIBLE.md](lore/CHARACTER_BIBLE.md) |
 | 도트 규격·제작 절차·검수 항목 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md) |
 | 이미지 생성 프롬프트 | [art/HERO_PROMPTS.md](art/HERO_PROMPTS.md) |
+| 프롬프트 복사, 후보 그림 비교·선택 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md)의 프롬프트 보드 (`npm run board`) |
 | 생성한 시트 수정·적 재제작 프롬프트 | [art/REVISION_PROMPTS.md](art/REVISION_PROMPTS.md) |
 | 명조 전투 시스템과 이식 설계 | [systems/WUWA_SYSTEMS.md](systems/WUWA_SYSTEMS.md) |
 | UI 규칙(색·부품·배치) | [../DESIGN.md](../DESIGN.md) |
