@@ -19,7 +19,6 @@
 | `index.html` | 게임 전체(CSS·JS 포함) | 추적 |
 | `assets/` | 게임이 읽는 최종 이미지·BGM | 추적(mp3 제외) |
 | `art/source/`, `art/source-v2/` | 생성 원본 시트 | 추적 |
-| `art/backup-recolor/` | 색 보정 전 도트 | 추적 |
 | `art/reference-review-*/references/` | 공식 참고 이미지 | 제외 |
 | `art/preview-v3/`, 미리보기 PNG | 다시 만들 수 있는 결과물 | 제외 |
 | `scripts/` | 에셋 처리·자가 점검 | 추적 |
