@@ -25,7 +25,7 @@
 |---|---|
 | `main.js`, `preload.js` | 데스크톱 앱(Electron) 창과 멀티 서버. 서버는 `index.html`, `src/`, `assets/`만 내보낸다 |
 | `scripts/selfcheck.cjs` | 게임 자가 점검 |
-| `scripts/prepare-heroes-v3.cjs`, `cards.cjs`, `make-vfx.cjs`, `prepare-battle-bg.cjs` | 지금 쓰는 에셋 처리 도구 ([절차](art/ART_PIPELINE.md)) |
+| `scripts/prepare-heroes-v3.cjs`, `cards.cjs`, `make-vfx.cjs`, `prepare-battle-bg.cjs`, `art-board.cjs` | 지금 쓰는 에셋 처리 도구 ([절차](art/ART_PIPELINE.md)) |
 | `scripts/prepare-sprites.cjs`, `prepare-art-v2.cjs`, `build-art-review.cjs`, `check-sprites.cjs` | 초기 제작 도구. 앞의 둘은 덮어쓰기 방지로 막혀 있다 |
 | `build/` | 앱 아이콘과 맥 서명 |
 
@@ -68,6 +68,7 @@ node scripts/selfcheck.cjs mp_guard   # 하나만
 
 - 공식 이미지(`art/*/references/` 안의 공식 자료)
 - 다시 만들 수 있는 결과물: 미리보기 PNG, `art/preview-v3/`, `dist/`
+- 프롬프트 보드(`art/board.html`)와 후보 그림(`art/candidates/`)
 - 백업 폴더(`art/backup-*/`). 이전 버전은 git 기록에서 꺼낸다: `git show <커밋>:<경로> > 파일`
 - BGM mp3
 
