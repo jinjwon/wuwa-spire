@@ -11,6 +11,7 @@
 - `feat/`, `fix/`, `art/`, `chore/`, `docs/` 브랜치에서 작업한다. main 병합과 push는 사용자 확인 후에 한다.
 - 공식 이미지는 커밋하지 않는다. 다시 만들 수 있는 결과물과 임시 파일도 커밋하지 않는다.
 - 새 문서는 `docs/`의 맞는 폴더에 두고 `docs/README.md`에 등록한다.
+- 코드 위치와 브랜치 절차는 [docs/MAINTENANCE.md](docs/MAINTENANCE.md)를 따른다.
 - 게임 규칙을 바꾸면 `scripts/selfcheck.cjs`에 점검을 추가한다.
 
 ## 끝내기 전

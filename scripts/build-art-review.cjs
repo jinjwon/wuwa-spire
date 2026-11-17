@@ -2,7 +2,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
-const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
+const html=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8');
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'art/manifest-v2.json'),'utf8'));
 const names=Object.fromEntries([...html.matchAll(/^  (\w+):\{(?:name|n):'([^']+)'/gm)].map(m=>[m[1],m[2]]));
 names.rov='방랑자 · 여성';names.rovM='방랑자 · 남성';names.aemMecha='에이메스 · 메카스카우트';

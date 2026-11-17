@@ -27,7 +27,7 @@ const CHECKS = {
     startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,300));return S.c.enemies[0].vuln>=1&&S.c.block>=8})()`,
   ascension: `(()=>{SEL_ASC=6;newGame('aem',0);const a=S.asc===6&&S.party.aem.maxHp<CH.aem.maxHp+14;SEL_ASC=0;return a})()`,
   mp_guard: `(async()=>{if(!window.mpHost)return false;const r=await window.mpHost.start();const ok1=Array.isArray(r.ips)&&(await fetch('http://127.0.0.1:7777/index.html')).ok;
-    const bad=(await fetch('http://127.0.0.1:7777/main.js')).status===404;newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';render();const g=S.gold;mpRun('S.gold=9999');return ok1&&bad&&S.gold===g})()`,
+    const bad=(await fetch('http://127.0.0.1:7777/main.js')).status===404&&(await fetch('http://127.0.0.1:7777/src/js/data.js')).ok&&(await fetch('http://127.0.0.1:7777/src/styles.css')).headers.get('content-type')==='text/css';newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';render();const g=S.gold;mpRun('S.gold=9999');return ok1&&bad&&S.gold===g})()`,
   merge_cards: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
     const c=S.c;c.hand=[mk('aem_a'),mk('aem_a')];render();const a=c.hand[0];const before=vals(a);mergeCard(a.uid);
     const after=vals(c.hand[0]);const k=Object.keys(before).find(k=>typeof before[k]==='number');

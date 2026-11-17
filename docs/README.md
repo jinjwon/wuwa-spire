@@ -10,13 +10,16 @@
 | 이미지 생성 프롬프트 | [art/HERO_PROMPTS.md](art/HERO_PROMPTS.md) |
 | 생성한 시트 수정·적 재제작 프롬프트 | [art/REVISION_PROMPTS.md](art/REVISION_PROMPTS.md) |
 | 명조 전투 시스템과 이식 설계 | [systems/WUWA_SYSTEMS.md](systems/WUWA_SYSTEMS.md) |
-| UI 규칙 | [../DESIGN.md](../DESIGN.md) |
+| UI 규칙(색·부품·배치) | [../DESIGN.md](../DESIGN.md) |
+| 코드 구조·브랜치·정리 규칙 | [MAINTENANCE.md](MAINTENANCE.md) |
+| 끝난 구현 계획(기록용) | [superpowers/plans/](superpowers/plans/) |
 | 작업 규칙(에이전트용) | [../CLAUDE.md](../CLAUDE.md) |
 
 ## 폴더 구조
 | 폴더 | 내용 | git |
 |---|---|---|
-| `index.html` | 게임 전체(CSS·JS 포함) | 추적 |
+| `index.html` | 뼈대(스타일·스크립트 불러오기만) | 추적 |
+| `src/styles.css`, `src/js/` | 게임 스타일과 코드 ([구조](MAINTENANCE.md)) | 추적 |
 | `assets/` | 게임이 읽는 최종 이미지·BGM | 추적(mp3 제외) |
 | `art/source/`, `art/source-v2/` | 생성 원본 시트 | 추적 |
 | `art/reference-review-*/references/` | 공식 참고 이미지 | 제외 |

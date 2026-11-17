@@ -7,7 +7,7 @@ const http = require('http'), fs = require('fs'), os = require('os');
 const MP_PORT = 7777;
 let mpServer = null, lastState = null;
 const subs = { host: new Set(), guest: new Set() };
-const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.json': 'application/json', '.svg': 'image/svg+xml' };
+const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript', '.css': 'text/css', '.png': 'image/png', '.jpg': 'image/jpeg', '.webp': 'image/webp', '.mp3': 'audio/mpeg', '.json': 'application/json', '.svg': 'image/svg+xml' };
 const lanIps = () => Object.values(os.networkInterfaces()).flat().filter(n => n && n.family === 'IPv4' && !n.internal).map(n => n.address);
 const send = (role, ev, data) => subs[role].forEach(r => r.write(`event:${ev}\ndata:${data}\n\n`));
 const isLocal = q => ['127.0.0.1', '::1', '::ffff:127.0.0.1'].includes(q.socket.remoteAddress);
@@ -35,10 +35,10 @@ function startMp() {
         q.on('end', () => { if (u.pathname === '/state') { lastState = b; send('guest', 'state', b); } else if (b.length < 2000) send('host', 'act', JSON.stringify(b)); r.end('ok'); });
         return;
       }
-      // 정적 파일: index.html과 assets/ 만
+      // 정적 파일: index.html, src/, assets/ 만
       const rel = u.pathname === '/' ? '/index.html' : decodeURIComponent(u.pathname);
       const f = path.join(__dirname, rel);
-      if (!/^\/(index\.html$|assets\/)/.test(rel) || !f.startsWith(__dirname + path.sep)) { r.writeHead(404); return r.end(); }
+      if (!/^\/(index\.html$|src\/|assets\/)/.test(rel) || !f.startsWith(__dirname + path.sep)) { r.writeHead(404); return r.end(); }
       fs.readFile(f, (e, d) => { if (e) { r.writeHead(404); return r.end(); } r.writeHead(200, { 'Content-Type': TYPES[path.extname(f)] || 'application/octet-stream' }); r.end(d); });
     });
     mpServer.on('error', e => { mpServer = null; fail(e.message); });
