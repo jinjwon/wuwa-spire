@@ -1,5 +1,4 @@
 // v3 도트 정규화: 4×2 모션 시트 → 128px 스트립. v2(nearest 축소)의 지글거림·잡티·해방 프레임 축소 문제 해결.
-// 기존 색 보정 캐릭터는 OUT=art/backup-recolor/assets IDS=rov,... 로 원본 자리에 쓰고 recolor.cjs를 다시 돌린다.
 // 사용: node scripts/prepare-heroes-v3.cjs [preview|write] [old]  (preview면 art/preview-v3/에만, old면 기존 8개 공명자 재처리)
 const sharp=require('sharp'),fs=require('node:fs/promises'),path=require('node:path'),assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..'),src=path.join(root,'art/source-v2');
@@ -10,10 +9,10 @@ const OLD_MODE=process.argv[3]==='old',CELL=OLD_MODE?128:256,BODY=CELL*13/16,MEC
 function clean(data,w,h,cut,minPx,edgePx=0){
   for(let i=3;i<data.length;i+=4)data[i]=data[i]<cut?0:255;
   const seen=new Uint8Array(w*h),st=[];
-  for(let p=0;p<w*h;p++){if(seen[p]||!data[p*4+3])continue;const comp=[];let edge=false;st.push(p);seen[p]=1;
-    while(st.length){const q=st.pop();comp.push(q);const x=q%w,y=(q/w)|0;if(x===0||x===w-1)edge=true;
+  for(let p=0;p<w*h;p++){if(seen[p]||!data[p*4+3])continue;const comp=[];let edge=false,x0=w,x1=0;st.push(p);seen[p]=1;
+    while(st.length){const q=st.pop();comp.push(q);const x=q%w,y=(q/w)|0;if(x===0||x===w-1)edge=true;if(x<x0)x0=x;if(x>x1)x1=x;
       for(const n of [x>0?q-1:-1,x<w-1?q+1:-1,y>0?q-w:-1,y<h-1?q+w:-1])if(n>=0&&!seen[n]&&data[n*4+3]){seen[n]=1;st.push(n)}}
-    if(comp.length<minPx||(edge&&comp.length<edgePx))for(const q of comp)data[q*4+3]=0}
+    if(comp.length<minPx||(edge&&comp.length<edgePx&&x1-x0<w/4))for(const q of comp)data[q*4+3]=0}
   return data;
 }
 const cellOf=(file,c,r,cols,rows)=>rectOf(file,c/cols,r/rows,(c+1)/cols,(r+1)/rows);
@@ -62,7 +61,7 @@ async function cards(id,ids,cols=3,rows=3){
     await sharp(file).extract({left:Math.round((i%cols)*w)+6,top:Math.round(Math.floor(i/cols)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
       .resize(144,96,{fit:'cover',kernel:'lanczos3'}).png({palette:true,colours:64,dither:0}).toFile(path.join(out,`cards/${cid}.png`))}
 }
-const HEROES={yin:null,car:'car',aem:null,aemMecha:null,mor:null,lyn:null,hiy:'hiy'};
+const HEROES={yin:null,car:'car',aem:null,aemMecha:null,mor:null,lyn:null,hiy:'hiy',sk:null,rov:null,rovM:null,chi:null,cam:null};
 // 기존 7명: 대기·공격 4프레임 = art/source 원본, 방어·피격·시전·해방 = source-v2 heroesA/B (prepare-sprites / prepare-art-v2와 같은 좌표)
 const OLD=[[ 'exec-bf959425-8856-4f3a-8fe6-9a7045d68467.png',[0,.25,.49,.81,1],[0,.26,.51,.745,1],['rov','rovM','aem','sk'],'heroesA',[0,.245,.48,.755,1],[0,.285,.535,.77,1]],
   ['exec-8f038a01-3412-4384-93c2-45eb51ce106e.png',[0,.25,.49,.79,1],[0,.26,.505,.74,1],['lyn','mor','chi','cam'],'heroesB',[0,.245,.48,.755,1],[0,.265,.515,.755,1]]];
@@ -71,14 +70,17 @@ const oldRects=()=>Object.fromEntries(OLD.flatMap(([a,ax,ay,ids,b,bx,by])=>ids.m
   ...[0,1,2,3].map(c=>[path.join(src,b+'.png'),bx[c],by[r],bx[c+1],by[r+1]])]])));
 const AEM_CARDS=['aem_a','aem_b','aem_s','aem_dash','aem_shard','aem_wing','aem_star','aem_ghost','aem_break','aem_sync'];
 const HIY_CARDS=['hiy_a','hiy_b','hiy_s','hiy_bloom','hiy_edge','hiy_suzu','hiy_art','hiy_shatter','hiy_bless'];
-const CARD_IDS=k=>Array.from({length:9},(_,i)=>`${k}_${i+1}`);
+// 카드 시트 패널 순서 = index.html 카드 정의 순서(HERO_PROMPTS.md 카드 순서)
+const CARD_LIST={aem:AEM_CARDS,hiy:HIY_CARDS,lyn:['lyn_a','lyn_b','lyn_s','lyn_spray','lyn_rapid','lyn_free','lyn_merc','lyn_quick','lyn_canvas'],
+  mor:['mor_a','mor_b','mor_s','mor_mass','mor_conv','mor_crit','mor_hyp','mor_probe','mor_lecture']};
 (async()=>{
   await fs.mkdir(path.join(out,'motion'),{recursive:true});await fs.mkdir(path.join(out,'cards'),{recursive:true});
   const R=oldRects(),list=(process.argv[3]==='old'?Object.keys(R).filter(id=>!HEROES.hasOwnProperty(id)):Object.keys(HEROES)).filter(id=>!process.env.IDS||process.env.IDS.split(',').includes(id));
   for(const id of list){
     const p=await hero(id,R[id]&&process.argv[3]==='old'?R[id]:null);
-    for(const f of p){const {data}=await sharp(f).ensureAlpha().raw().toBuffer({resolveWithObject:true});let v=0;for(let i=3;i<data.length;i+=4)v+=data[i]>0;assert(v>800,`${id}: frame nearly empty`)}
-    if(!R[id]||process.argv[3]!=='old')try{await fs.access(path.join(src,`cards_${id}.png`));await (id==='aem'?cards(id,AEM_CARDS,2,5):cards(id,id==='hiy'?HIY_CARDS:CARD_IDS(id)))}catch{console.log(`skip cards_${id}.png (없음)`)}
+    for(const f of p){const {data}=await sharp(f).ensureAlpha().raw().toBuffer({resolveWithObject:true});let v=0;for(let i=3;i<data.length;i+=4)v+=data[i]>0;assert(v>800,`${id}: frame ${p.indexOf(f)} nearly empty (${v}px)`)}
+    // 카드 목록이 등록된 캐릭터만. 나머지는 기존 카드 유지
+    if(CARD_LIST[id]&&process.argv[3]!=='old')try{await fs.access(path.join(src,`cards_${id}.png`));await (id==='aem'?cards(id,AEM_CARDS,2,5):cards(id,CARD_LIST[id]))}catch{console.log(`skip cards_${id}.png (없음)`)}
   }
   console.log('PASS',PREVIEW?'(preview)':'');
 })();

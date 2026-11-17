@@ -810,6 +810,38 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
 .cutin .img{background-size:512px 512px;background-position:center bottom;image-rendering:pixelated}
 .battle-art img{image-rendering:auto}
+/* ===== 공명자 선택 (2026-11-12) — 명조 공명자 목록 화면 구성. 토큰만 사용(DESIGN.md) ===== */
+.selscr{position:relative;flex:1;min-height:calc(100vh - 24px);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:18px 26px;text-align:left}
+.selscr::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,12,15,.92) 0,rgba(11,12,15,.55) 45%,rgba(11,12,15,.9) 100%)}
+.sel-top{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px}
+.sel-ttl h2{margin:0;font-size:22px;color:var(--wu-ink)}
+.sel-opts{display:flex;flex-direction:column;align-items:flex-end;gap:6px}.sel-opts .diffs,.sel-opts .ascs{justify-content:flex-end;margin:0}
+.sel-opts .diffs{flex-wrap:nowrap;gap:6px;max-width:none}.sel-opts .diff{flex:0 0 auto;width:auto;min-width:72px;min-height:44px;padding:0 14px;display:grid;place-items:center}.sel-opts .diff b{font-size:13px}.sel-opts .diff small{display:none}
+.sel-body{flex:1;display:grid;grid-template-columns:230px 1fr minmax(300px,380px);gap:20px;min-height:0}
+.sel-list{display:flex;flex-direction:column;gap:6px;overflow:hidden auto;padding:2px 10px 2px 2px}
+.sel-tile{display:flex;align-items:center;gap:10px;min-height:52px;padding:4px 12px 4px 4px;background:var(--wu-panel);color:var(--wu-ink);border:0;box-shadow:inset 0 0 0 1px var(--wu-line),inset 3px 0 0 var(--c);clip-path:var(--wu-cut-s);cursor:pointer;text-align:left;transition:.15s}
+.sel-tile:hover,.sel-tile:focus-visible{box-shadow:inset 0 0 0 1px var(--wu-acc),inset 3px 0 0 var(--c);outline:none}
+.sel-tile.on{background:var(--wu-panel2);box-shadow:inset 0 0 0 1px var(--wu-acc),inset 3px 0 0 var(--c),var(--wu-glow);transform:translateX(6px)}
+.sel-av{width:44px;height:44px;flex:none;background-color:rgba(255,255,255,.04);background-repeat:no-repeat;clip-path:var(--wu-cut-s)}
+.sel-tile b{display:block;font-size:14px}.sel-tile small{font-size:11px;color:var(--c)}
+.sel-stage{position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:0}
+.sel-stage::after{content:"";position:absolute;left:50%;bottom:4%;width:60%;height:10%;transform:translateX(-50%);background:radial-gradient(closest-side,color-mix(in srgb,var(--c) 45%,transparent),transparent);z-index:-1}
+.sel-en{position:absolute;top:6%;left:0;right:0;text-align:center;font-size:clamp(40px,7vw,96px);font-weight:900;letter-spacing:.12em;color:transparent;-webkit-text-stroke:1px var(--wu-acc-dim);white-space:nowrap;pointer-events:none}
+.sel-hero{width:min(512px,62vh);aspect-ratio:1;background-repeat:no-repeat;background-position:0 0;image-rendering:pixelated;animation:pxIdle 1.8s steps(4,end) infinite}
+.sel-hero.ini{display:grid;place-items:center;font-size:64px;color:var(--wu-sub)}
+.sel-info{align-self:center;background:var(--wu-panel);box-shadow:inset 0 0 0 1px var(--wu-line);clip-path:polygon(var(--cut) 0,100% 0,100% calc(100% - var(--cut)),calc(100% - var(--cut)) 100%,0 100%,0 var(--cut));padding:20px 22px;display:flex;flex-direction:column;gap:8px;color:var(--wu-ink)}
+.sel-name{display:flex;align-items:baseline;gap:12px}.sel-name h3{margin:0;font-size:28px}
+.sel-el{color:var(--c);font-size:13px;font-weight:700}
+.sel-tag{font-size:12px;color:var(--wu-sub)}
+.sel-info p{margin:0;font-size:13px;line-height:1.6;color:var(--wu-ink)}
+.sel-kit{list-style:none;margin:4px 0;padding:0;display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--wu-line);padding-top:10px}
+.sel-kit li{display:grid;grid-template-columns:42px 1fr;gap:8px;font-size:12px;line-height:1.5;color:var(--wu-sub)}
+.sel-kit b{color:var(--wu-acc);font-size:11px;letter-spacing:1px}
+.sel-go{min-height:52px;margin-top:6px;background:var(--wu-fill);color:var(--wu-on-fill);box-shadow:none;font-size:16px;font-weight:800}
+.sel-go .eng{color:var(--wu-on-fill);opacity:.6;margin:0}
+@media (max-height:760px){.sel-tile{min-height:44px}.sel-av{width:38px;height:38px}.sel-info{padding:14px 18px;gap:6px}.sel-info p{font-size:12px}.sel-name h3{font-size:24px}}
+@media (max-width:900px){.sel-body{grid-template-columns:1fr}.sel-list{flex-direction:row;flex-wrap:wrap}.sel-stage{min-height:300px}}
+@media(prefers-reduced-motion:reduce){.sel-hero{animation:none}.sel-tile.on{transform:none}}
 </style>
 </head>
 <body>
@@ -2288,15 +2320,28 @@ function charCardHTML(id,click,label){
     <ul class="kit"><li>${C.intro}</li><li>${C.outro}</li><li>${C.lib}</li></ul>
     <div class="pick">${label}</div></div>`;
 }
+// 명조식 공명자 선택: 왼쪽 목록 · 가운데 전신 도트 · 오른쪽 정보 패널
+const EN_NAME={rov:'ROVER',aem:'AEMEATH',sk:'SHOREKEEPER',lyn:'LYNAE',mor:'MORNYE',chi:'CHISA',cam:'CAMELLYA',hiy:'HIYUKI'};
+let SEL_HERO='rov';
 function selectHTML(){
-  return `<div class="title">
-    <button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
-    <h2>함께 탑에 오를 첫 번째 공명자를 선택하세요</h2>
-    <div class="diffs">${DIFF.map((x,i)=>`<button class="diff ${SEL_DIFF===i?'on':''}" onclick="SEL_DIFF=${i};render()"><b>${x.n}</b><small>${x.d}</small></button>`).join('')}</div>
-    <div class="ascs"><b>승천</b>${Array.from({length:ascMax()+1},(_,i)=>`<button class="asc ${SEL_ASC===i?'on':''}" aria-label="승천 ${i}" data-tip="${i?`<b>승천 ${i}</b><br>${ASC.slice(1,i+1).join('<br>')}`:'승천 없음'}" onclick="SEL_ASC=${i};render()">${i}</button>`).join('')}<small>${ascMax()<10?'게임을 클리어하면 다음 승천이 열려요':'모든 승천 해금!'}</small></div>
-    <div class="dim">나머지 동료는 탑을 오르며 ✚ 영입 지점과 사건에서 만나요 (최대 3명)</div>
-    <div class="party-intro">${ALL.map(id=>charCardHTML(id,`newGame('${id}')`,'이 공명자로 시작')).join('')}</div>
-  </div>`;
+  const id=SEL_HERO,C=CH[id],a=artOf(id).idle,kit=[['변주',C.intro],['협주',C.outro],['해방',C.lib]];
+  return `<div class="selscr">${battleBackground('lahai')}
+    <div class="sel-top"><button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
+      <div class="sel-ttl"><span class="eng">RESONATOR</span><h2>공명자 선택</h2></div>
+      <div class="sel-opts"><div class="diffs">${DIFF.map((x,i)=>`<button class="diff ${SEL_DIFF===i?'on':''}" onclick="SEL_DIFF=${i};render()"><b>${x.n}</b><small>${x.d}</small></button>`).join('')}</div>
+      <div class="ascs"><b>승천</b>${Array.from({length:ascMax()+1},(_,i)=>`<button class="asc ${SEL_ASC===i?'on':''}" aria-label="승천 ${i}" data-tip="${i?`<b>승천 ${i}</b><br>${ASC.slice(1,i+1).join('<br>')}`:'승천 없음'}" onclick="SEL_ASC=${i};render()">${i}</button>`).join('')}</div></div></div>
+    <div class="sel-body">
+      <div class="sel-list" role="listbox" aria-label="공명자 목록">${ALL.map(k=>`<button class="sel-tile ${k===id?'on':''}" role="option" aria-selected="${k===id}" style="--c:${EL[CH[k].el]}" onclick="SEL_HERO='${k}';render()">
+        <i class="sel-av" style="${artStyle(k)}"></i><span><b>${CH[k].name}</b><small>${CH[k].el}</small></span></button>`).join('')}</div>
+      <div class="sel-stage" style="--c:${EL[C.el]}"><div class="sel-en">${EN_NAME[id]||''}</div>
+        ${a?`<div class="sel-hero" style="background-image:url('${a.src}');background-size:${a.frames*100}% 100%"></div>`:`<div class="sel-hero ini">${C.ini}</div>`}</div>
+      <div class="sel-info"><span class="eng">${EN_NAME[id]||''}</span>
+        <div class="sel-name"><h3>${C.name}</h3><span class="sel-el" style="--c:${EL[C.el]}">◆ ${C.el}</span></div>
+        <div class="sel-tag">${C.tag}</div><p>${C.desc}</p>
+        <ul class="sel-kit">${kit.map(([k,t])=>`<li><b>${k}</b><span>${t.replace(/^(변주|협주|공명 해방)\s*/,'')}</span></li>`).join('')}</ul>
+        <button class="btn primary sel-go" onclick="newGame('${id}')"><span class="eng">START</span>이 공명자로 시작</button>
+        <small class="dim">나머지 동료는 탑을 오르며 ✚ 영입 지점과 사건에서 만나요 (최대 3명)</small></div>
+    </div></div>`;
 }
 let REC_F='all';
 function clearRecords(){if(!confirm('게임 기록을 모두 지울까요? 되돌릴 수 없어요.'))return;try{localStorage.removeItem(REC_KEY)}catch(e){}render()}

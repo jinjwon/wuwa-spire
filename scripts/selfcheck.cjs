@@ -1,6 +1,9 @@
 // 게임 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 중에 `node scripts/selfcheck.cjs`
 const CHECKS = {
   _noluck: `(()=>{window.NOLUCK=1;return true})()`,
+  select_screen: `(async()=>{S=null;goMenu('select');await new Promise(r=>setTimeout(r,200));const n=document.querySelectorAll('.sel-tile').length;
+    document.querySelectorAll('.sel-tile')[3].click();await new Promise(r=>setTimeout(r,100));const on=document.querySelector('.sel-tile.on b').textContent===CH[ALL[3]].name;
+    document.querySelector('.sel-go').click();await new Promise(r=>setTimeout(r,200));return n===ALL.length&&on&&S&&S.team[0]===ALL[3]})()`,
   pixel_fx: `(async()=>{const els=[...new Set(Object.values(CH).map(c=>c.el))];if(!els.every(e=>FXFILE[e]))return false;
     const ok=await Promise.all(els.map(e=>new Promise(r=>{const i=new Image();i.onload=()=>r(i.naturalWidth===384&&i.naturalHeight===64);i.onerror=()=>r(false);i.src='assets/fx/'+FXFILE[e]+'.png'})));
     newGame('lyn',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
