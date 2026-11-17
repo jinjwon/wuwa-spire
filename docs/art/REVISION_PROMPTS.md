@@ -1,8 +1,16 @@
 # 도트 수정 프롬프트
 
-마지막 갱신 2026-11-06. 생성한 시트의 문제를 고칠 때 쓴다. 끝난 항목은 지운다. 새로 만드는 시트는 [HERO_PROMPTS.md](HERO_PROMPTS.md)를 쓴다.
+마지막 갱신 2026-11-17. 생성한 시트의 문제를 고칠 때 쓴다. 끝난 항목은 지운다. 새로 만드는 시트는 [HERO_PROMPTS.md](HERO_PROMPTS.md)를 쓴다.
+
+## 공통 규칙
+모든 시트 프롬프트 끝에 붙는 규칙이다. 새 수정 프롬프트를 쓸 때 그대로 붙인다.
+
+```
+Same rules: 7-head adult proportions, same body size and foot line in all cells, uniform 16-bit pixel grid, at most 48 colors, true alpha transparency, solid hard-edged effects only. No soft glow, outer glow, haze, colored fringe, specks, text, grid lines or background. Everything stays at least 8% away from every cell edge.
+```
 
 ## 공명자 수정
+수정 프롬프트에는 캐릭터 외형을 함께 적는다. 외형을 적지 않으면 고치는 동안 의상과 머리가 바뀐다. 외형은 [설정 기준표](../lore/CHARACTER_BIBLE.md)의 확인된 내용만 쓴다.
 각 프롬프트에 해당 시트 1장을 첨부한다(`art/source-v2/`). 결과는 같은 파일명으로 덮어쓴다.
 
 ### 모니에 · `hero_mor.png`
@@ -38,7 +46,7 @@ Attachment 1 is the current sprite sheet of Lynae. Keep the same character, outf
 - 해방의 메카가 칸 밖으로 나감
 
 ```
-Attachment 1 is the current sprite sheet of Aemeath. Keep the same character, outfit, weapon, poses and 4 by 2 cell layout. Fix only these problems: Row 1 col 1 and col 4: angle the sword so its tip stays inside the cell. Row 1 col 3: shorten the slash. Row 2 col 4: make the mech smaller and fully inside the cell, keeping her body at the same size. Remove the outer glow. Same rules: 7-head adult proportions, same body size and foot line in all cells, uniform 16-bit pixel grid, at most 48 colors, true alpha transparency, solid hard-edged effects only. No soft glow, outer glow, haze, colored fringe, specks, text, grid lines or background. Everything stays at least 8% away from every cell edge.
+Attachment 1 is the current sprite sheet of Aemeath. Keep the same character, outfit, weapon, poses and 4 by 2 cell layout. Do not redesign her: knee-length rose-pink high ponytail with peach tips, golden eyes, white sleeveless leotard with gold trim, metal device at the waist, navy-to-sky-blue starry gradient skirt tails, white gloves from the elbow, white thigh-highs with gold bands, white heels, sword. Change nothing except the listed problems; every cell that is not listed must stay pixel-identical in pose and design. Fix only these problems: Row 1 col 1 and col 4: angle the sword so its tip stays inside the cell. Row 1 col 3: shorten the slash. Row 2 col 4: make the mech smaller and fully inside the cell, keeping her body at the same size. Remove the outer glow. Same rules: 7-head adult proportions, same body size and foot line in all cells, uniform 16-bit pixel grid, at most 48 colors, true alpha transparency, solid hard-edged effects only. No soft glow, outer glow, haze, colored fringe, specks, text, grid lines or background. Everything stays at least 8% away from every cell edge.
 ```
 
 ### 에이메스 메카 · `hero_aemMecha.png`
@@ -47,7 +55,7 @@ Attachment 1 is the current sprite sheet of Aemeath. Keep the same character, ou
 - 다른 캐릭터와 키 기준이 다름
 
 ```
-Attachment 1 is the current sprite sheet of Aemeath's mech form. Keep the same character, outfit, weapon, poses and 4 by 2 cell layout. Fix only these problems: Remove all blue and white noise between cells. Shrink the wings so they stay inside each cell. Keep the armor design. Mech body height is about 10% taller than Aemeath; use the same foot line. Same rules: 7-head adult proportions, same body size and foot line in all cells, uniform 16-bit pixel grid, at most 48 colors, true alpha transparency, solid hard-edged effects only. No soft glow, outer glow, haze, colored fringe, specks, text, grid lines or background. Everything stays at least 8% away from every cell edge.
+Attachment 1 is the current sprite sheet of Aemeath's mech form. Keep the same character, outfit, weapon, poses and 4 by 2 cell layout. Do not redesign it: silver-white armor, round helmet with teal visor, golden crest swept back, pale gold cables, black joints with gold trim, teal chest core, floating white blade wings. Change nothing except the listed problems; every cell that is not listed must stay the same in pose and design. Fix only these problems: Remove all blue and white noise between cells. Shrink the wings so they stay inside each cell. Keep the armor design. Mech body height is about 10% taller than Aemeath; use the same foot line. Same rules: 7-head adult proportions, same body size and foot line in all cells, uniform 16-bit pixel grid, at most 48 colors, true alpha transparency, solid hard-edged effects only. No soft glow, outer glow, haze, colored fringe, specks, text, grid lines or background. Everything stays at least 8% away from every cell edge.
 ```
 
 ## 적 재제작
