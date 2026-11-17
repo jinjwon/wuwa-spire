@@ -1,4 +1,4 @@
-# 진행 현황 (2026-11-12 기준)
+# 진행 현황 (2026-11-17 기준)
 
 작업이 끝날 때마다 이 문서를 고친다.
 
@@ -29,5 +29,6 @@
 | 신규 공명자 데이터·카드 | 히유키 완료, 음림·카르티시아 미착수 |
 
 ## 코드 메모
-- `index.html` 약 2,800줄. CSS는 덮어쓰기 층이 많아 다음 정리 후보.
+- 2026-11-17: `index.html`을 `src/styles.css`와 `src/js/` 9개 파일로 분리. 구조와 남은 정리 후보는 [MAINTENANCE.md](MAINTENANCE.md).
+- CSS는 덮어쓰기 층이 많아 다음 정리 후보.
 - 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 후 `node scripts/selfcheck.cjs`. VS Code 터미널에서는 `env -u ELECTRON_RUN_AS_NODE`를 앞에 붙인다.

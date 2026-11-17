@@ -70,7 +70,7 @@ const oldRects=()=>Object.fromEntries(OLD.flatMap(([a,ax,ay,ids,b,bx,by])=>ids.m
   ...[0,1,2,3].map(c=>[path.join(src,b+'.png'),bx[c],by[r],bx[c+1],by[r+1]])]])));
 const AEM_CARDS=['aem_a','aem_b','aem_s','aem_dash','aem_shard','aem_wing','aem_star','aem_ghost','aem_break','aem_sync'];
 const HIY_CARDS=['hiy_a','hiy_b','hiy_s','hiy_bloom','hiy_edge','hiy_suzu','hiy_art','hiy_shatter','hiy_bless'];
-// 카드 시트 패널 순서 = index.html 카드 정의 순서(HERO_PROMPTS.md 카드 순서)
+// 카드 시트 패널 순서 = src/js/data.js 카드 정의 순서(HERO_PROMPTS.md 카드 순서)
 const CARD_LIST={aem:AEM_CARDS,hiy:HIY_CARDS,lyn:['lyn_a','lyn_b','lyn_s','lyn_spray','lyn_rapid','lyn_free','lyn_merc','lyn_quick','lyn_canvas'],
   mor:['mor_a','mor_b','mor_s','mor_mass','mor_conv','mor_crit','mor_hyp','mor_probe','mor_lecture']};
 (async()=>{

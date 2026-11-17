@@ -21,7 +21,7 @@ const ABSTRACT={상태:'glitchy corrupted energy, static and dark purple noise, 
   저주:'distorted echo noise waveform, eerie dark abstract shapes, no character'};
 const STYLE='Pixel art card illustration, landscape 3:2 (1536x1024), 16-bit SNES style, crisp pixels, limited palette, dark blue night atmosphere, inspired by the game Wuthering Waves. No text, no letters, no card frame, no border.';
 
-function cards(){const src=fs.readFileSync(path.join(root,'index.html'),'utf8');
+function cards(){const src=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8');
   return fs.readdirSync(CARDS).filter(f=>f.endsWith('.png')&&!f.startsWith('node')).map(f=>{const id=f.slice(0,-4);
     const m=src.match(new RegExp(`[ ,{]${id}:\\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'`));assert(m,'카드 정의 없음: '+id);
     return{id,n:m[1],o:m[2],t:m[3]}})}

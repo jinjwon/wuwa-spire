@@ -101,7 +101,7 @@ async function poses(job){
       for(const[state,index]of [['guard',4],['hit',5],['cast',6],['ultimate',7]])await strip('aemMecha',state,[p[0],state==='ultimate'?p[6]:p[index],p[index],p[0]]);
     }
   }
-  const html=await fs.readFile(path.join(root,'index.html'),'utf8');
+  const html=await fs.readFile(path.join(root,'src/js/data.js'),'utf8');
   const cardSource=html.slice(html.indexOf('const CD={'),html.indexOf('const REWARD_POOL='));
   const cards=[...cardSource.matchAll(/^  (\w+):\{n:/gm)].map(m=>m[1]);
   assert.equal(cards.length,70);
