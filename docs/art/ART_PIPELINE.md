@@ -23,8 +23,7 @@
 4. `scripts/prepare-heroes-v3.cjs`의 `HEROES`에 id를 넣는다.
 5. `IDS=<id> node scripts/prepare-heroes-v3.cjs preview`로 `art/preview-v3/`에서 먼저 본다.
 6. 문제없으면 `IDS=<id> node scripts/prepare-heroes-v3.cjs write`로 적용한다.
-7. 예전 색 보정이 있는 캐릭터는 `scripts/recolor.cjs` 규칙을 지운다.
-8. 게임 화면에서 대기·공격·해방을 확인한다.
+7. 게임 화면에서 대기·공격·해방을 확인한다.
 
 ## 검수 항목
 - [ ] 칸 수가 맞고 경계를 넘은 부분이 없다
