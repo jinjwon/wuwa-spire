@@ -8,12 +8,13 @@ const root=path.join(__dirname,'..'),CARDS=path.join(root,'assets/cards');
 // 원작 외형 요약(공식 원화 관찰 기준, 팬아트용 설명)
 const LOOK={
   rov:'Rover (female): short black bob hair with silver-white strands, black sleeveless high-neck top, grey asymmetric waist cloth, black thigh-high boots, slim black sword with small glowing blue accents',
-  aem:'Aemeath: very long pink hair, white and silver futuristic dress with navy-blue accents and thin gold trim, cyan glowing energy sword, often with a sleek white-silver mecha companion with cyan lights',
-  sk:'Shorekeeper: long pale blue-teal hair, flowing white dress, serene expression, glowing cyan butterflies around her, starry ocean motifs',
+  aem:'Aemeath: knee-length rose-pink high ponytail with peach tips, golden eyes, white sleeveless leotard with gold trim, metal device at the waist, navy-to-sky-blue starry gradient skirt tails, white gloves from the elbow, white thigh-highs with gold bands, white heels, sword. Her mecha form: silver-white armor, round helmet with teal visor, golden crest swept back, teal chest core, floating white blade wings',
+  sk:'Shorekeeper: shoulder-length sky-blue hair with dark blue tips, pink-purple eyes, white translucent hood with navy and yellow butterfly ornaments, navy starry veil, short white dress with frilled collar, silver straps and bracelets, bare legs, glowing butterflies around her',
   lyn:'Lynae: long wavy blonde hair, headphones, white shirt, black jacket and short black skirt, mint and teal neon spray-paint graffiti effects',
   mor:'Mornye: long silver-white hair covering one eye, one visible red eye, long white coat over indigo-navy inner outfit, celestial orbit diagrams and planets, large white blade',
-  chi:'Chisa: long straight black hair with a red ribbon, black jacket and black pleated skirt, dark blade with red accents, crimson thread-like slash effects',
-  cam:'Camellya: white hair with crimson tips, red and black dress decorated with camellia flowers, crimson petals and thorny vines, vine-like whip blade',
+  chi:'Chisa: long straight black hair with one red ribbon, short black jacket over a sailor top with red scarf, black pleated skirt, scissor-shaped greatsword, crimson thread-like slash effects',
+  cam:'Camellya: white twin-tail hair with black streaks, dark grey eyes with red diamond pupils, dark red flower on her head, red and black dress decorated with camellia flowers, crimson petals and thorny vines, sword',
+  hiy:'Hiyuki: white high ponytail with a red ribbon, red and white shrine maiden outfit with cherry blossom pattern, sword, ice and snow effects',
 };
 const POSE={공격:'dynamic attack action, mid-strike with motion trails',스킬:'defensive or support stance, protective glowing barrier or graceful evasive motion',
   파워:'powerful aura awakening, energy swirling around the character, close-up heroic shot',상태:'',저주:''};
@@ -21,10 +22,9 @@ const ABSTRACT={상태:'glitchy corrupted energy, static and dark purple noise, 
   저주:'distorted echo noise waveform, eerie dark abstract shapes, no character'};
 const STYLE='Pixel art card illustration, landscape 3:2 (1536x1024), 16-bit SNES style, crisp pixels, limited palette, dark blue night atmosphere, inspired by the game Wuthering Waves. No text, no letters, no card frame, no border.';
 
-function cards(){const src=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8');
-  return fs.readdirSync(CARDS).filter(f=>f.endsWith('.png')&&!f.startsWith('node')).map(f=>{const id=f.slice(0,-4);
-    const m=src.match(new RegExp(`[ ,{]${id}:\\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'`));assert(m,'카드 정의 없음: '+id);
-    return{id,n:m[1],o:m[2],t:m[3]}})}
+function cards(){const src=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8'),cd=src.slice(src.indexOf('const CD={'),src.indexOf('const REWARD_POOL='));
+  const L=[...cd.matchAll(/^  (\w+):\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'/gm)].map(m=>({id:m[1],n:m[2],o:m[3],t:m[4]}));
+  assert(L.length>=70,'카드 정의를 읽지 못했어요: '+L.length);return L}
 
 function prompt(c){
   const who=LOOK[c.o]||'a mysterious resonator silhouette with glowing echo energy';
