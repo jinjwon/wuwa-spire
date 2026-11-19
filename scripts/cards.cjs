@@ -8,13 +8,29 @@ const root=path.join(__dirname,'..'),CARDS=path.join(root,'assets/cards');
 // 원작 외형 요약(공식 원화 관찰 기준, 팬아트용 설명)
 const LOOK={
   rov:'Rover (female): short black bob hair with silver-white strands, black sleeveless high-neck top, grey asymmetric waist cloth, black thigh-high boots, slim black sword with small glowing blue accents',
-  aem:'Aemeath: knee-length rose-pink high ponytail with peach tips, golden eyes, white sleeveless leotard with gold trim, metal device at the waist, navy-to-sky-blue starry gradient skirt tails, white gloves from the elbow, white thigh-highs with gold bands, white heels, sword. Her mecha form: silver-white armor, round helmet with teal visor, golden crest swept back, teal chest core, floating white blade wings',
+  aem:'Aemeath: knee-length rose-pink high ponytail with peach tips, golden eyes, white sleeveless leotard with gold trim, metal device at the waist, navy-to-sky-blue starry gradient skirt tails, white gloves from the elbow, white thigh-highs with gold bands, white heels, sword',
+
   sk:'Shorekeeper: shoulder-length sky-blue hair with dark blue tips, pink-purple eyes, white translucent hood with navy and yellow butterfly ornaments, navy starry veil, short white dress with frilled collar, silver straps and bracelets, bare legs, glowing butterflies around her',
   lyn:'Lynae: long wavy blonde hair, headphones, white shirt, black jacket and short black skirt, mint and teal neon spray-paint graffiti effects',
   mor:'Mornye: long silver-white hair covering one eye, one visible red eye, long white coat over indigo-navy inner outfit, celestial orbit diagrams and planets, large white blade',
   chi:'Chisa: long straight black hair with one red ribbon, short black jacket over a sailor top with red scarf, black pleated skirt, scissor-shaped greatsword, crimson thread-like slash effects',
   cam:'Camellya: white twin-tail hair with black streaks, dark grey eyes with red diamond pupils, dark red flower on her head, red and black dress decorated with camellia flowers, crimson petals and thorny vines, sword',
   hiy:'Hiyuki: white high ponytail with a red ribbon, red and white shrine maiden outfit with cherry blossom pattern, sword, ice and snow effects',
+};
+// 메카 외형은 메카가 나오는 카드에만 붙인다(전 카드에 붙이면 GPT가 모든 카드에 메카를 그림)
+const MECHA='Her mecha form: silver-white armor, round helmet with teal visor, golden crest swept back, teal chest core, floating white blade wings.';
+// 카드별 장면(카드 효과 문구 기준). [장면, 메카 등장 여부]. 없으면 종류별 공통 포즈를 쓴다
+const SCENE={
+  aem_a:['Aemeath alone, one quick forward sword slash with a short pink-white arc. No mecha in this image',0],
+  aem_b:['Aemeath sidestepping lightly to dodge, starry skirt tails trailing a stardust afterimage. No mecha in this image',0],
+  aem_s:['transformation moment: Aemeath stepping into a column of starlight while her mecha form assembles around her',1],
+  aem_dash:['Aemeath and her mecha fusing their weapons into one huge glowing blade and dashing forward together',1],
+  aem_shard:['three bright star shards striking one dark enemy in rapid succession, Aemeath pointing her sword at it. No mecha in this image',0],
+  aem_wing:['the floating white blade wings of her mecha fanning out behind Aemeath, glowing and empowering her',1],
+  aem_star:['a rain of morning-star streaks hitting several dark enemies at once, Aemeath mid-leap above them. No mecha in this image',0],
+  aem_sync:['Aemeath with eyes closed, hand on her chest, a glowing ring linking her to the teal chest core of her mecha',1],
+  aem_break:['her mecha delivering a huge overhead strike, starlight shattering a cracked barrier, Aemeath small in the foreground',1],
+  aem_ghost:['a faint translucent outline of Aemeath standing guard behind an ally, an invisible companion. No mecha in this image',0],
 };
 const POSE={공격:'dynamic attack action, mid-strike with motion trails',스킬:'defensive or support stance, protective glowing barrier or graceful evasive motion',
   파워:'powerful aura awakening, energy swirling around the character, close-up heroic shot',상태:'',저주:''};
@@ -23,12 +39,12 @@ const ABSTRACT={상태:'glitchy corrupted energy, static and dark purple noise, 
 const STYLE='Pixel art card illustration, landscape 3:2 (1536x1024), 16-bit SNES style, crisp pixels, limited palette, dark blue night atmosphere, inspired by the game Wuthering Waves. No text, no letters, no card frame, no border.';
 
 function cards(){const src=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8'),cd=src.slice(src.indexOf('const CD={'),src.indexOf('const REWARD_POOL='));
-  const L=[...cd.matchAll(/^  (\w+):\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'/gm)].map(m=>({id:m[1],n:m[2],o:m[3],t:m[4]}));
+  const L=[...cd.matchAll(/^  (\w+):\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'/gm)].map(m=>({id:m[1],n:m[2],o:m[3],t:m[4],duo:m[0].match(/duo:\['(\w+)','(\w+)'\]/)?.slice(1)}));
   assert(L.length>=70,'카드 정의를 읽지 못했어요: '+L.length);return L}
 
 function prompt(c){
-  const who=LOOK[c.o]||'a mysterious resonator silhouette with glowing echo energy';
-  const body=ABSTRACT[c.t]||`${who}. ${POSE[c.t]}. Theme: "${c.n}".`;
+  const who=c.duo?.every(k=>LOOK[k])?`Two characters together. ${LOOK[c.duo[0]]}. And ${LOOK[c.duo[1]]}`:LOOK[c.o]||'a mysterious resonator silhouette with glowing echo energy';
+  const sc=SCENE[c.id],body=ABSTRACT[c.t]||(sc?`${who}. ${sc[0]}.${sc[1]?' '+MECHA:''}`:`${who}. ${POSE[c.t]}. Theme: "${c.n}".`);
   return `${STYLE} ${body} Character centered, full scene fills the frame.`;
 }
 
