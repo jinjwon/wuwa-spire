@@ -4,14 +4,14 @@
 // 후보 그림은 art/candidates/<키>/ 에 아무 이름으로 넣는다. 키는 보드의 각 항목에 적혀 있다.
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const root=path.join(__dirname,'..'),ART=path.join(root,'art'),CAND=path.join(ART,'candidates');
-const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md']];
+const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md'],['전투 배경 프롬프트','docs/art/BG_PROMPTS.md']];
 const IMG=/\.(png|jpe?g|webp)$/i;
 const exists=p=>fs.existsSync(path.join(root,p));
 
 // 키 → 지금 쓰는 그림, 적용할 자리
 function slot(key){
-  if(/^(hero|cards|enemies|enemy_sheet)_?\w*$/.test(key)&&!exists(`assets/cards/${key}.png`))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,
-    next:key.startsWith('cards_')||key.startsWith('enem')?'docs/art/ART_PIPELINE.md 의 절차대로 처리':'node scripts/prepare-heroes-v3.cjs preview  (확인 후 write)'};
+  if(/^(hero|cards|enemies|enemy_sheet|battle)_?\w*$/.test(key)&&!exists(`assets/cards/${key}.png`))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,
+    next:key.startsWith('battle_')?'node scripts/prepare-battle-bg.cjs':key.startsWith('cards_')||key.startsWith('enem')?'docs/art/ART_PIPELINE.md 의 절차대로 처리':'node scripts/prepare-heroes-v3.cjs preview  (확인 후 write)'};
   return{cur:`assets/cards/${key}.png`,dst:`art/card-gen/${key}.png`,next:'node scripts/cards.cjs import'};
 }
 
@@ -27,7 +27,7 @@ function parse(file){
   }
   for(const it of items){
     it.notes=it.notes.join('\n').trim();
-    const f=it.title.match(/`?((?:hero|cards)_\w+)\.png`?/),c=it.title.match(/^(\w+) · /);
+    const f=it.title.match(/`?((?:hero|cards|battle)_\w+)\.png`?/),c=it.title.match(/^(\w+) · /);
     it.key=f?f[1]:c&&exists(`assets/cards/${c[1]}.png`)?c[1]:null;
     if(it.level===2&&exists(`assets/${it.title}.png`))it.face=`assets/${it.title}.png`;
   }
