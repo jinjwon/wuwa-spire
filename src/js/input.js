@@ -135,7 +135,11 @@ addEventListener('keydown',e=>{
 });
 addEventListener('pointerover',e=>{const n=e.target.closest&&e.target.closest('.mnode');document.querySelectorAll('.mlines line.peek').forEach(l=>l.classList.remove('peek'));
   if(n&&n.getAttribute('onclick')){const k=n.getAttribute('onclick').match(/'(.+)'/)[1];document.querySelectorAll(`.mlines line[data-a="${k}"]`).forEach(l=>l.classList.add('peek'))}});
-addEventListener('resize',()=>{if(S&&S.screen==='combat'&&$('#hand')&&!DRAG)renderHand()});
+// 도트 정수 배율: 캐릭터 --k(실제 화면 높이 1000px당 1배), 배경 --bk(640×360을 덮는 최소 정수 배율). 실제 픽셀 기준으로 맞춰 레티나에서도 고르게
+function pixelScale(){const d=devicePixelRatio||1,r=document.documentElement.style;
+  r.setProperty('--k',Math.max(Math.ceil(d),Math.floor(innerHeight*d/1000))/d);r.setProperty('--bk',Math.ceil(Math.max(innerWidth/640,innerHeight/360)*d)/d)}
+pixelScale();
+addEventListener('resize',()=>{pixelScale();if(S&&S.screen==='combat'&&$('#hand')&&!DRAG)renderHand()});
 function rewardHTML(){
   const r=S.reward;const open=r.open;
   const rows=[`<div class="rw got"><i>◎</i><span>조개 화폐 <b>+${r.gold}</b></span></div>`];
