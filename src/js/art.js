@@ -30,9 +30,10 @@ async function loadArt(){
     ARTS[id]=A;
   }));
 }
-function spriteImg(s,once){
+// fps: 대기 루프 8fps. 8장 이상 동작 스트립(16칸 시트)은 playSprite가 16fps로 재생
+function spriteImg(s,once,fps=8){
   const n=s.frames;
-  return `<img src="${s.src}" alt="" draggable="false" style="width:${n*100}%;--spr-end:${-100*(n-1)/n}%;${n>1?`animation-duration:${(n/8).toFixed(2)}s;animation-timing-function:steps(${n},jump-none);${once?'animation-iteration-count:1;animation-fill-mode:forwards;':''}`:'animation:none;'}">`;
+  return `<img src="${s.src}" alt="" draggable="false" style="width:${n*100}%;--spr-end:${-100*(n-1)/n}%;${n>1?`animation-duration:${(n/fps).toFixed(2)}s;animation-timing-function:steps(${n},jump-none);${once?'animation-iteration-count:1;animation-fill-mode:forwards;':''}`:'animation:none;'}">`;
 }
 function partySVG(id){
   const c=CH[id].color;
@@ -83,8 +84,8 @@ function playSprite(sp,id,state){
   const art=artOf(id),strip=art[state]||(state==='ultimate'?art.cast:state==='guard'?art.cast:null);
   if(!strip||!art.idle)return;
   clearTimeout(sp._restore);sp.dataset.motion=state;sp.dataset.art=artKey(id);
-  sp.innerHTML=spriteImg(strip,true);
-  sp._restore=setTimeout(()=>resetSprite(sp,id),strip.frames/8*1000);
+  const fps=strip.frames>=8?16:8;sp.innerHTML=spriteImg(strip,true,fps);
+  sp._restore=setTimeout(()=>resetSprite(sp,id),strip.frames/fps*1000);
 }
 function bodyOf(key){return key.startsWith('u-')?document.querySelector(`#${key} .body`):document.querySelector(`#e-${key.slice(1)} .body`)}
 function flushFx(){
