@@ -61,5 +61,14 @@ const DRAW={
   for(const [el,cols] of Object.entries(PAL)){const g=canvas(),p=cols.map(hex);DRAW[el](g,p);
     for(let f=0;f<F;f++){let v=0;for(let y=0;y<N;y++)for(let x=0;x<N;x++)v+=g.d[(y*N*F+f*N+x)*4+3]>0;assert(v>20,`${el} frame ${f} empty`)}
     await sharp(Buffer.from(g.d),{raw:{width:N*F,height:N,channels:4}}).png().toFile(path.join(out,`${FILE[el]}.png`))}
+  // 칼베기: art/fx-src/tbbk_sword_slash.png(CC0, 64×47 9칸 3×3)를 속성 팔레트로 칠해 가로 시트 slash_<속성>.png로. 회색→중간, 흰색→하이라이트, 바깥 1px→어두운 윤곽
+  const SW=64,SH=47,SF=9,src=await sharp(path.join(root,'art/fx-src/tbbk_sword_slash.png')).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+  for(const [el,cols] of Object.entries(PAL)){const p=cols.map(hex),d=new Uint8Array(SW*SF*SH*4),sw=src.info.width;
+    const at=(f,x,y)=>x>=0&&y>=0&&x<SW&&y<SH?((Math.floor(f/3)*SH+y)*sw+(f%3)*SW+x)*4:-1;
+    for(let f=0;f<SF;f++)for(let y=0;y<SH;y++)for(let x=0;x<SW;x++){const i=at(f,x,y),o=(y*SW*SF+f*SW+x)*4;let c=null;
+      if(src.data[i+3]>0)c=src.data[i]>240?p[3]:p[1];
+      else if([[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>{const j=at(f,x+dx,y+dy);return j>=0&&src.data[j+3]>0}))c=p[0];
+      if(c){[d[o],d[o+1],d[o+2]]=c;d[o+3]=255}}
+    await sharp(Buffer.from(d),{raw:{width:SW*SF,height:SH,channels:4}}).png().toFile(path.join(out,`slash_${FILE[el]}.png`))}
   console.log('PASS',out);
 })();

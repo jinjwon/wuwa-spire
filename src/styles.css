@@ -52,8 +52,10 @@ h1,h2,h3{margin:0}
 .t-foot{position:absolute;bottom:14px;left:16px;right:16px;font-size:11px;color:var(--dim)}
 .backbtn{align-self:flex-start}
 .vfx{position:fixed;pointer-events:none;z-index:65}
-.vfx.pfx{width:var(--s);height:var(--s);transform:translate(-50%,-50%);background:var(--img) 0 0/600% 100% no-repeat;image-rendering:pixelated;animation:pfx .42s steps(6,jump-none) forwards}
+/* 시트 경로는 JS가 인라인 background-image로 준다(변수 안 url()은 이 CSS 파일 기준으로 풀려 src/assets를 찾는다) */
+.vfx.pfx{width:var(--s);height:var(--s);transform:translate(-50%,-50%);background:0 0/600% 100% no-repeat;image-rendering:pixelated;animation:pfx .42s steps(6,jump-none) forwards}
 @keyframes pfx{to{background-position:100% 0}}
+.vfx.pslash{width:calc(64px*var(--z)*var(--k,1));height:calc(47px*var(--z)*var(--k,1));transform:translate(-50%,-50%) scale(var(--fx,1),var(--fy,1));background:0 0/900% 100% no-repeat;image-rendering:pixelated;animation:pfx .36s steps(9,jump-none) both}
 .vfx.slash{width:var(--s);height:var(--s);transform:translate(-50%,-50%) rotate(var(--r))}
 .vfx.slash svg{width:100%;height:100%;overflow:visible;animation-delay:inherit}
 .vfx.slash path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:slashdraw .34s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:inherit;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}

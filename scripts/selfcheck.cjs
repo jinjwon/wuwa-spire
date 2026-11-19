@@ -9,6 +9,12 @@ const CHECKS = {
     newGame('lyn',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
     const T=alive()[0];T.hp=T.maxHp=500;T.block=0;S.c.cur=S.c.active;dmgEnemy(T,5);flushFx();await new Promise(r=>setTimeout(r,250));
     return ok.every(Boolean)&&!!document.querySelector('#fx .pfx')})()`,
+  free_assets: `(async()=>{const ok=await Promise.all(Object.values(FXFILE).map(f=>new Promise(r=>{const i=new Image();i.onload=()=>r(i.naturalWidth===576&&i.naturalHeight===47);i.onerror=()=>r(false);i.src='assets/fx/slash_'+f+'.png'})));
+    const snd=await Promise.all(Object.values(SMP).flat().map(n=>fetch('assets/sfx/'+n+'.ogg').then(r=>r.ok).catch(()=>false)));
+    newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
+    const T=alive()[0];T.hp=T.maxHp=500;T.block=0;S.c.cur=S.c.active;dmgEnemy(T,5);flushFx();await new Promise(r=>setTimeout(r,250));
+    const s=document.querySelector('#fx .pslash'),w=s&&s.getBoundingClientRect().width/parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--k')||1);
+    return ok.every(Boolean)&&snd.every(Boolean)&&!!s&&[192,256].includes(Math.round(w))&&[s,document.querySelector('#fx .pfx')].every(e=>e&&/\\/assets\\/fx\\//.test(getComputedStyle(e).backgroundImage)&&!/\\/src\\/assets/.test(getComputedStyle(e).backgroundImage))})()`,
   wuwa_systems: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip','zig'],'battle');await new Promise(r=>setTimeout(r,400));
     const c=S.c;const [T,U]=c.enemies;T.hp=T.maxHp=500;U.hp=U.maxHp=500;T.block=U.block=0;T.fb=3;c.cur=c.active;applyElem(T,'용융');const boom=T.fb===0&&T.hp===488&&U.hp===496;
     S.echoes=['snip','fdread'];const s2=son2('용융')&&!son4('용융');

@@ -122,11 +122,12 @@ function sparks(x,y,c,n,spread){for(let i=0;i<n;i++){const a=Math.random()*Math.
 function runVfx(v){
   const t=centerOf(v.key);if(!t)return;const c=v.o.c||'#fff';const S0=Math.max(90,t.w*(v.o.big?1.3:1));
   // 속성 도트 임팩트(scripts/make-vfx.cjs). 64px 시트를 정수배(2·3배)로만 키운다
-  if(FXFILE[v.o.el])fxEl('','pfx',t.x,t.y,`--img:url('assets/fx/${FXFILE[v.o.el]}.png');--s:${v.o.big?192:128}px`,480);
+  if(FXFILE[v.o.el])fxEl('','pfx',t.x,t.y,`background-image:url('assets/fx/${FXFILE[v.o.el]}.png');--s:${v.o.big?192:128}px`,480);
   if(v.type==='sword'||v.type==='heavy'){
-    const n=v.type==='heavy'?1:(Math.random()<.5?1:2);const sz=v.type==='heavy'?S0*1.35:S0;
-    for(let i=0;i<n;i++){const r=(Math.random()*70-35)+(i?90:0);
-      fxEl(`<svg viewBox="0 0 100 100"><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="${c}" stroke-width="${v.type==='heavy'?13:9}"/><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="#fff" stroke-width="3"/></svg>`,'slash',t.x,t.y,`--s:${sz}px;--r:${r}deg;animation-delay:${i*70}ms`,600)}
+    const n=v.type==='heavy'?1:(Math.random()<.5?1:2);
+    // 도트 칼베기(CC0 tbbk, make-vfx.cjs가 속성색으로 칠함). 도트라 회전 대신 뒤집기만, 크기는 정수 배율
+    const sf=FXFILE[v.o.el]||'spectro',z=v.type==='heavy'||v.o.big?4:3,fx=Math.random()<.5?-1:1;
+    for(let i=0;i<n;i++)fxEl('','pslash',t.x,t.y,`background-image:url('assets/fx/slash_${sf}.png');--z:${z};--fx:${i?-fx:fx};--fy:${i?-1:1};animation-delay:${i*70}ms`,420+i*70);
     if(v.type==='heavy')fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*1.3}px`,600);
     sparks(t.x,t.y,c,v.o.big?14:9,S0*.55);
   }else if(v.type==='shot'){
