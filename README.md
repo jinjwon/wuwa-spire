@@ -95,6 +95,7 @@
 - **적** — 잔상이 일반·정예로, 명식(레비아탄 · 알레프-원의 창조물)이 보스로 등장
 - **자동 저장** — 지도에 있을 때마다 저장돼서 타이틀 **이어하기**로 계속. 끝난 판은 타이틀 **게임 기록**에서 승률·최고 기록 확인
 - **난이도** — 보통(적 체력·피해 110%) · 어려움(125%/120%) · 악몽(140%/135%)
+- **선명한 도트** — 1080p부터 4K까지 캐릭터·배경을 정수 배율로 키워 픽셀이 고르게 보여요(전투 배경 640×360 도트)
 
 <img src="docs/img/map.jpg" width="820" alt="지도 화면">
 
@@ -117,10 +118,10 @@ npm run dist:win     # 윈도우 빌드
 **배포**: `package.json`의 `version`을 올리고 같은 번호로 태그를 올리면 GitHub Actions가 Releases에 설치 파일을 올려요.
 
 ```bash
-git tag v0.7.1 && git push origin v0.7.1
+git tag v0.10.0 && git push origin v0.10.0
 ```
 
-**자가 점검**: `npx electron . --remote-debugging-port=9334` 실행 중 `node scripts/selfcheck.cjs`
+**자가 점검**: `npx electron . --remote-debugging-port=9334` 실행 중 `node scripts/selfcheck.cjs` (VS Code 터미널에서는 앞에 `env -u ELECTRON_RUN_AS_NODE`). `mp_guard`는 7777 포트를 다른 프로그램이 쓰고 있으면 실패해요
 
 **디자인 규칙**: [DESIGN.md](DESIGN.md) (명조풍 토큰·부품)
 
@@ -128,6 +129,16 @@ git tag v0.7.1 && git push origin v0.7.1
 
 **프로젝트 문서**: [docs/README.md](docs/README.md)에서 설정·아트·시스템 문서를 찾을 수 있어요.
 
-**이미지 교체**: `assets/`에 도트를 넣으면 자동 적용돼요. 규칙은 [assets/README.md](assets/README.md). 공명자 도트 재처리는 `node scripts/prepare-heroes-v3.cjs write`만 쓰고, 예전 스크립트 2개는 덮어쓰기 방지로 막혀 있어요.
+**이미지 교체**: 규칙은 [docs/art/ART_PIPELINE.md](docs/art/ART_PIPELINE.md), 파일 위치는 [assets/README.md](assets/README.md).
+
+| 하고 싶은 것 | 명령 |
+|---|---|
+| 프롬프트 복사, 후보 그림 비교·적용 | `npm run board` |
+| 공명자 도트 재처리(전원) | `node scripts/prepare-heroes-v3.cjs write` (한 명만: 앞에 `IDS=aem`, 미리보기: `write` 대신 `preview`) |
+| 카드 시트도 다시 자르기 | 앞에 `CARDS=1`, 끝나면 `node scripts/cards.cjs import` (단품 카드 덮어쓰기 복구) |
+| 카드 한 장 교체 | `art/card-gen/<카드ID>.png` 넣고 `node scripts/cards.cjs import` |
+| 전투 배경 재처리 | `node scripts/prepare-battle-bg.cjs` |
+
+예전 스크립트 2개(`prepare-sprites`, `prepare-art-v2`)는 덮어쓰기 방지로 막혀 있어요.
 
 </details>
