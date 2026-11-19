@@ -791,17 +791,20 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @keyframes epiglow{50%{box-shadow:0 0 0 2px #fff4cf,0 0 34px 12px rgba(255,214,120,.95)}}
 .epis{display:flex;gap:10px;margin-top:14px}.epis .choice{flex:1;min-height:88px}.epx{color:#ffe08a}
 @media(prefers-reduced-motion:reduce){.card.epi{animation:none}}
-/* 도트 정수배 표시: 프레임 256px은 1배, 128px은 2배(보스 3배)로만 보여 픽셀을 고르게 유지 */
-#stage{--ph:256px;--px2:256px;--px3:384px}
+/* 도트 정수배 표시: 공명자 프레임 320px(몸 208px), 적 256px은 1배, 128px은 2배(보스 3배)로만 보여 픽셀을 고르게 유지 */
+/* --k: 도트 정수 배율(1080p 1배, 4K 2배). input.js의 pixelScale()이 정한다 */
+#stage{--ph:calc(320px*var(--k,1));--px2:calc(256px*var(--k,1));--px3:calc(384px*var(--k,1))}
 #stage .unit.party.s1{--sc:.5}#stage .unit.party.s2{--sc:.5}
+#stage .unit.party.s1 .sprite img,#stage .unit.party.s2 .sprite img{image-rendering:auto} /* 0.5배 축소는 최근접이면 픽셀이 빠지므로 부드럽게 */
 #stage .unit.enemy,#stage .unit.enemy.elite,#stage .unit.enemy.af-giant,#stage .unit.enemy.boss.twin{--w:var(--px2)}
-#stage .unit.enemy:not(.elite):not(.boss):not(.af-giant){--w:192px}
+#stage .unit.enemy:not(.elite):not(.boss):not(.af-giant){--w:calc(192px*var(--k,1))}
 #stage .unit.enemy:not(.elite):not(.boss):not(.af-giant) .sprite img{image-rendering:auto} /* shortcut: 1.5배라 부드럽게 표시, 적 256px 재제작 후 제거 */
-#stage .unit.enemy.boss{--w:var(--px3)}#stage .unit.enemy.minion{--w:128px}
+#stage .unit.enemy.boss{--w:var(--px3)}#stage .unit.enemy.minion{--w:calc(128px*var(--k,1))}
 .unit.enemy.boss .fig:has(.sprite){animation:pxIdle 1.8s steps(4,end) infinite}
 .unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
-.cutin .img{background-size:512px 512px;background-position:center bottom;image-rendering:pixelated}
-.battle-art img{image-rendering:auto}
+.cutin .img{background-size:640px 640px;background-position:center bottom;image-rendering:pixelated}
+/* 배경은 640×360 도트 격자. 화면을 덮는 가장 작은 정수 배율(--bk)로 키워 1080p 3배, 4K 6배에서 픽셀이 고르게 */
+.battle-art img{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
 /* ===== 공명자 선택 (2026-11-12) — 명조 공명자 목록 화면 구성. 토큰만 사용(DESIGN.md) ===== */
 .selscr{position:relative;flex:1;min-height:calc(100vh - 24px);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:18px 26px;text-align:left}
 .selscr::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,12,15,.92) 0,rgba(11,12,15,.55) 45%,rgba(11,12,15,.9) 100%)}
