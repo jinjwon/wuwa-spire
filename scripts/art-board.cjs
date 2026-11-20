@@ -95,6 +95,9 @@ figure img{display:block;height:260px;max-width:none;image-rendering:pixelated}
 figure.big img{height:auto;max-height:80vh;max-width:92vw}
 figcaption{color:var(--sub);font-size:12px;padding-top:4px}
 .hint{color:var(--sub);font-size:12px}
+#nav a{margin-right:14px}#tabs{display:flex;gap:0;width:100%;border-bottom:1px solid var(--line)}#tabs button{background:none;color:var(--sub);border:0;border-bottom:3px solid transparent;padding:10px 18px;font-size:15px;min-height:44px}
+#tabs button[aria-selected=true]{color:var(--acc);border-bottom-color:var(--acc)}#tabs small{display:block;font-weight:400;font-size:11px}
+body.tab-pl .gpt-only{display:none!important}.intro{border:1px solid #4fb3a9;background:#16211f;padding:12px 14px;margin:10px 0;line-height:1.8}.intro b{color:#7fd8c8}
 #filters{display:flex;gap:14px;flex-wrap:wrap;align-items:center;width:100%}#filters fieldset{border:0;margin:0;padding:0;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
 #filters legend{float:left;color:var(--sub);font-size:12px;margin-right:4px}
 .chip{background:none;color:var(--sub);border:1px solid var(--line);padding:4px 10px;min-height:32px;font-weight:400}.chip[aria-pressed=true]{background:var(--acc);color:#17150f;border-color:var(--acc);font-weight:600}
@@ -112,7 +115,7 @@ figcaption{color:var(--sub);font-size:12px;padding-top:4px}
 #bar{position:fixed;left:0;right:0;bottom:0;background:#15161a;border-top:1px solid var(--acc);padding:10px 16px;display:none;gap:10px;align-items:center;flex-wrap:wrap}
 #bar code{flex:1;min-width:200px;overflow-wrap:anywhere;color:var(--acc)}
 </style>
-<header><b>프롬프트 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><span id="nav"></span><div id="filters"></div></header>
+<header><b>프롬프트 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><div id="tabs" role="tablist" aria-label="AI별 탭"></div><span id="nav"></span><div id="filters"></div></header>
 <main id="main"></main>
 <div id="bar"><span>고른 그림 적용 명령</span><code id="cmd"></code><button id="cp">복사</button></div>
 <script>
@@ -122,11 +125,12 @@ const el=(t,p={},...c)=>{const e=Object.assign(document.createElement(t),p);e.ap
 const copy=(text,btn)=>navigator.clipboard.writeText(text).then(()=>{const o=btn.textContent;btn.textContent='복사됨';setTimeout(()=>btn.textContent=o,900)});
 const main=document.getElementById('main'),nav=document.getElementById('nav');
 G.forEach((g,gi)=>{
-  nav.append(el('a',{href:'#g'+gi,textContent:g.name}),' · ');
-  const grp=el('section',{className:'grp'});main.append(grp);
+  const nv=el('a',{href:'#g'+gi,textContent:g.name,className:'nv'});nv.dataset.ai=g.ai;nav.append(nv);
+  const grp=el('section',{className:'grp'});grp.dataset.ai=g.ai;main.append(grp);
+  if(g.ai==='PixelLab')grp.append(el('div',{className:'intro'},el('b',{textContent:'PixelLab 쓰는 법  '}),'캐릭터 카드 하나를 골라 ① → ⑩ 순서대로 PixelLab 화면에서 똑같이 고르세요. 청록색 칸이 고를 값입니다. 이미지는 올리지 않고, ④의 외형 설명만 복사해 붙여 넣습니다. 크기와 비용은 아래 「요금제」 버튼으로 바꿉니다.'));
   grp.append(el('h2',{id:'g'+gi,textContent:g.name+'  '},el('span',{className:'tag',textContent:g.ai})),el('div',{className:'hint gnote',textContent:'원본 문서: '+g.file}));
   g.items.forEach((it,ii)=>{
-    if(it.level<3&&!it.prompts.length){
+    if(it.level<3&&!it.prompts.length){if(g.ai==='PixelLab')return;
       if(it.level===2){const h=el('h3',{className:'gnote'},it.title);if(it.face)h.prepend(el('img',{className:'face',src:it.face,alt:''}));grp.append(h)}
       if(it.notes)grp.append(el('div',{className:'notes gnote',textContent:it.notes}));return}
     const box=el('section',{className:'item'});box.dataset.text=(it.title+' '+(it.key||'')+' '+it.notes+' '+it.prompts.join(' ')).toLowerCase();
@@ -185,20 +189,24 @@ document.querySelectorAll('.grp').forEach(grp=>{if(!grp.querySelector('.pl'))ret
   const sw=el('div',{className:'row'},el('b',{textContent:'요금제'}),...[['free','무료 체험 (64px까지)'],['paid','Tier 1 이상 (크게)']].map(([k,t])=>{const b=el('button',{className:'chip',type:'button',textContent:t});b.setAttribute('aria-pressed',k===cur);b.onclick=()=>{store.set('board:pl:plan',k==='free'?null:k);location.reload()};return b}));
   grp.querySelector('h2').after(sw)});
 // 필터: AI·종류·상태 칩 + 찾기. 고른 값은 이 브라우저에 기억한다
-const F={ai:store.get('board:f:ai')||'전체',kind:store.get('board:f:kind')||'전체',state:store.get('board:f:state')||'전체'};
-const OPTS={ai:['전체','GPT','PixelLab'],kind:['전체','공명자','적','이펙트','카드','배경','공통'],state:['전체','후보 있음','그림 있음','그림 없음']};
-const LABEL={ai:'AI',kind:'종류',state:'상태'},fbox=document.getElementById('filters'),q=document.getElementById('q');
-for(const k of Object.keys(OPTS)){const fs=el('fieldset',{},el('legend',{textContent:LABEL[k]}));
-  OPTS[k].forEach(v=>{const b=el('button',{className:'chip',type:'button',textContent:v});b.setAttribute('aria-pressed',F[k]===v);
+const F={ai:store.get('board:f:tab')==='PixelLab'?'PixelLab':'GPT',kind:store.get('board:f:kind')||'전체',state:store.get('board:f:state')||'전체'};
+const OPTS={kind:['전체','공명자','적','이펙트','카드','배경','공통'],state:['전체','후보 있음','그림 있음','그림 없음']};
+const LABEL={kind:'종류',state:'상태'},fbox=document.getElementById('filters'),q=document.getElementById('q');
+const tabs=document.getElementById('tabs');[['GPT','GPT 시트','카드·배경·이펙트·16칸 시트'],['PixelLab','PixelLab 캐릭터','공명자·적 캐릭터 만들기']].forEach(([k,t,sub])=>{
+  const b=el('button',{type:'button',role:'tab'},t,el('small',{textContent:sub}));b.setAttribute('aria-selected',F.ai===k);
+  b.onclick=()=>{F.ai=k;store.set('board:f:tab',k==='GPT'?null:k);tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));apply();scrollTo(0,0)};tabs.append(b)});
+for(const k of Object.keys(OPTS)){const fs=el('fieldset',{className:k==='state'?'gpt-only':''},el('legend',{textContent:LABEL[k]}));
+  OPTS[k].forEach(v=>{const b=el('button',{className:'chip'+(k==='kind'&&!['전체','공명자','적'].includes(v)?' gpt-only':''),type:'button',textContent:v});b.setAttribute('aria-pressed',F[k]===v);
     b.onclick=()=>{F[k]=v;store.set('board:f:'+k,v==='전체'?null:v);fs.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));apply()};fs.append(b)});fbox.append(fs)}
-const cmp=el('button',{className:'chip',type:'button',textContent:'프롬프트 접기'});cmp.setAttribute('aria-pressed',store.get('board:f:compact')==='1');
+const cmp=el('button',{className:'chip gpt-only',type:'button',textContent:'프롬프트 접기'});cmp.setAttribute('aria-pressed',store.get('board:f:compact')==='1');
 cmp.onclick=()=>{const on=cmp.getAttribute('aria-pressed')!=='true';cmp.setAttribute('aria-pressed',on);store.set('board:f:compact',on?'1':null);document.body.classList.toggle('compact',on)};
 document.body.classList.toggle('compact',cmp.getAttribute('aria-pressed')==='true');
 const count=el('span',{id:'count'});fbox.append(cmp,count);
 function apply(){const t=q.value.trim().toLowerCase();let n=0;
   document.querySelectorAll('.item').forEach(b=>{const ok=(!t||b.dataset.text.includes(t))&&['ai','kind','state'].every(k=>F[k]==='전체'||b.dataset[k]===F[k]);b.style.display=ok?'':'none';n+=ok});
-  document.querySelectorAll('.grp').forEach(g=>g.style.display=g.querySelector('.item:not([style*="none"])')?'':'none');
-  document.body.classList.toggle('filtering',!!t||Object.values(F).some(v=>v!=='전체'));count.textContent=n+'개 표시'}
+  document.querySelectorAll('.grp').forEach(g=>g.style.display=g.dataset.ai===F.ai&&g.querySelector('.item:not([style*="none"])')?'':'none');
+  document.querySelectorAll('.nv').forEach(a=>a.style.display=a.dataset.ai===F.ai?'':'none');document.body.classList.toggle('tab-pl',F.ai==='PixelLab');
+  document.body.classList.toggle('filtering',!!t||F.kind!=='전체'||F.state!=='전체');count.textContent=n+'개 표시'}
 q.oninput=apply;apply();
 </script></html>
 `;

@@ -34,6 +34,7 @@ PixelLab용 프롬프트 추가([PIXELLAB_PROMPTS.md](art/PIXELLAB_PROMPTS.md), 
 프롬프트 보드에 필터 추가(AI·종류·상태, 프롬프트 접기, 표시 개수). GPT 프롬프트 41개를 OBJECTIVE·REFERENCES·REQUIREMENTS·PREFERENCES·CONSTRAINTS·OUTPUT·VALIDATION 구조로 재작성(첨부가 유일한 근거, 끝에 검수 항목). PixelLab 문서에 참고 자료 역할·근거(확인됨/추정)·필수와 선택·검수 체크리스트 추가.
 PixelLab 프롬프트를 웹 화면 스크린샷에 맞춰 수정: Create from Text·Character Type(Humanoid/Quadruped/Custom)·v3·Sidescroller·Detail·Outline, Negative 칸 제거. 크기는 무료 체험(64px까지) 64·48·64·64와 Tier 1 이상 160·96·128·192 두 안, 비용 약 80/150 생성(동작 제외). 동작 화면은 미확인.
 보드의 PixelLab 항목을 실제 화면 순서의 10단계 입력 카드로 바꿈(선택할 칸 강조, 외형 설명 복사, 요금제 전환, 이미지 업로드 불필요 표시, 지금 도트 비교 그림, 동작 설명 접기).
+보드 맨 위를 GPT 시트 / PixelLab 캐릭터 탭으로 나눔(AI 필터 대신). PixelLab 탭은 짧은 사용법만 보이고 상태 필터·접기는 숨김.
 
 ## 시스템
 | 항목 | 상태 |
