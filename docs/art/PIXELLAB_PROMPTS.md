@@ -21,9 +21,30 @@
 
 확인한 것: 위 항목 이름과 값 범위는 PixelLab 문서·MCP 설명 기준이다. 웹 화면의 실제 칸 이름과 위치, 참조 이미지 칸 유무는 로그인 화면이라 직접 보지 못했다(미확인).
 
+## 참고 자료와 역할
+| 자료 | 역할 | 근거 |
+|---|---|---|
+| 참조 이미지 `art/pixellab-ref/<id>.png` | 외형·색·실루엣의 기준. 설명과 다르면 이것을 따른다 | 게임에 쓰는 지금 도트(확인됨) |
+| Description | 참조 이미지로 안 보이는 세부를 보강 | 공명자 9명은 HERO_PROMPTS의 확정 문장(확인됨). 방랑자(남)·카르티시아·음림과 적 전부는 지금 도트를 보고 적음(추정) |
+| Negative description | 반복된 실패(큰 머리, 흐림, 글로우, 배경)를 막음 | GPT 시트에서 실제로 나온 문제 |
+| 설정값 | 크기·시점·방향·윤곽 | PixelLab 문서 기준(확인됨). 웹 칸 이름은 미확인 |
+
+## 필수와 선택
+- 필수: View side, Size(표의 값), 방향(공명자 east, 적 west), 동작 프레임 수, 사람형이 아닌 적의 참조 이미지.
+- 선택: Shading·Detail(약한 힌트), 대기 템플릿, 공명자 참조 이미지(있으면 외형이 더 잘 맞는다).
+
+## 검수 체크리스트 (받은 결과마다)
+- [ ] 캔버스 크기가 표의 값과 같다
+- [ ] 공명자는 오른쪽, 적은 왼쪽을 본다
+- [ ] 모든 프레임에서 키와 발 위치가 같다(쓰러짐·처치 제외)
+- [ ] 배경이 투명하고 체크무늬·반투명 테두리·글로우가 없다
+- [ ] 얼굴·머리·옷·무기·색이 참조 이미지와 같다
+- [ ] 공명자는 7등신이고 머리가 크지 않다
+- [ ] 프레임 수가 동작 블록 위 숫자와 같다
+
 ## 공명자
 ### 에이메스 · `aem`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/aem.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/aem.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -86,7 +107,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 에이메스 메카 · `aemMecha`
-Size 160 · humanoid · heroic · 참조 `art/pixellab-ref/aemMecha.png`
+Size 160 · humanoid · heroic · 참조 `art/pixellab-ref/aemMecha.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -149,7 +170,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 파수인 · `sk`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/sk.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/sk.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -212,7 +233,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 방랑자(여) · `rov`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/rov.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/rov.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -275,7 +296,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 방랑자(남) · `rovM`
-Size 160 · humanoid · realistic male · 참조 `art/pixellab-ref/rovM.png` · 외형 문장 미확정: 참조 이미지에 의존
+Size 160 · humanoid · realistic male · 참조 `art/pixellab-ref/rovM.png` · 외형 근거: 추정(확정 문장 없음, 참조 이미지에 의존)
 
 외형(Description)
 ```
@@ -338,7 +359,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 치사 · `chi`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/chi.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/chi.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -401,7 +422,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 카멜리아 · `cam`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/cam.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/cam.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -464,7 +485,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 모니에 · `mor`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/mor.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/mor.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -527,7 +548,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 린네 · `lyn`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/lyn.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/lyn.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -590,7 +611,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 히유키 · `hiy`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/hiy.png`
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/hiy.png` · 외형 근거: 확정 문장
 
 외형(Description)
 ```
@@ -653,7 +674,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 카르티시아 · `car`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/car.png` · 외형 문장 미확정: 참조 이미지에 의존
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/car.png` · 외형 근거: 추정(확정 문장 없음, 참조 이미지에 의존)
 
 외형(Description)
 ```
@@ -716,7 +737,7 @@ relaxes, then strikes a confident victory pose with the weapon
 ```
 
 ### 음림 · `yin`
-Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/yin.png` · 외형 문장 미확정: 참조 이미지에 의존
+Size 160 · humanoid · realistic female · 참조 `art/pixellab-ref/yin.png` · 외형 근거: 추정(확정 문장 없음, 참조 이미지에 의존)
 
 외형(Description)
 ```
@@ -782,7 +803,7 @@ relaxes, then strikes a confident victory pose with the weapon
 외형 설명은 지금 도트(칵찰찰·아즈즈는 2026-11-20 새 디자인)를 보고 적었다. 공식 모습과는 대조하지 않았다(미확인). 사람형이 아닌 적은 참조 이미지를 꼭 올린다.
 
 ### 칵찰찰 · `snip`
-경파급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/snip.png`
+경파급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/snip.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -825,7 +846,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 아즈즈 · `zig`
-경파급 · 회절 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/zig.png`
+경파급 · 회절 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/zig.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -868,7 +889,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 우글글 · `tick`
-경파급 · 인멸 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/tick.png`
+경파급 · 인멸 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/tick.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -911,7 +932,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 꾹꾹복어 · `gulp`
-경파급 · 응결 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/gulp.png`
+경파급 · 응결 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/gulp.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -954,7 +975,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 쮸쮸복어 · `chirp`
-경파급 · 기류 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/chirp.png`
+경파급 · 기류 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/chirp.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -997,7 +1018,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 선봉 암괴 · `vjun`
-경파급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/vjun.png`
+경파급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/vjun.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1040,7 +1061,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 분열 암괴 · `fjun`
-경파급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/fjun.png`
+경파급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/fjun.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1083,7 +1104,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 순회나비 · `cruise`
-경파급 · 회절 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/cruise.png`
+경파급 · 회절 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/cruise.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1126,7 +1147,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 갈기늑대 · 불꽃 · `fdread`
-경파급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/fdread.png`
+경파급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/fdread.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1169,7 +1190,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 서릿땅거북 · `hoar`
-경파급 · 응결 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/hoar.png`
+경파급 · 응결 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/hoar.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1212,7 +1233,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 초록색 왜가리 · `cheron`
-거랑급 · 기류 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/cheron.png`
+거랑급 · 기류 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/cheron.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1255,7 +1276,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 보라색 왜가리 · `vheron`
-거랑급 · 전도 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/vheron.png`
+거랑급 · 전도 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/vheron.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1298,7 +1319,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 갈기늑대 · 암흑 · `hdread`
-거랑급 · 인멸 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/hdread.png`
+거랑급 · 인멸 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/hdread.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1341,7 +1362,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 화살곰 · `spear`
-거랑급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/spear.png`
+거랑급 · 물리 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/spear.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1384,7 +1405,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 그린멜팅카멜레온 · `saur`
-거랑급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/saur.png`
+거랑급 · 용융 · Size 96 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/saur.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1427,7 +1448,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 초혼의 악사 · `tamb`
-거랑급 · 인멸 · Size 96 · humanoid · 참조 `art/pixellab-ref/tamb.png`
+거랑급 · 인멸 · Size 96 · humanoid · 참조 `art/pixellab-ref/tamb.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1470,7 +1491,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 경전차 로봇 · `scout`
-거랑급 · 응결 · Size 96 · humanoid · 참조 `art/pixellab-ref/scout.png`
+거랑급 · 응결 · Size 96 · humanoid · 참조 `art/pixellab-ref/scout.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1513,7 +1534,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 크라운리스 · `crown`
-노도급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/crown.png`
+노도급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/crown.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1556,7 +1577,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 천둥의 비늘 · `mephis`
-노도급 · 전도 · Size 128 · humanoid · 참조 `art/pixellab-ref/mephis.png`
+노도급 · 전도 · Size 128 · humanoid · 참조 `art/pixellab-ref/mephis.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1599,7 +1620,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 애곡하는 아익스 · `aix`
-노도급 · 회절 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/aix.png`
+노도급 · 회절 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/aix.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1642,7 +1663,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 이름없는 탐색자 · `explorer`
-노도급 · 기류 · Size 128 · humanoid · 참조 `art/pixellab-ref/explorer.png`
+노도급 · 기류 · Size 128 · humanoid · 참조 `art/pixellab-ref/explorer.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1685,7 +1706,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 지옥불 기사 · `rider`
-노도급 · 용융 · Size 128 · humanoid · 참조 `art/pixellab-ref/rider.png`
+노도급 · 용융 · Size 128 · humanoid · 참조 `art/pixellab-ref/rider.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1728,7 +1749,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 폭주의 고릴라 · `gorilla`
-노도급 · 기류 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/gorilla.png`
+노도급 · 기류 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/gorilla.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1771,7 +1792,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 무망자 · `dreamless`
-해일급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/dreamless.png`
+해일급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/dreamless.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1814,7 +1835,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 타종 거북이 · `turtle`
-해일급 · 응결 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/turtle.png`
+해일급 · 응결 · Size 128 · 사람형 아님: 참조 이미지 필수 · 참조 `art/pixellab-ref/turtle.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1857,7 +1878,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 헤카테 · `hecate`
-해일급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/hecate.png`
+해일급 · 인멸 · Size 128 · humanoid · 참조 `art/pixellab-ref/hecate.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1900,7 +1921,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 레비아탄 · `levia`
-명식 · 인멸 · Size 192 · humanoid · 참조 `art/pixellab-ref/levia.png`
+명식 · 인멸 · Size 192 · humanoid · 참조 `art/pixellab-ref/levia.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```
@@ -1943,7 +1964,7 @@ collapses and breaks apart into a few large fragments that vanish
 ```
 
 ### 알레프-원의 창조물 · `aleph`
-명식 · 인멸 · Size 192 · humanoid · 참조 `art/pixellab-ref/aleph.png`
+명식 · 인멸 · Size 192 · humanoid · 참조 `art/pixellab-ref/aleph.png` · 외형 근거: 추정(지금 도트)
 
 외형(Description)
 ```

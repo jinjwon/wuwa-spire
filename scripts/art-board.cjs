@@ -18,13 +18,19 @@ function slot(key){
   return{cur:`assets/cards/${key}.png`,dst:`art/card-gen/${key}.png`,next:'node scripts/cards.cjs import'};
 }
 
+// 보드 필터용 종류: 키가 있으면 키로, 없으면 제목·속한 ## 제목·문서로 정한다
+function kindOf(it,file){const k=it.key||'',t=it.title+' '+it.sec;
+  if(/^fx_/.test(k)||/이펙트/.test(t))return '이펙트';if(/^battle_/.test(k)||/BG_PROMPTS/.test(file))return '배경';
+  if(/^cards_/.test(k)||/카드/.test(t)||/card-prompts/.test(file))return '카드';if(/^enem/.test(k)||/(^|[\s.])적(\s|$)/.test(it.sec))return '적';
+  if(/^hero_/.test(k)||/공명자|모션|동작/.test(t))return '공명자';return '기타'}
+
 // 마크다운을 제목 단위 항목으로 나눈다: 제목, 설명 글, 코드 블록(프롬프트)
 function parse(file){
-  const items=[];let it=null,code=null;
+  const items=[];let it=null,code=null,sec='';
   for(const line of fs.readFileSync(path.join(root,file),'utf8').split('\n')){
     if(code){if(line.startsWith('```')){it.prompts.push(code.join('\n'));code=null}else code.push(line);continue}
     const h=line.match(/^(#{1,3}) (.*)/);
-    if(h){it={level:h[1].length,title:h[2],notes:[],prompts:[]};items.push(it);continue}
+    if(h){if(h[1].length<=2)sec=h[2];it={level:h[1].length,title:h[2],sec,notes:[],prompts:[]};items.push(it);continue}
     if(!it)continue;
     if(line.startsWith('```'))code=[];else it.notes.push(line);
   }
@@ -38,7 +44,8 @@ function parse(file){
 }
 
 function build(){
-  const groups=DOCS.map(([name,file])=>({name,file,items:parse(file)}));
+  const groups=DOCS.map(([name,file])=>({name,file,ai:/PIXELLAB/.test(file)?'PixelLab':'GPT',items:parse(file)}));
+  for(const g of groups)for(const it of g.items)it.kind=kindOf(it,g.file);
   for(const g of groups)for(const it of g.items)if(it.key){
     const s=slot(it.key);it.cur=exists(s.cur)?s.cur:null;
     const dir=path.join(CAND,it.key);it.cands=fs.existsSync(dir)?fs.readdirSync(dir).filter(f=>IMG.test(f)).sort():[];
@@ -86,10 +93,15 @@ figure img{display:block;height:260px;max-width:none;image-rendering:pixelated}
 figure.big img{height:auto;max-height:80vh;max-width:92vw}
 figcaption{color:var(--sub);font-size:12px;padding-top:4px}
 .hint{color:var(--sub);font-size:12px}
+#filters{display:flex;gap:14px;flex-wrap:wrap;align-items:center;width:100%}#filters fieldset{border:0;margin:0;padding:0;display:flex;gap:4px;flex-wrap:wrap;align-items:center}
+#filters legend{float:left;color:var(--sub);font-size:12px;margin-right:4px}
+.chip{background:none;color:var(--sub);border:1px solid var(--line);padding:4px 10px;min-height:32px;font-weight:400}.chip[aria-pressed=true]{background:var(--acc);color:#17150f;border-color:var(--acc);font-weight:600}
+#count{color:var(--acc);font-size:12px}body.filtering .gnote{display:none}body.compact .item textarea{min-height:0;height:4.6em}
+.tag{font-size:11px;color:var(--sub);border:1px solid var(--line);padding:0 6px;font-weight:400}
 #bar{position:fixed;left:0;right:0;bottom:0;background:#15161a;border-top:1px solid var(--acc);padding:10px 16px;display:none;gap:10px;align-items:center;flex-wrap:wrap}
 #bar code{flex:1;min-width:200px;overflow-wrap:anywhere;color:var(--acc)}
 </style>
-<header><b>프롬프트 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><span id="nav"></span></header>
+<header><b>프롬프트 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><span id="nav"></span><div id="filters"></div></header>
 <main id="main"></main>
 <div id="bar"><span>고른 그림 적용 명령</span><code id="cmd"></code><button id="cp">복사</button></div>
 <script>
@@ -100,13 +112,15 @@ const copy=(text,btn)=>navigator.clipboard.writeText(text).then(()=>{const o=btn
 const main=document.getElementById('main'),nav=document.getElementById('nav');
 G.forEach((g,gi)=>{
   nav.append(el('a',{href:'#g'+gi,textContent:g.name}),' · ');
-  main.append(el('h2',{id:'g'+gi,textContent:g.name}),el('div',{className:'hint',textContent:'원본 문서: '+g.file}));
+  const grp=el('section',{className:'grp'});main.append(grp);
+  grp.append(el('h2',{id:'g'+gi,textContent:g.name+'  '},el('span',{className:'tag',textContent:g.ai})),el('div',{className:'hint gnote',textContent:'원본 문서: '+g.file}));
   g.items.forEach((it,ii)=>{
     if(it.level<3&&!it.prompts.length){
-      if(it.level===2){const h=el('h3',{},it.title);if(it.face)h.prepend(el('img',{className:'face',src:it.face,alt:''}));main.append(h)}
-      if(it.notes)main.append(el('div',{className:'notes',textContent:it.notes}));return}
+      if(it.level===2){const h=el('h3',{className:'gnote'},it.title);if(it.face)h.prepend(el('img',{className:'face',src:it.face,alt:''}));grp.append(h)}
+      if(it.notes)grp.append(el('div',{className:'notes gnote',textContent:it.notes}));return}
     const box=el('section',{className:'item'});box.dataset.text=(it.title+' '+(it.key||'')+' '+it.notes+' '+it.prompts.join(' ')).toLowerCase();
-    box.append(el('h4',{},it.title.replace(/\`/g,''),it.key?el('code',{textContent:'  키: '+it.key}):''));
+    box.dataset.ai=g.ai;box.dataset.kind=it.kind;box.dataset.state=it.cands&&it.cands.length?'후보 있음':it.cur?'그림 있음':'그림 없음';
+    box.append(el('h4',{},it.title.replace(/\`/g,''),' ',el('span',{className:'tag',textContent:g.ai+' · '+it.kind}),it.key?el('code',{textContent:'  키: '+it.key}):''));
     if(it.notes)box.append(el('div',{className:'notes',textContent:it.notes}));
     it.prompts.forEach((p,pi)=>{
       const k='board:'+g.file+':'+it.title+':'+pi,ta=el('textarea',{value:store.get(k)??p,spellcheck:false});ta.setAttribute('aria-label',it.title+' 프롬프트');
@@ -126,9 +140,24 @@ G.forEach((g,gi)=>{
         imgs.append(f)});
       box.append(imgs,el('div',{className:'hint',textContent:it.cands.length?'후보를 누르면 아래에 적용 명령이 나와요. 두 번 누르면 크게 보여요.':'후보 넣는 곳: art/candidates/'+it.key+'/  (넣은 뒤 node scripts/art-board.cjs 다시 실행)'}));
     }
-    main.append(box)})});
+    grp.append(box)})});
 document.getElementById('cp').onclick=e=>copy(document.getElementById('cmd').textContent,e.target);
-document.getElementById('q').oninput=e=>{const q=e.target.value.trim().toLowerCase();document.querySelectorAll('.item').forEach(b=>b.style.display=!q||b.dataset.text.includes(q)?'':'none')};
+// 필터: AI·종류·상태 칩 + 찾기. 고른 값은 이 브라우저에 기억한다
+const F={ai:store.get('board:f:ai')||'전체',kind:store.get('board:f:kind')||'전체',state:store.get('board:f:state')||'전체'};
+const OPTS={ai:['전체','GPT','PixelLab'],kind:['전체','공명자','적','이펙트','카드','배경','공통'],state:['전체','후보 있음','그림 있음','그림 없음']};
+const LABEL={ai:'AI',kind:'종류',state:'상태'},fbox=document.getElementById('filters'),q=document.getElementById('q');
+for(const k of Object.keys(OPTS)){const fs=el('fieldset',{},el('legend',{textContent:LABEL[k]}));
+  OPTS[k].forEach(v=>{const b=el('button',{className:'chip',type:'button',textContent:v});b.setAttribute('aria-pressed',F[k]===v);
+    b.onclick=()=>{F[k]=v;store.set('board:f:'+k,v==='전체'?null:v);fs.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));apply()};fs.append(b)});fbox.append(fs)}
+const cmp=el('button',{className:'chip',type:'button',textContent:'프롬프트 접기'});cmp.setAttribute('aria-pressed',store.get('board:f:compact')==='1');
+cmp.onclick=()=>{const on=cmp.getAttribute('aria-pressed')!=='true';cmp.setAttribute('aria-pressed',on);store.set('board:f:compact',on?'1':null);document.body.classList.toggle('compact',on)};
+document.body.classList.toggle('compact',cmp.getAttribute('aria-pressed')==='true');
+const count=el('span',{id:'count'});fbox.append(cmp,count);
+function apply(){const t=q.value.trim().toLowerCase();let n=0;
+  document.querySelectorAll('.item').forEach(b=>{const ok=(!t||b.dataset.text.includes(t))&&['ai','kind','state'].every(k=>F[k]==='전체'||b.dataset[k]===F[k]);b.style.display=ok?'':'none';n+=ok});
+  document.querySelectorAll('.grp').forEach(g=>g.style.display=g.querySelector('.item:not([style*="none"])')?'':'none');
+  document.body.classList.toggle('filtering',!!t||Object.values(F).some(v=>v!=='전체'));count.textContent=n+'개 표시'}
+q.oninput=apply;apply();
 </script></html>
 `;
 

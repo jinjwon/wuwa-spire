@@ -110,12 +110,33 @@ const fit=async(src,size,opt={})=>{ // 투명 여백을 자르고 캔버스 높�
 
 확인한 것: 위 항목 이름과 값 범위는 PixelLab 문서·MCP 설명 기준이다. 웹 화면의 실제 칸 이름과 위치, 참조 이미지 칸 유무는 로그인 화면이라 직접 보지 못했다(미확인).
 
+## 참고 자료와 역할
+| 자료 | 역할 | 근거 |
+|---|---|---|
+| 참조 이미지 \`art/pixellab-ref/<id>.png\` | 외형·색·실루엣의 기준. 설명과 다르면 이것을 따른다 | 게임에 쓰는 지금 도트(확인됨) |
+| Description | 참조 이미지로 안 보이는 세부를 보강 | 공명자 9명은 HERO_PROMPTS의 확정 문장(확인됨). 방랑자(남)·카르티시아·음림과 적 전부는 지금 도트를 보고 적음(추정) |
+| Negative description | 반복된 실패(큰 머리, 흐림, 글로우, 배경)를 막음 | GPT 시트에서 실제로 나온 문제 |
+| 설정값 | 크기·시점·방향·윤곽 | PixelLab 문서 기준(확인됨). 웹 칸 이름은 미확인 |
+
+## 필수와 선택
+- 필수: View side, Size(표의 값), 방향(공명자 east, 적 west), 동작 프레임 수, 사람형이 아닌 적의 참조 이미지.
+- 선택: Shading·Detail(약한 힌트), 대기 템플릿, 공명자 참조 이미지(있으면 외형이 더 잘 맞는다).
+
+## 검수 체크리스트 (받은 결과마다)
+- [ ] 캔버스 크기가 표의 값과 같다
+- [ ] 공명자는 오른쪽, 적은 왼쪽을 본다
+- [ ] 모든 프레임에서 키와 발 위치가 같다(쓰러짐·처치 제외)
+- [ ] 배경이 투명하고 체크무늬·반투명 테두리·글로우가 없다
+- [ ] 얼굴·머리·옷·무기·색이 참조 이미지와 같다
+- [ ] 공명자는 7등신이고 머리가 크지 않다
+- [ ] 프레임 수가 동작 블록 위 숫자와 같다
+
 ## 공명자
 `;
   for(const h of HEROES){const w=WEAPON[h.id];assert(w,h.id);
     const look=(h.intro.match(/Do not redesign: (.*)$/)||[])[1];
     const desc=(look?look.replace(/\.$/,''):`${h.who} from Wuthering Waves, follow the reference image exactly`)+`. Adult with realistic slim 7-head proportions${look?'':`, ${w==='rectifier'?'no weapon in hand':w}`}, side view facing right.`;
-    md+=`### ${h.ko} · \`${h.id}\`\nSize ${HERO_SIZE} · humanoid · ${BUILD[h.id]||'realistic female'} · 참조 ${refs[h.id]?'`art/pixellab-ref/'+h.id+'.png`':'없음(공식 이미지 사용)'}${look?'':' · 외형 문장 미확정: 참조 이미지에 의존'}\n\n외형(Description)\n${block(desc)}\n금지(Negative)\n${block(NEG_HERO)}\n${anims(HERO_ANIMS(w),'east(오른쪽)')}\n`;
+    md+=`### ${h.ko} · \`${h.id}\`\nSize ${HERO_SIZE} · humanoid · ${BUILD[h.id]||'realistic female'} · 참조 ${refs[h.id]?'`art/pixellab-ref/'+h.id+'.png`':'없음(공식 이미지 사용)'}${look?' · 외형 근거: 확정 문장':' · 외형 근거: 추정(확정 문장 없음, 참조 이미지에 의존)'}\n\n외형(Description)\n${block(desc)}\n금지(Negative)\n${block(NEG_HERO)}\n${anims(HERO_ANIMS(w),'east(오른쪽)')}\n`;
   }
   md+=`## 적
 외형 설명은 지금 도트(칵찰찰·아즈즈는 2026-11-20 새 디자인)를 보고 적었다. 공식 모습과는 대조하지 않았다(미확인). 사람형이 아닌 적은 참조 이미지를 꼭 올린다.
@@ -124,7 +145,7 @@ const fit=async(src,size,opt={})=>{ // 투명 여백을 자르고 캔버스 높�
   for(const [id,en,ko,g,el,atk,cast] of ENEMIES){const size=ENEMY_SIZE[g];
     const desc=`${en}, a Wuthering Waves enemy: ${LOOK[id]}. Menacing, side view facing left.`;
     const list=[['idle','대기',4,'idle stance, breathing slowly with small motion of tail, wings or limbs'],['attack','공격',8,`${atk}, moving to the left, then recovers`],['cast','시전',6,`${cast}, then releases a compact burst`],['hit','피격',4,'recoils to the right from a blow, then regains balance'],['guard','막기',4,'braces in a defensive pose'],['death','처치',8,'collapses and breaks apart into a few large fragments that vanish']];
-    md+=`### ${ko} · \`${id}\`\n${g} · ${el} · Size ${size} · ${HUMANOID[id]?'humanoid':'사람형 아님: 참조 이미지 필수'} · 참조 \`art/pixellab-ref/${id}.png\`\n\n외형(Description)\n${block(desc)}\n금지(Negative)\n${block(NEG_ENEMY)}\n${anims(list,'west(왼쪽)')}\n`;
+    md+=`### ${ko} · \`${id}\`\n${g} · ${el} · Size ${size} · ${HUMANOID[id]?'humanoid':'사람형 아님: 참조 이미지 필수'} · 참조 \`art/pixellab-ref/${id}.png\` · 외형 근거: 추정(지금 도트)\n\n외형(Description)\n${block(desc)}\n금지(Negative)\n${block(NEG_ENEMY)}\n${anims(list,'west(왼쪽)')}\n`;
   }
   fs.writeFileSync(path.join(root,'docs/art/PIXELLAB_PROMPTS.md'),md.trimEnd()+'\n');
   const long=[...md.matchAll(/외형\(Description\)\n```\n([^\n]+)/g)].map(m=>m[1].length);
