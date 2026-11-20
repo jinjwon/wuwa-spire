@@ -51,6 +51,7 @@ description: 첨탑의 메아리 프로젝트에서 도트 시트(공명자·적
 - Character Type Humanoid / Quadruped(네발) / Custom(그 밖), Generation Mode v3, Camera View **Sidescroller**, Detail Highly detailed, Outline. 결과 8방향 중 공명자 East, 적 West.
 - Negative·체형 비율·Shading 칸은 없다. 피할 것은 외형 설명 안에 원하는 모습으로 쓴다(최대 2000자).
 - 크기는 게임 규격의 정수분의 1: 무료 체험(64px까지) 공명자 64·적 48/64/64, Tier 1 이상 160·96/128/192. 비용은 화면 아래 "Costs N generations"로 확인한다.
+- 보드는 PixelLab 항목을 화면과 같은 순서의 단계 카드(탭→Character Type→Mode→Description→Camera→Size→Detail·Outline→Generate→결과→동작)로 그린다. 메모 줄 형식(`Character Type **…** · Sprite Size 무료 N / 유료 N · 방향 … · 비교 기준 `…``)을 바꾸면 `art-board.cjs`의 `it.pl` 정규식도 같이 고친다.
 - 동작 화면은 아직 미확인. 받은 결과는 `art/pixellab/<id>/<동작>.png`. 게임 연결은 `dev`.
 
 ## 3. 보드로 보여 주기
