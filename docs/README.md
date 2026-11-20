@@ -12,6 +12,7 @@
 | 생성한 시트 수정·적 재제작 프롬프트 | [art/REVISION_PROMPTS.md](art/REVISION_PROMPTS.md) |
 | 전투 배경 프롬프트 | [art/BG_PROMPTS.md](art/BG_PROMPTS.md) |
 | 추가 모션 프롬프트(적 16칸·공명자 추가 동작·이펙트) | [art/MOTION_PROMPTS.md](art/MOTION_PROMPTS.md) |
+| PixelLab 캐릭터 프롬프트(설정·외형·동작) | [art/PIXELLAB_PROMPTS.md](art/PIXELLAB_PROMPTS.md) |
 | 명조 전투 시스템과 이식 설계 | [systems/WUWA_SYSTEMS.md](systems/WUWA_SYSTEMS.md) |
 | UI 규칙(색·부품·배치) | [../DESIGN.md](../DESIGN.md) |
 | 코드 구조·브랜치·정리 규칙 | [MAINTENANCE.md](MAINTENANCE.md) |

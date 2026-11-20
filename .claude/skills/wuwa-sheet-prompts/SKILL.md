@@ -43,6 +43,14 @@ description: 첨탑의 메아리 프로젝트에서 도트 시트(공명자·적
 - 방향: 공명자는 오른쪽, 적은 왼쪽.
 - 이펙트는 흑백 세 단계(#FFFFFF·#B0B0B0·#505050)로 받고 속성색은 `scripts/make-vfx.cjs`가 칠한다. 한 장으로 6속성을 쓴다. 외부 무료 에셋은 CC0만 쓰고 출처를 `art/fx-src/README.md`에 적는다.
 
+### PixelLab용 (pixellab.ai Character Creator)
+GPT 시트와 방식이 다르다. 시트 한 장이 아니라 **캐릭터를 한 번 만들고 동작을 하나씩 붙인다.** `node scripts/pixellab-prompts.cjs`가 `docs/art/PIXELLAB_PROMPTS.md`와 참조 이미지 `art/pixellab-ref/<id>.png`(커밋 안 함)를 만든다. 고칠 때는 이 스크립트를 고친다.
+- 칸 구성·여백·투명 배경 잠금 문장은 쓰지 않는다(PixelLab이 캔버스·투명을 직접 다룬다). 대신 설정값을 고른다: View **side**, Directions 4, Outline single color black outline.
+- 캔버스: 게임에서 2배 정수 확대하면 규격과 맞게 공명자 160, 경파급·거랑급 96, 노도급·해일급 128, 명식 192.
+- Description은 외형만, 500자 이하(스크립트가 검사). 동작은 Action description에 **움직임만** 적는다(외형 금지). 프레임은 4~16 짝수.
+- 사람형이 아닌 적은 참조 이미지를 꼭 올린다. 없으면 두 발 인물로 그린다. 네발 템플릿은 참조 이미지와 같이 못 쓴다.
+- 받은 결과는 `art/pixellab/<id>/<동작>.png`. 게임 연결은 `dev`.
+
 ## 3. 보드로 보여 주기
 ```
 npm run board        # scripts/art-board.cjs로 art/board.html을 만들고 연다

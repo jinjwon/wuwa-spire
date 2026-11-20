@@ -109,5 +109,7 @@ md+=`## C·D. 이펙트 시트 (흑백 → 코드로 속성색)
 
 `;
 for(const [k,grp,ko,note,p] of FX)md+=`### ${k}.png · ${grp} ${ko}\n${note}\n\`\`\`\n${p}\n\`\`\`\n\n`;
-fs.writeFileSync(root+'/docs/art/MOTION_PROMPTS.md',md.trimEnd()+'\n');
-console.log('ok',ENEMIES.length,HEROES.length,FX.length,md.length);
+// pixellab-prompts.cjs가 공명자 외형·적 기술 데이터를 같이 쓴다
+module.exports={HEROES,ENEMIES};
+if(require.main===module){fs.writeFileSync(root+'/docs/art/MOTION_PROMPTS.md',md.trimEnd()+'\n');
+console.log('ok',ENEMIES.length,HEROES.length,FX.length,md.length)}

@@ -4,7 +4,7 @@
 // 후보 그림은 art/candidates/<키>/ 에 아무 이름으로 넣는다. 키는 보드의 각 항목에 적혀 있다.
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const root=path.join(__dirname,'..'),ART=path.join(root,'art'),CAND=path.join(ART,'candidates');
-const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md'],['전투 배경 프롬프트','docs/art/BG_PROMPTS.md'],['추가 모션 프롬프트','docs/art/MOTION_PROMPTS.md']];
+const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md'],['전투 배경 프롬프트','docs/art/BG_PROMPTS.md'],['추가 모션 프롬프트','docs/art/MOTION_PROMPTS.md'],['PixelLab 캐릭터 프롬프트','docs/art/PIXELLAB_PROMPTS.md']];
 const IMG=/\.(png|jpe?g|webp)$/i;
 const exists=p=>fs.existsSync(path.join(root,p));
 
