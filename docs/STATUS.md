@@ -32,6 +32,7 @@
 같은 날 업로드 4장 반영: 칵찰찰 새 디자인 16칸(체크무늬 제거, `scripts/unchecker.cjs` 추가), 아즈즈 새 디자인 16칸, 린네·파수인 추가 동작 → `art/source-v2/`. 업로드에서 본 잔상 번짐·속도선 글로우·윤곽 색 테두리를 프롬프트에 반영(EDGE LOCK, 잔상 금지). 프롬프트는 `scripts/motion-prompts.cjs`가 만든다. 시트 프롬프트 작업 절차를 프로젝트 스킬 `wuwa-sheet-prompts`로 정리. 에이전트가 손으로 찍었던 에이메스·메카·파수인 도트(`art/preview-v3/hand/`, 커밋 안 된 폴더) 삭제.
 PixelLab용 프롬프트 추가([PIXELLAB_PROMPTS.md](art/PIXELLAB_PROMPTS.md), `scripts/pixellab-prompts.cjs`): 공명자 12·적 28, 캐릭터마다 설정·외형·금지·동작 10종(적 6종). 캔버스는 2배 정수 확대로 게임 규격과 맞게 공명자 160, 적 96·128·192. 참조 이미지 40장 `art/pixellab-ref/`(다시 만들 수 있어 커밋 안 함). PixelLab 결과의 게임 연결은 아직 없음.
 프롬프트 보드에 필터 추가(AI·종류·상태, 프롬프트 접기, 표시 개수). GPT 프롬프트 41개를 OBJECTIVE·REFERENCES·REQUIREMENTS·PREFERENCES·CONSTRAINTS·OUTPUT·VALIDATION 구조로 재작성(첨부가 유일한 근거, 끝에 검수 항목). PixelLab 문서에 참고 자료 역할·근거(확인됨/추정)·필수와 선택·검수 체크리스트 추가.
+PixelLab 프롬프트를 웹 화면 스크린샷에 맞춰 수정: Create from Text·Character Type(Humanoid/Quadruped/Custom)·v3·Sidescroller·Detail·Outline, Negative 칸 제거. 크기는 무료 체험(64px까지) 64·48·64·64와 Tier 1 이상 160·96·128·192 두 안, 비용 약 80/150 생성(동작 제외). 동작 화면은 미확인.
 
 ## 시스템
 | 항목 | 상태 |

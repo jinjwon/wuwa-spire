@@ -46,12 +46,12 @@ description: 첨탑의 메아리 프로젝트에서 도트 시트(공명자·적
 - 이펙트는 흑백 세 단계(#FFFFFF·#B0B0B0·#505050)로 받고 속성색은 `scripts/make-vfx.cjs`가 칠한다. 한 장으로 6속성을 쓴다. 외부 무료 에셋은 CC0만 쓰고 출처를 `art/fx-src/README.md`에 적는다.
 
 ### PixelLab용 (pixellab.ai Character Creator)
-GPT 시트와 방식이 다르다. 시트 한 장이 아니라 **캐릭터를 한 번 만들고 동작을 하나씩 붙인다.** `node scripts/pixellab-prompts.cjs`가 `docs/art/PIXELLAB_PROMPTS.md`와 참조 이미지 `art/pixellab-ref/<id>.png`(커밋 안 함)를 만든다. 고칠 때는 이 스크립트를 고친다.
-- 칸 구성·여백·투명 배경 잠금 문장은 쓰지 않는다(PixelLab이 캔버스·투명을 직접 다룬다). 대신 설정값을 고른다: View **side**, Directions 4, Outline single color black outline.
-- 캔버스: 게임에서 2배 정수 확대하면 규격과 맞게 공명자 160, 경파급·거랑급 96, 노도급·해일급 128, 명식 192.
-- Description은 외형만, 500자 이하(스크립트가 검사). 동작은 Action description에 **움직임만** 적는다(외형 금지). 프레임은 4~16 짝수.
-- 사람형이 아닌 적은 참조 이미지를 꼭 올린다. 없으면 두 발 인물로 그린다. 네발 템플릿은 참조 이미지와 같이 못 쓴다.
-- 받은 결과는 `art/pixellab/<id>/<동작>.png`. 게임 연결은 `dev`.
+캐릭터를 한 번 만들고 동작을 하나씩 붙인다. `node scripts/pixellab-prompts.cjs`가 `docs/art/PIXELLAB_PROMPTS.md`와 비교 기준 `art/pixellab-ref/<id>.png`(커밋 안 함)를 만든다. 고칠 때는 이 스크립트를 고친다. 칸 이름은 **웹 화면 스크린샷(2026-11-20)** 기준이다. 화면이 바뀌면 스크린샷을 받아 다시 맞춘다(문서·API 설명만 보고 칸을 지어내지 않는다).
+- 탭 Create from Text. Create from Reference는 정면(South) 그림이 필수라 옆모습 도트는 못 넣는다.
+- Character Type Humanoid / Quadruped(네발) / Custom(그 밖), Generation Mode v3, Camera View **Sidescroller**, Detail Highly detailed, Outline. 결과 8방향 중 공명자 East, 적 West.
+- Negative·체형 비율·Shading 칸은 없다. 피할 것은 외형 설명 안에 원하는 모습으로 쓴다(최대 2000자).
+- 크기는 게임 규격의 정수분의 1: 무료 체험(64px까지) 공명자 64·적 48/64/64, Tier 1 이상 160·96/128/192. 비용은 화면 아래 "Costs N generations"로 확인한다.
+- 동작 화면은 아직 미확인. 받은 결과는 `art/pixellab/<id>/<동작>.png`. 게임 연결은 `dev`.
 
 ## 3. 보드로 보여 주기
 ```
