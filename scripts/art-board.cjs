@@ -22,7 +22,7 @@ function slot(key){
 function kindOf(it,file){const k=it.key||'',t=it.title+' '+it.sec;
   if(/^fx_/.test(k)||/이펙트/.test(t))return '이펙트';if(/^battle_/.test(k)||/BG_PROMPTS/.test(file))return '배경';
   if(/^cards_/.test(k)||/카드/.test(t)||/card-prompts/.test(file))return '카드';if(/^enem/.test(k)||/(^|[\s.])적(\s|$)/.test(it.sec))return '적';
-  if(/^hero_/.test(k)||/공명자|모션|동작/.test(t))return '공명자';return '기타'}
+  if(/^hero_/.test(k)||/공명자|모션|동작/.test(t))return '공명자';return '공통'}
 
 // 마크다운을 제목 단위 항목으로 나눈다: 제목, 설명 글, 코드 블록(프롬프트)
 function parse(file){
