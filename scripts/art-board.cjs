@@ -4,7 +4,7 @@
 // 후보 그림은 art/candidates/<키>/ 에 아무 이름으로 넣는다. 키는 보드의 각 항목에 적혀 있다.
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
 const root=path.join(__dirname,'..'),ART=path.join(root,'art'),CAND=path.join(ART,'candidates');
-const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md'],['전투 배경 프롬프트','docs/art/BG_PROMPTS.md'],['추가 모션 프롬프트','docs/art/MOTION_PROMPTS.md'],['PixelLab 캐릭터 프롬프트','docs/art/PIXELLAB_PROMPTS.md']];
+const DOCS=[['수정 프롬프트','docs/art/REVISION_PROMPTS.md'],['새 시트 프롬프트','docs/art/HERO_PROMPTS.md'],['카드 한 장 프롬프트','art/card-prompts.md'],['배경 프롬프트(타이틀·전투)','docs/art/BG_PROMPTS.md'],['추가 모션 프롬프트','docs/art/MOTION_PROMPTS.md'],['PixelLab 캐릭터 프롬프트','docs/art/PIXELLAB_PROMPTS.md']];
 const IMG=/\.(png|jpe?g|webp)$/i;
 const exists=p=>fs.existsSync(path.join(root,p));
 
@@ -12,6 +12,8 @@ const exists=p=>fs.existsSync(path.join(root,p));
 function slot(key){
   // 추가 모션·이펙트: 처리 코드가 아직 없어 원본 자리에만 둔다(docs/art/MOTION_PROMPTS.md)
   if(/^fx_\w+$/.test(key))return{cur:`art/fx-src/${key}.png`,dst:`art/fx-src/${key}.png`,next:'dev에서 make-vfx.cjs 연결 필요 (docs/art/MOTION_PROMPTS.md)'};
+  if(key==='title_bg')return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 타이틀 화면(titleHTML) 연결 필요 (docs/art/BG_PROMPTS.md)'};
+  if(/^battle_(elite|boss)\d$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 prepare-battle-bg.cjs 목록·전투 종류별 배경 연결 필요 (docs/art/BG_PROMPTS.md)'};
   if(/^(enemy_full_\w+|hero_\w+_extra)$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 자르기·재생 코드 연결 필요 (docs/art/MOTION_PROMPTS.md)'};
   if(/^(hero|cards|enemies|enemy_sheet|battle)_?\w*$/.test(key)&&!exists(`assets/cards/${key}.png`))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,
     next:key.startsWith('battle_')?'node scripts/prepare-battle-bg.cjs':key.startsWith('cards_')||key.startsWith('enem')?'docs/art/ART_PIPELINE.md 의 절차대로 처리':'node scripts/prepare-heroes-v3.cjs preview  (확인 후 write)'};
@@ -20,7 +22,7 @@ function slot(key){
 
 // 보드 필터용 종류: 키가 있으면 키로, 없으면 제목·속한 ## 제목·문서로 정한다
 function kindOf(it,file){const k=it.key||'',t=it.title+' '+it.sec;
-  if(/^fx_/.test(k)||/이펙트/.test(t))return '이펙트';if(/^battle_/.test(k)||/BG_PROMPTS/.test(file))return '배경';
+  if(/^fx_/.test(k)||/이펙트/.test(t))return '이펙트';if(/^(battle|title)_/.test(k)||/BG_PROMPTS/.test(file))return '배경';
   if(/^cards_/.test(k)||/카드/.test(t)||/card-prompts/.test(file))return '카드';if(/^enem/.test(k)||/(^|[\s.])적(\s|$)/.test(it.sec))return '적';
   if(/^hero_/.test(k)||/공명자|모션|동작/.test(t))return '공명자';return '공통'}
 

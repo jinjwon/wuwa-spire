@@ -50,3 +50,5 @@ PixelLab 프롬프트를 웹 화면 스크린샷에 맞춰 수정: Create from T
 - 2026-11-17: `index.html`을 `src/styles.css`와 `src/js/` 9개 파일로 분리. 구조와 남은 정리 후보는 [MAINTENANCE.md](MAINTENANCE.md).
 - CSS는 덮어쓰기 층이 많아 다음 정리 후보.
 - 자가 점검: `npx electron . --remote-debugging-port=9334` 실행 후 `node scripts/selfcheck.cjs`. VS Code 터미널에서는 `env -u ELECTRON_RUN_AS_NODE`를 앞에 붙인다.
+
+2026-11-23: [배경 프롬프트](art/BG_PROMPTS.md)에 메인 타이틀 전용 배경(`title_bg`, 명조 실행 화면 구도 참고·공식 그림 미첨부)과 구역별 정예·보스 전투 배경 6장(`battle_elite1~3`, `battle_boss1~3`)을 추가했다. 보드에서 '배경' 종류로 보인다. 그림을 받은 뒤 게임 연결(타이틀 교체, 전투 종류별 배경 고르기)은 `dev` 일이다.

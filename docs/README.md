@@ -10,7 +10,7 @@
 | 이미지 생성 프롬프트 | [art/HERO_PROMPTS.md](art/HERO_PROMPTS.md) |
 | 프롬프트 복사, 후보 그림 비교·선택 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md)의 프롬프트 보드 (`npm run board`) |
 | 생성한 시트 수정·적 재제작 프롬프트 | [art/REVISION_PROMPTS.md](art/REVISION_PROMPTS.md) |
-| 전투 배경 프롬프트 | [art/BG_PROMPTS.md](art/BG_PROMPTS.md) |
+| 배경 프롬프트(타이틀·전투) | [art/BG_PROMPTS.md](art/BG_PROMPTS.md) |
 | 추가 모션 프롬프트(적 16칸·공명자 추가 동작·이펙트) | [art/MOTION_PROMPTS.md](art/MOTION_PROMPTS.md) |
 | PixelLab 캐릭터 프롬프트(설정·외형·동작) | [art/PIXELLAB_PROMPTS.md](art/PIXELLAB_PROMPTS.md) |
 | 명조 전투 시스템과 이식 설계 | [systems/WUWA_SYSTEMS.md](systems/WUWA_SYSTEMS.md) |
