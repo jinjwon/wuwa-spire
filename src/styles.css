@@ -529,7 +529,7 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .anc-art{width:120px;height:120px;margin:0 auto 6px;background:center/contain no-repeat;filter:drop-shadow(0 0 22px #e9d9a6);animation:hover 3s ease-in-out infinite}
 /* 도트 전투·지역·카드: 배경은 낮은 대비, 조작 정보는 선명하게 유지합니다. */
 .battle-art{position:absolute;inset:0;z-index:-1;pointer-events:none;background:#10182b}
-.battle-art img{width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated}
+.battle-art img,.battle-art video{width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated}
 .battle-art::after{content:'';position:absolute;inset:0;background:linear-gradient(#090f2422,#090f2410 45%,#090f2444)}
 .mapwrap{background:#101929;padding:0;border:2px solid #566775;clip-path:none;box-shadow:0 0 0 3px #080e1d}
 .route-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;pointer-events:none;opacity:.68}
@@ -806,7 +806,7 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
 .cutin .img{background-size:640px 640px;background-position:center bottom;image-rendering:pixelated}
 /* 배경은 640×360 도트 격자. 화면을 덮는 가장 작은 정수 배율(--bk)로 키워 1080p 3배, 4K 6배에서 픽셀이 고르게 */
-.battle-art img{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
+.battle-art img,.battle-art video{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
 /* ===== 공명자 선택 (2026-11-12) — 명조 공명자 목록 화면 구성. 토큰만 사용(DESIGN.md) ===== */
 .selscr{position:relative;flex:1;min-height:calc(100vh - 24px);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:18px 26px;text-align:left}
 .selscr::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,12,15,.92) 0,rgba(11,12,15,.55) 45%,rgba(11,12,15,.9) 100%)}

@@ -134,7 +134,7 @@ function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():doc
 function titleHTML(){
   const sv=loadSave();
   const motes=Array.from({length:22},(_,i)=>`<i class="mote" style="left:${(i*47)%100}%;bottom:${(i*17)%60}%;animation-delay:${(i*.41)%7}s;background:${i%3?'#bfe6ff':'#ffe9a8'}"></i>`).join('');
-  return `<div class="titlescr">${battleBackground('title')}${motes}
+  return `<div class="titlescr">${battleBackground('title-video')}${motes}
     <div class="t-logo"><div class="t-sub">WUTHERING WAVES · FAN-MADE DECKBUILDER</div><h1>첨탑의 메아리</h1><div class="t-en">Echoes of the Spire</div></div>
     <div class="t-menu">
       ${sv?`<button class="main" onclick="continueRun()">이어하기<small>${ACTS[sv.act].name} · ${sv.floor}층 · ${sv.team.map(id=>CH[id].name).join(', ')}</small></button>`:''}
@@ -326,6 +326,8 @@ function intentHTML(e){
 function intentTitle(e){const m=e.move;const t=[];if(m.d)t.push(`공격 ${enemyDmg(e,m)}${m.h>1?`×${m.h}`:''}`);if(m.b)t.push(`방어 ${m.b}`);if(m.s)t.push(`힘 +${m.s}`);if(m.w)t.push(`약화 ${m.w}`);if(m.add)t.push(`덱에 「${CD[m.add[0]].n}」 ${m.add[1]}장`);return `${m.n}: ${t.join(', ')}`}
 function battleBackground(region=regionArt()){
   // 'title'은 타이틀·공명자 선택 공용 배경(assets/maps/title-bg.png)
+  // 'title-video'는 메인 타이틀의 움직이는 배경(assets/maps/title-bg.mp4, 소리 없는 핑퐁 반복). 못 읽으면 그림으로 바꾼다
+  if(region==='title-video')return `<div class="battle-art"><video src="assets/maps/title-bg.mp4" autoplay muted loop playsinline disablepictureinpicture onerror="this.outerHTML='<img src=&quot;assets/maps/title-bg.png&quot; alt=&quot;&quot; draggable=&quot;false&quot;>'"></video></div>`;
   return `<div class="battle-art"><img src="assets/maps/${region==='title'?'title-bg':region+'-battle'}.png" alt="" draggable="false"></div>`;
 }
 function enemyPos(n,i,boss,slot){

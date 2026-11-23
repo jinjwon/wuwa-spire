@@ -34,6 +34,9 @@ const CHECKS = {
   ascension: `(()=>{SEL_ASC=6;newGame('aem',0);const a=S.asc===6&&S.party.aem.maxHp<CH.aem.maxHp+14;SEL_ASC=0;return a})()`,
   pixel_scale: `(()=>{const g=v=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue(v)),d=devicePixelRatio,k=g('--k'),b=g('--bk');
     return k>=1&&Number.isInteger(Math.round(k*d*1000)/1000)&&640*b>=innerWidth&&360*b>=innerHeight&&Number.isInteger(Math.round(b*d*1000)/1000)})()`,
+  // 타이틀 움직이는 배경: 소리 없는 반복 영상이 재생되고, 크기는 배경 규격(640×360)의 정수 배율
+  title_video: `(async()=>{S=null;goMenu('title');await new Promise(r=>setTimeout(r,1500));const v=document.querySelector('.titlescr .battle-art video');if(!v)return 'no video';
+    const r=v.getBoundingClientRect(),b=r.width/640;return v.muted&&v.loop&&!v.paused&&v.readyState>=2&&v.videoWidth===1280&&v.videoHeight===720&&Number.isInteger(Math.round(b*devicePixelRatio*1000)/1000)&&Math.abs(r.height-360*b)<1||JSON.stringify({m:v.muted,p:v.paused,rs:v.readyState,w:v.videoWidth,b})})()`,
   // 가로 지도: 지도가 옆으로 길고, 보스가 가장 오른쪽, 첫 층이 왼쪽
   map_horizontal: `(async()=>{newGame('rov',0);S.ancient=null;S.modal=null;S.screen='map';render();await new Promise(r=>setTimeout(r,300));
     const m=document.querySelector('.map'),b=document.querySelector('.mboss').getBoundingClientRect(),ns=[...document.querySelectorAll('.mnode')].map(n=>n.getBoundingClientRect().left);
