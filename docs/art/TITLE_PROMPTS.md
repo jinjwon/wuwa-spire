@@ -17,6 +17,7 @@
 | 1 배경 | 설산·와이어프레임 능선·빛줄기와 바위·뒤집힌 격자·거울 호수·아래 눈 둑. 인물 없음 | `title_bg`(플로우) → `node scripts/prepare-battle-bg.cjs`가 `assets/maps/title-bg.png`(640×360)로 만든다 |
 | 2 떠 있는 바위 | (선택) 지금 배경 빛줄기에 바위가 이미 있다. 움직이게 하고 싶을 때만 만든다 | `title_rocks` 프롬프트 |
 | 3 캐릭터 | 아래 눈 둑 왼쪽: 에이메스 서 있음(뒤돌아봄). 오른쪽: 방랑자 앉음. 방랑자는 타이틀의 "방랑자 외형" 설정(남/여)을 따른다 | `title_pose_*` 프롬프트, 4칸 숨쉬기·바람 반복 |
+| 1-1 움직이는 배경(선택) | 같은 배경을 8초 무음 반복 영상으로. 빛줄기·바위·격자·눈발만 천천히 움직임 | `title_bg.mp4` 영상 프롬프트(플로우) |
 | 4 UI | 왼쪽 위 "첨탑의 메아리" 로고, 오른쪽 위 버전, 오른쪽 아이콘 줄(전체 화면·기록·도움말·외형·종료), 아래 가운데 이어하기/새 게임 상자와 "첨탑에 오르기" 시작 띠. 지금의 원형 파티 얼굴 줄은 뺀다 | 코드(그림 없음) |
 
 캐릭터 고르기 이유: 에이메스는 라하이로이(3.0 지역) 캐릭터이고 방랑자는 주인공이다(설정 기준표). 다른 캐릭터로 바꾸려면 아래 프롬프트 틀에서 외형 문장과 첨부만 바꾼다. 외형 문장은 [HERO_PROMPTS.md](HERO_PROMPTS.md)에 확정된 것만 쓴다(남성 방랑자는 확정 문장이 없어 첨부로만 맞춘다).
@@ -41,6 +42,25 @@ CONSTRAINTS: Authentic 16-bit pixel art on a uniform pixel grid, at most 32 colo
 OUTPUT: Landscape 1536x1024, the rock cluster centered.
 VALIDATION: only rocks on a transparent background; colors match Attachment 1; hard pixel edges with no halo. CLEAN LOCK (prevents noisy, muddy output): every art pixel is a clearly visible solid square of equal size; one clear subject and at most two supporting elements; large flat color areas with only 2-3 shade steps per material; no texture noise, no speckles, no scattered sparkles or glitter particles (a few single-pixel stars in a night sky are fine), no translucent overlapping layers, no ghosted, doubled or giant background faces, no afterimages, no lens flare, no bloom or glow halos; light and energy are a few bold solid pixel shapes with hard edges; background simplified into big chunky blocks, darker and lower in contrast than the subject; clear readable silhouette; use fewer colors than the limit allows.
 ```
+
+## 움직이는 배경 (영상)
+
+명조 로그인 화면처럼 배경이 천천히 살아 움직이게 한다: 빛줄기가 흐르고, 바위가 떠다니고, 격자가 깜빡이고, 눈발이 날린다. 캐릭터는 영상에 넣지 않는다(도트 포즈 그림을 위에 따로 얹는다).
+- 도구: 구글 플로우(Veo) 이미지→영상. 시작 프레임과 끝 프레임에 **같은 타이틀 배경 그림**을 넣으면 처음과 끝이 이어져 끊김 없이 반복된다. 16:9, 8초.
+- 소리: 프롬프트에서 무음을 요청한다. 그래도 소리가 붙어 나오면 게임에서는 `muted`로 재생하고, 파일에서도 소리 트랙을 뺀다(`ffmpeg -i in.mp4 -an -c:v copy out.mp4`).
+- 주의: 영상 모델은 도트를 뭉개기 쉽다. 결과가 흐리면 움직임 수를 줄여(빛줄기·눈발만) 다시 만든다. 한국에서는 보이는 워터마크가 붙는다(지우지 않는다).
+- 결과: `art/source-v2/title_bg.mp4`(커밋 여부는 용량을 보고 정한다). 게임 연결(타이틀 배경을 영상으로, 첫 프레임 그림을 대체 이미지로)은 `dev` 일.
+
+### title_bg.mp4 · 타이틀 움직이는 배경 (플로우)
+```
+Animate the attached 16-bit pixel art title background into a calm, seamless 8-second loop for a game login screen. Keep the camera completely still and keep every shape, color and the pixel-art look of the image: crisp square pixels, no smoothing, no blur, no new objects. Gentle motion only: the diagonal teal light beam slowly shimmers and drifts along its length; the floating rocks bob up and down a few pixels and turn very slightly; the cyan wireframe lines pulse softly in brightness; a few small snow pixels drift sideways in the wind; the frozen lake reflection ripples faintly. The last frame matches the first frame exactly so it loops. No people, no text, no logo, no camera movement, no zoom, no cuts. Audio: none. Completely silent video: no music, no sound effects, no ambience, no voices.
+```
+
+검수 체크리스트(영상)
+- [ ] 소리가 없다(있으면 소리 트랙 제거)
+- [ ] 카메라가 움직이지 않고, 처음과 끝이 이어져 반복할 때 튀지 않는다
+- [ ] 도트가 뭉개지거나 흐려지지 않았다. 새 물체·인물·글자가 생기지 않았다
+- [ ] 움직임이 느리고 작아서 로고·메뉴를 읽는 데 방해가 안 된다
 
 ## 캐릭터 포즈 (2×2 4칸, 숨쉬기·바람 반복)
 - 첨부: 1. 공식 이미지(공식 그림은 커밋하지 않는다) 2. `art/source-v2/hero_<id>.png`(지금 도트 시트).
