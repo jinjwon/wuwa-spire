@@ -309,7 +309,7 @@ function dmgEnemy(T,d,pierce,style){
   T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',dl);
   sfx(d>=18?'crit':'hit',dl);if(!window.FAST)setTimeout(()=>hitStop(d>=18?110:55),dl/OPT.speed);
   vfx(style||(pierce?'burst':(WEAPON[own]||'sword')),'e'+T.uid,{c:pierce?EL.회절:CH[own].color,el:pierce?'회절':CH[own].el,from:'u-'+own,big:d>=18},dl);
-  if(T.hp<=0){T.hp=0;T.dead=true;if(WPN(own,'w_thorn'))heal(own,6);sfx('death',dl+120);S.stats.kills++;log(`${EN[T.id].n} 처치!`);vfx('death','e'+T.uid,{c:EL[EN[T.id].el]},dl+120);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++;onAffixDeath(T,dl);echoHook('kill',T)}
+  if(T.hp<=0){T.hp=0;T.dead=true;if(WPN(own,'w_thorn'))heal(own,6);sfx('death',dl+120);S.stats.kills++;log(`${EN[T.id].n} 처치!`);vfx('death','e'+T.uid,{c:EL[EN[T.id].el],el:EN[T.id].el,big:1},dl+120);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++;onAffixDeath(T,dl);echoHook('kill',T)}
   enemyHook(T,!pierce&&style!=='burst');
   if(!pierce&&style!=='burst')addVib(T,1+(WPN(own,'w_heavy')?1:0));
 }
@@ -385,7 +385,7 @@ function doLib(T){if(son4('전도')&&S.c)S.c.energy++;
   if(id==='chi'){alive().forEach(e=>{hit(e,10);unravel(e,3)});T_().forEach(x=>heal(x,5))}
   if(id==='cam'){hit(T,26);bloom(3)}
   if(id==='hiy')alive().forEach(e=>{hit(e,12);frost(e,3)});
-  (LIB_TG[id]?[[T,[0,110,220]]]:alive().map(e=>[e,[60]])).forEach(([e,ts])=>e&&!e.dead&&ts.forEach(t=>vfx(WEAPON[id],'e'+e.uid,{c:CH[id].color,big:1,from:'u-'+id},FXDELAY+t)));
+  (LIB_TG[id]?[[T,[0,110,220]]]:alive().map(e=>[e,[60]])).forEach(([e,ts])=>e&&!e.dead&&ts.forEach(t=>vfx(WEAPON[id],'e'+e.uid,{c:CH[id].color,el:CH[id].el,big:1,from:'u-'+id},FXDELAY+t)));
   setTimeout(()=>libFinale(id),FXDELAY);
   FXDELAY=0;alive().forEach(e=>addVib(e,3));gainConc(id,1);
   if(has('aix')){c.energy++;draw(1)}
@@ -430,7 +430,7 @@ const wiped=()=>T_().every(id=>S.party[id].down);
 function hurtParty(d,e){
   const c=S.c;const ab=Math.min(c.block,d);c.block-=ab;const rest=d-ab;
   const p=S.party[c.active];
-  if(e)vfx('claw','u-'+c.active,{c:EL[EN[e.id].el]||'#ff5d6c',big:d>=15});
+  if(e)vfx('claw','u-'+c.active,{c:EL[EN[e.id].el]||'#ff5d6c',el:EN[e.id].el,big:d>=15});
   sfx(rest>0?'hurt':'block',FXDELAY);if(rest>0){hitStop(rest>=15?100:50);if(rest>=12){shakeStage(rest>=20);flash('rgba(255,60,80,.5)')}}
   if(rest>0){p.hp-=rest;pop('p-'+c.active,`-${rest}`,'dmg');anim('u-'+c.active,'hit');if(c.active==='cam'&&c.camUni)bloom(c.camUni)}
   else{pop('party',e&&ab>0?'완벽 회피!':'막음','blk');anim('u-'+c.active,'block');

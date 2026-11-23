@@ -847,3 +847,8 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .titlescr .t-sub{letter-spacing:4px;font-size:11px}
 .titlescr .t-menu{width:min(460px,100%)}
 .titlescr .t-menu button{background:rgba(8,14,32,.72);border-color:#3d6f8f}
+
+/* 효과 도트화(2026-11-24): 불꽃 튐은 네모 도트, 탄 궤적은 단색 선, 속성 임팩트는 화면 배율(--k)을 따라 정수배 */
+.vfx.spark{width:calc(4px*var(--k,1));height:calc(4px*var(--k,1));margin:calc(-2px*var(--k,1));border-radius:0}
+.vfx.tracer{height:calc(2px*var(--k,1));background:var(--c);border-radius:0}
+.vfx.pfx{width:calc(var(--s)*var(--k,1));height:calc(var(--s)*var(--k,1))}
