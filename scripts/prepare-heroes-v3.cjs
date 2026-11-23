@@ -63,9 +63,16 @@ function outline(d,w,h){
 // 다듬기(캐릭터별 선택): 원본의 흰 테두리가 축소 뒤 윤곽에 흰 점으로 남거나, 옷 무늬가 한 점 잡티가 되는 경우
 // rim: 바깥과 닿은 밝은 픽셀을 윤곽 남색으로(끊긴 흰 점 윤곽 → 이어진 어두운 윤곽)
 // despeck: 머리(위 28%) 아래에서 상하좌우와 모두 다른 밝은 외톨이 점을 이웃 평균색으로(눈 하이라이트는 건드리지 않음)
-const POLISH={sk:{rim:true,despeck:true}};
+// grad: 원작 색 맞춤. 몸 높이 y0 아래의 파란 계열(채도 있는) 픽셀을 아래로 갈수록 to 색 쪽으로 섞는다
+//   에이메스: 설정 기준표 '남색→하늘색 별빛 그라데이션 자락'(공식 원화 확인) — 도트는 자락 전체가 진한 남색이었다
+const POLISH={sk:{rim:true,despeck:true},aem:{grad:{hue:[200,255],y0:.42,to:[95,180,255],max:.75}}};
 const lum=(d,q)=>d[q]*.3+d[q+1]*.59+d[q+2]*.11,near=(d,a,b)=>Math.abs(d[a]-d[b])+Math.abs(d[a+1]-d[b+1])+Math.abs(d[a+2]-d[b+2])<70;
+function hsv(r,g,b){const M=Math.max(r,g,b),m=Math.min(r,g,b),c=M-m;let hh=0;if(c){hh=M===r?((g-b)/c)%6:M===g?(b-r)/c+2:(r-g)/c+4;hh*=60;if(hh<0)hh+=360}return [hh,M?c/M:0,M/255]}
 function polish(d,w,h,o){
+  if(o.grad){const g=o.grad,y0=Math.round(h*g.y0);
+    for(let y=y0;y<h;y++){const t=Math.min(1,(y-y0)/(h-y0))*g.max;for(let x=0;x<w;x++){const q=(y*w+x)*4;if(!d[q+3])continue;
+      const [hh,sat,v]=hsv(d[q],d[q+1],d[q+2]);if(hh<g.hue[0]||hh>g.hue[1]||sat<.3||v<.12)continue;
+      for(let i=0;i<3;i++)d[q+i]=Math.round(d[q+i]*(1-t)+g.to[i]*t*(.45+.55*v))}}}
   if(o.despeck){const top=Math.round(h*.28),set=[];
     for(let y=Math.max(1,top);y<h-1;y++)for(let x=1;x<w-1;x++){const q=(y*w+x)*4;if(!d[q+3])continue;
       const n=[q-4,q+4,q-w*4,q+w*4];if(n.some(k=>!d[k+3]))continue;
