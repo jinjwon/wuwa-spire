@@ -1,4 +1,4 @@
-# 배경 프롬프트 (타이틀·전투)
+# 전투 배경 프롬프트
 
 마지막 갱신 2026-11-23. 결과는 `art/candidates/<키>/`에 넣고 `npm run board`에서 고른다([절차](ART_PIPELINE.md)). 지역 설정은 [설정 기준표](../lore/CHARACTER_BIBLE.md)의 확인된 내용만 쓴다. 지역의 공식 모습은 대조하지 않았다(미확인).
 
@@ -15,35 +15,7 @@
 Authentic 16-bit pixel art battle background, as if drawn at 640x360 pixels and scaled up by whole numbers: uniform pixel grid, crisp clusters, at most 64 colors, no anti-aliasing, no dithering noise, no painterly brush texture, no blur, no smooth gradients. Landscape 1536x1024; keep the top 8% and bottom 8% free of important details because the image is cropped to 16:9. The bottom 35% is a flat, readable ground plane where characters will stand: party on the left, enemies on the right, so keep the center and both sides open. Dark night palette so pixel characters stay readable in front. No characters, no creatures, no text, no UI, no frame.
 ```
 
-## 메인 타이틀
-
-지금 타이틀은 1구역 전투 배경(검은 해안)을 그대로 쓴다. 타이틀 전용 그림을 따로 만든다. 구도는 명조 실행 화면(사용자 스크린샷, 2026-11-23)의 짜임만 참고한다: 양옆 설산이 가운데 계곡을 감싸고, 계곡에 거울 같은 얼음 호수가 하늘을 비추고, 하늘을 왼쪽 위에서 가운데로 사선 빛줄기가 가르며 부서진 바위 조각이 떠 있고, 화면 위쪽에 청록 와이어프레임 격자가 산맥 모양으로 걸려 있다. 로고·글자·공식 그림은 넣지도 첨부하지도 않는다(공식 이미지 비사용). 첨부 없이 글로만 요청한다.
-
-- 첨부: 없음 · 용도: 타이틀 화면 배경(`titleHTML`). 게임 연결(그림 교체)은 `dev` 일.
-- 화면 가운데 세로 띠에 로고와 메뉴 버튼이 올라가므로 가운데는 어둡고 단순하게 둔다. 바닥 35% 규칙은 쓰지 않는다(캐릭터가 서지 않음).
-
-### title_bg.png · 메인 타이틀
-```
-OBJECTIVE: Title-screen background for a fan-made pixel-art deckbuilder. A vast, quiet, awe-inspiring frozen valley at night that feels like the opening of a long journey.
-COMPOSITION (must):
-- Snow-covered mountain ranges rise on the left and right edges and slope down toward the center, framing a wide valley that recedes to a low horizon at about 55% of the height.
-- The valley floor is a perfectly still frozen lake that mirrors the sky and mountains as a clean vertical reflection in the lower 40% of the image.
-- A broad diagonal beam of pale teal-green light cuts across the sky from the upper left toward the center horizon, with a trail of broken floating rock fragments drifting along it; the largest fragments cluster just above the center horizon.
-- Along the top 20%, a thin glowing cyan wireframe grid hangs in the sky shaped like an upside-down mountain range, as if the world is being scanned.
-- Mountain ridges have thin cyan glowing contour lines on their snow, matching the wireframe.
-LAYOUT: Keep a calm, dark, low-detail vertical band in the middle 40% of the width from 20% to 90% height, because a game logo and a column of menu buttons are placed there; the light beam and rocks may pass behind it but stay soft in value.
-PALETTE: deep navy and midnight blue sky, cold white and ice-blue snow, cyan accent lines, one pale teal-green light beam. No warm colors.
-STYLE & CONSTRAINTS: Authentic 16-bit pixel art, as if drawn at 640x360 pixels and scaled up by whole numbers: uniform pixel grid, crisp clusters, at most 64 colors, no anti-aliasing, no dithering noise, no painterly brush texture, no blur, no smooth gradients; light and reflections are drawn as flat stepped bands of solid color. No characters, no creatures, no logo, no text, no letters, no UI, no frame, no watermark.
-OUTPUT: Landscape 1536x1024; keep the top 8% and bottom 8% free of important details because the image is cropped to 16:9.
-VALIDATION: mountains frame both sides; lake reflection visible in the lower part; diagonal beam with floating rocks; wireframe grid at top; center band calm enough for white text; no text anywhere; pixel grid uniform with no soft gradients.
-```
-
-검수 체크리스트
-- [ ] 글자·로고·인물이 하나도 없다
-- [ ] 가운데 세로 띠가 어둡고 단순해서 흰 로고·메뉴가 읽힌다
-- [ ] 양옆 설산, 호수 반사, 사선 빛줄기와 떠 있는 바위, 위쪽 격자가 모두 있다
-- [ ] 빛줄기·반사가 부드러운 그라데이션이 아니라 계단식 단색 띠다
-- [ ] 16:9로 잘라도 빛줄기 중심과 바위 무리가 남는다
+메인 타이틀 배경은 [TITLE_PROMPTS.md](TITLE_PROMPTS.md)로 옮겼다.
 
 ## 지역
 
