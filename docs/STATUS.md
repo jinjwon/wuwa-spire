@@ -53,3 +53,4 @@ PixelLab 프롬프트를 웹 화면 스크린샷에 맞춰 수정: Create from T
 
 2026-11-23: [배경 프롬프트](art/BG_PROMPTS.md)에 메인 타이틀 전용 배경(`title_bg`, 명조 실행 화면 구도 참고·공식 그림 미첨부)과 구역별 정예·보스 전투 배경 6장(`battle_elite1~3`, `battle_boss1~3`)을 추가했다. 보드에서 '배경' 종류로 보인다. 그림을 받은 뒤 게임 연결(타이틀 교체, 전투 종류별 배경 고르기)은 `dev` 일이다.
 2026-11-23: 메인 타이틀을 명조 3.0 로그인 화면처럼 바꾸는 기획과 프롬프트를 [TITLE_PROMPTS.md](art/TITLE_PROMPTS.md)로 분리했다. 층: 배경(`title_bg`) · 떠 있는 바위(`title_rocks`) · 캐릭터 포즈 4칸(`title_pose_aem`, `title_pose_rov`, `title_pose_rovM`) · UI(코드). 업로드한 전투 배경 4장은 후보에 넣었다(위아래 검은 띠 자르기 필요). 전투 배경을 명조 실제 장소로 바꾸는 일은 장소별 스크린샷을 받은 뒤 진행한다.
+2026-11-23: GPT 그림 자글자글·뭉개짐 대응으로 `CLEAN LOCK` 공통 문장을 만들어 GPT 프롬프트 전부(카드 91장, 모션, 공명자, 수정, 전투 배경, 타이틀)에 넣었다. 카드 기본 문장에서 "glow·motion trails·noise"처럼 잡티를 부르는 말을 뺐다. 공용 카드 3장(`any_scan`·`any_focus`·`any_overload`) 업로드 그림은 후보에 넣었다. 도구별 차이는 [ART_PIPELINE.md](art/ART_PIPELINE.md).

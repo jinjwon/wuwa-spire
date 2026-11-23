@@ -30,22 +30,23 @@ const SCENE={
   aem_star:['a rain of morning-star streaks hitting several dark enemies at once, Aemeath mid-leap above them. No mecha in this image',0],
   aem_sync:['Aemeath with eyes closed, hand on her chest, a glowing ring linking her to the teal chest core of her mecha',1],
   aem_break:['her mecha delivering a huge overhead strike, starlight shattering a cracked barrier, Aemeath small in the foreground',1],
-  aem_ghost:['a faint translucent outline of Aemeath standing guard behind an ally, an invisible companion. No mecha in this image',0],
+  aem_ghost:['Aemeath drawn only as a dashed solid pale-blue pixel outline standing guard behind an ally, an invisible companion. No mecha in this image',0],
 };
-const POSE={공격:'dynamic attack action, mid-strike with motion trails',스킬:'defensive or support stance, protective glowing barrier or graceful evasive motion',
-  파워:'powerful aura awakening, energy swirling around the character, close-up heroic shot',상태:'',저주:''};
-const ABSTRACT={상태:'glitchy corrupted energy, static and dark purple noise, ominous abstract shapes, no character',
-  저주:'distorted echo noise waveform, eerie dark abstract shapes, no character'};
-const STYLE='Pixel art card illustration, landscape 3:2 (1536x1024), 16-bit SNES style, crisp pixels, limited palette, dark blue night atmosphere, inspired by the game Wuthering Waves. No text, no letters, no card frame, no border.';
+const POSE={공격:'dynamic attack action, mid-strike, one bold solid slash shape',스킬:'calm defensive or support stance with one simple solid barrier shape, or a graceful evasive motion',
+  파워:'powerful awakening stance with a few bold solid energy shapes around the character, close-up heroic shot',상태:'',저주:''};
+const ABSTRACT={상태:'glitchy corrupted energy drawn as a few broken solid dark purple pixel blocks, ominous abstract shapes, no character',
+  저주:'a distorted echo waveform drawn as one bold jagged solid line, eerie dark abstract shapes, no character'};
+const {CLEAN}=require('./lib/clean-lock.cjs');
+const STYLE='Pixel art card illustration, landscape 3:2 (1536x1024), 16-bit SNES style, drawn as if at about 144x96 pixels and scaled up so each art pixel is a large crisp block, at most 32 colors, dark blue night atmosphere, inspired by the game Wuthering Waves. No text, no letters, no card frame, no border.';
 
 function cards(){const src=fs.readFileSync(path.join(root,'src/js/data.js'),'utf8'),cd=src.slice(src.indexOf('const CD={'),src.indexOf('const REWARD_POOL='));
   const L=[...cd.matchAll(/^  (\w+):\{n:'([^']*)',o:'([^']*)'[^}]*?t:'([^']*)'/gm)].map(m=>({id:m[1],n:m[2],o:m[3],t:m[4],duo:m[0].match(/duo:\['(\w+)','(\w+)'\]/)?.slice(1)}));
   assert(L.length>=70,'카드 정의를 읽지 못했어요: '+L.length);return L}
 
 function prompt(c){
-  const who=c.duo?.every(k=>LOOK[k])?`Two characters together. ${LOOK[c.duo[0]]}. And ${LOOK[c.duo[1]]}`:LOOK[c.o]||'a mysterious resonator silhouette with glowing echo energy';
+  const who=c.duo?.every(k=>LOOK[k])?`Two characters together. ${LOOK[c.duo[0]]}. And ${LOOK[c.duo[1]]}`:LOOK[c.o]||'a mysterious hooded resonator shown as a clear dark silhouette with a few solid echo-energy accents';
   const sc=SCENE[c.id],body=ABSTRACT[c.t]||(sc?`${who}. ${sc[0]}.${sc[1]?' '+MECHA:''}`:`${who}. ${POSE[c.t]}. Theme: "${c.n}".`);
-  return `${STYLE} ${body} Character centered, full scene fills the frame.`;
+  return `${STYLE} ${body} Character centered, full scene fills the frame. ${CLEAN}`;
 }
 
 function writePrompts(){const L=cards();let md=`# 카드 일러스트 GPT 프롬프트 (${L.length}장)\n\n`+

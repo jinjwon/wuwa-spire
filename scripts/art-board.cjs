@@ -38,8 +38,8 @@ function parse(file){
   }
   for(const it of items){
     it.notes=it.notes.join('\n').trim();
-    const f=it.title.match(/`?((?:hero|cards|battle|enemy_full|fx)_\w+)\.png`?/),c=it.title.match(/^(\w+) · /);
-    it.key=f?f[1]:c&&exists(`assets/cards/${c[1]}.png`)?c[1]:null;
+    const f=it.title.match(/`?((?:hero|cards|battle|enemy_full|fx|title)_\w+)\.png`?/),c=it.title.match(/^(\w+) · /);
+    it.key=f?f[1]:c&&(exists(`assets/cards/${c[1]}.png`)||/card-prompts/.test(file))?c[1]:null;
     if(it.level===2&&exists(`assets/${it.title}.png`))it.face=`assets/${it.title}.png`;
   }
   return items;
