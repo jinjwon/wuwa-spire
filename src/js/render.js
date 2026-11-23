@@ -105,7 +105,7 @@ function render(){
   else scr.innerHTML={map:mapHTML,ancient:ancientHTML,recruit:recruitHTML,reward:rewardHTML,event:eventHTML,rest:restHTML,shop:shopHTML,msg:msgHTML,over:overHTML,win:winHTML}[S.screen]();
   $('#modal').innerHTML=S&&S.modal?modalHTML():'';
   if(S&&S.screen==='map')saveRun();
-  if(S&&S.screen==='map'){const cur=document.querySelector('.mnode.avail,.mboss.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'center'});S._scrolled=true}}
+  if(S&&S.screen==='map'){const cur=document.querySelector('.mnode.avail,.mboss.avail');if(cur&&!S._scrolled){cur.scrollIntoView({block:'nearest',inline:'center'});S._scrolled=true}}
   requestAnimationFrame(flushFx);
   playBgm();
 }
@@ -279,28 +279,29 @@ const NODE_IMG=Object.fromEntries(['battle','elite','event','rest','shop','treas
 const nodeImg=t=>NODE_IMG[t]?`<img src="assets/${NODE_IMG[t]}" alt="" onerror="this.remove()">`:'';
 const regionArt=()=>[['coast','forest'],['spire','lahai'],['lahai','spire']][S.act][S.vari||0];
 function mapHTML(readonly){
-  const GAP=86,H=ROWS*GAP+250;const av=readonly?[]:availNodes();const path=S.path||[];
-  const yOf=(r,n)=>H-(r*GAP+70+(n?n.jy:0));
+  // 가로 지도(2026-11-24): 층은 왼쪽(시작) → 오른쪽(보스), 같은 층 노드는 위아래로 놓인다. 연결선 SVG는 가로 px × 세로 0~100
+  const GAP=86,W=ROWS*GAP+250;const av=readonly?[]:availNodes();const path=S.path||[];
+  const xOf=(r,n)=>r*GAP+70+(n?n.jy:0),BX=ROWS*GAP+150;
   const onPath=(a,b)=>{const i=path.indexOf(a);return i>=0&&path[i+1]===b};
   let lines='';
   S.map.forEach((row,r)=>row.forEach(n=>{
-    const k=`${r}-${n.i}`;const y1=yOf(r,n);
-    const tg=r===ROWS-1?[{x:.5,y:H-(ROWS*GAP+110),k:'boss'}]:n.next.map(j=>{const m=S.map[r+1][j];return{x:m.x,y:yOf(r+1,m),k:`${r+1}-${j}`}});
+    const k=`${r}-${n.i}`;const x1=xOf(r,n);
+    const tg=r===ROWS-1?[{x:BX,y:.5,k:'boss'}]:n.next.map(j=>{const m=S.map[r+1][j];return{x:xOf(r+1,m),y:m.x,k:`${r+1}-${j}`}});
     tg.forEach(t=>{const hot=onPath(k,t.k)||(t.k==='boss'&&path.includes(k)&&S.pos&&S.pos.r===ROWS);
-      lines+=`<line x1="${n.x*100}" y1="${y1}" x2="${t.x*100}" y2="${t.y}" class="${hot?'hot':''}" data-a="${k}" vector-effect="non-scaling-stroke"/>`})}));
+      lines+=`<line x1="${x1}" y1="${n.x*100}" x2="${t.x}" y2="${t.y*100}" class="${hot?'hot':''}" data-a="${k}" vector-effect="non-scaling-stroke"/>`})}));
   let nodes='';
   S.map.forEach((row,r)=>row.forEach(n=>{
     const key=`${r}-${n.i}`;const T=NODE[n.type];const isAv=av.includes(key);
     const isCur=S.pos&&S.pos.r===r&&S.pos.i===n.i;const vis=path.includes(key);const past=S.pos&&r<S.pos.r&&!vis;
-    nodes+=`<button class="mnode t-${n.type} ${n.burn?'burn':''} ${isAv?'avail':''} ${isCur?'cur':''} ${vis?'vis':''} ${past?'past':''}" style="left:${n.x*100}%;top:${yOf(r,n)}px;--c:${T.c}"${tipAttr(`<b>${T.l}${n.burn?' · 불타는 정예':''}</b><br>${NODE_TIP[n.type]}${n.burn?'<hr>더 강하지만 에코를 하나 더 주는 정예예요.':''}`)} ${isAv?`onclick="enterNode('${key}')"`:'disabled'}><i><svg viewBox="0 0 24 24">${NODE_SVG[n.type]}</svg>${nodeImg(n.type)}</i></button>`;
+    nodes+=`<button class="mnode t-${n.type} ${n.burn?'burn':''} ${isAv?'avail':''} ${isCur?'cur':''} ${vis?'vis':''} ${past?'past':''}" style="left:${xOf(r,n)}px;top:${n.x*100}%;--c:${T.c}"${tipAttr(`<b>${T.l}${n.burn?' · 불타는 정예':''}</b><br>${NODE_TIP[n.type]}${n.burn?'<hr>더 강하지만 에코를 하나 더 주는 정예예요.':''}`)} ${isAv?`onclick="enterNode('${key}')"`:'disabled'}><i><svg viewBox="0 0 24 24">${NODE_SVG[n.type]}</svg>${nodeImg(n.type)}</i></button>`;
   }));
   const bav=av.includes('boss');const bid=ACTS[S.act].boss;const ba=ARTS[bid]||{};
-  nodes+=`<button class="mboss ${bav?'avail':''}" style="top:${H-(ROWS*GAP+110)}px" ${bav?`onclick="enterNode('boss')"`:'disabled'}${tipAttr(`<b>명식 · ${EN[bid].n}</b><br>${EN[bid].pv?EN[bid].pv.tx:''}`)}>
+  nodes+=`<button class="mboss ${bav?'avail':''}" style="left:${BX}px;top:50%" ${bav?`onclick="enterNode('boss')"`:'disabled'}${tipAttr(`<b>명식 · ${EN[bid].n}</b><br>${EN[bid].pv?EN[bid].pv.tx:''}`)}>
     <div class="bimg" style="${ba.portrait?`background-image:url('${ba.portrait}')`:''}"></div><span>명식 · ${EN[bid].n}</span></button>`;
   const legend=Object.entries(NODE).filter(([k])=>k!=='boss').map(([k,t])=>`<div class="lg t-${k}" style="--c:${t.c}"><i><svg viewBox="0 0 24 24">${NODE_SVG[k]}</svg>${nodeImg(k)}</i>${t.l}</div>`).join('');
   return `<div class="mapscr">
     <div class="maphead"><small>TOWER OF ECHOES · ACT ${S.act+1}</small><b>${AV().name}</b><em>${AV().flavor}</em></div>
-    <div class="mapwrap"><div class="map" style="height:${H}px"><img class="route-art" src="assets/maps/${regionArt()}-route.png" alt="" draggable="false"><svg class="mlines" viewBox="0 0 100 ${H}" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
+    <div class="mapwrap" onwheel="if(Math.abs(event.deltaY)>Math.abs(event.deltaX)){this.scrollLeft+=event.deltaY;event.preventDefault()}"><div class="map" style="width:${W}px"><img class="route-art" src="assets/maps/${regionArt()}-battle.png" alt="" draggable="false"><svg class="mlines" viewBox="0 0 ${W} 100" preserveAspectRatio="none">${lines}</svg>${nodes}</div></div>
     <aside class="maplegend"><small>LEGEND</small>${legend}<div class="lg burnlg"><i></i>불타는 정예</div></aside>
   </div>`;
 }

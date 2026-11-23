@@ -852,3 +852,12 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .vfx.spark{width:calc(4px*var(--k,1));height:calc(4px*var(--k,1));margin:calc(-2px*var(--k,1));border-radius:0}
 .vfx.tracer{height:calc(2px*var(--k,1));background:var(--c);border-radius:0}
 .vfx.pfx{width:calc(var(--s)*var(--k,1));height:calc(var(--s)*var(--k,1))}
+
+/* 가로 지도(2026-11-24): 지도는 가로 스크롤, 높이 고정. 배경은 그 구역 전투 배경(640×360)을 덮어 씀. 범례는 지도 아래 한 줄 */
+.mapscr{grid-template-columns:1fr}
+.mapscr .mapwrap{width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.mapscr .map{height:clamp(380px,62vh,560px)}
+.mapscr .route-art{object-fit:cover;opacity:.6}
+.mapscr .mboss{transform:translate(-50%,-50%)}
+.mapscr .mboss .bimg{width:110px;height:110px}
+.mapscr .maplegend{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;clip-path:none}

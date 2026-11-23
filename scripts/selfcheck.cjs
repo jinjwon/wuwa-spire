@@ -34,6 +34,10 @@ const CHECKS = {
   ascension: `(()=>{SEL_ASC=6;newGame('aem',0);const a=S.asc===6&&S.party.aem.maxHp<CH.aem.maxHp+14;SEL_ASC=0;return a})()`,
   pixel_scale: `(()=>{const g=v=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue(v)),d=devicePixelRatio,k=g('--k'),b=g('--bk');
     return k>=1&&Number.isInteger(Math.round(k*d*1000)/1000)&&640*b>=innerWidth&&360*b>=innerHeight&&Number.isInteger(Math.round(b*d*1000)/1000)})()`,
+  // 가로 지도: 지도가 옆으로 길고, 보스가 가장 오른쪽, 첫 층이 왼쪽
+  map_horizontal: `(async()=>{newGame('rov',0);S.ancient=null;S.modal=null;S.screen='map';render();await new Promise(r=>setTimeout(r,300));
+    const m=document.querySelector('.map'),b=document.querySelector('.mboss').getBoundingClientRect(),ns=[...document.querySelectorAll('.mnode')].map(n=>n.getBoundingClientRect().left);
+    return m.scrollWidth>m.clientHeight*1.5&&b.left>Math.max(...ns)&&Math.min(...ns)<b.left})()`,
   mp_guard: `(async()=>{if(!window.mpHost)return false;const r=await window.mpHost.start();const ok1=Array.isArray(r.ips)&&(await fetch('http://127.0.0.1:7777/index.html')).ok;
     const bad=(await fetch('http://127.0.0.1:7777/main.js')).status===404&&(await fetch('http://127.0.0.1:7777/src/js/data.js')).ok&&(await fetch('http://127.0.0.1:7777/src/styles.css')).headers.get('content-type')==='text/css';newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';render();const g=S.gold;mpRun('S.gold=9999');return ok1&&bad&&S.gold===g})()`,
   merge_cards: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));
