@@ -839,3 +839,11 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @media (max-height:760px){.sel-tile{min-height:44px}.sel-av{width:38px;height:38px}.sel-info{padding:14px 18px;gap:6px}.sel-info p{font-size:12px}.sel-name h3{font-size:24px}}
 @media (max-width:900px){.sel-body{grid-template-columns:1fr}.sel-list{flex-direction:row;flex-wrap:wrap}.sel-stage{min-height:300px}}
 @media(prefers-reduced-motion:reduce){.sel-hero{animation:none}.sel-tile.on{transform:none}}
+
+/* 타이틀(2026-11-24): 명조 로그인 화면처럼 로고는 왼쪽 위, 메뉴는 아래 가운데. 배경은 title-bg(가운데 호수·빛줄기가 보이게 둔다) */
+.titlescr{justify-content:flex-end;padding:28px 16px 64px}
+.titlescr .t-logo{position:absolute;top:22px;left:26px;text-align:left;padding:10px 22px 14px 4px;background:radial-gradient(ellipse at 30% 50%,rgba(6,10,24,.6) 0%,rgba(6,10,24,.3) 60%,transparent 80%)}
+.titlescr .t-logo h1{font-size:clamp(34px,5vw,64px);letter-spacing:6px;margin:6px 0 2px}
+.titlescr .t-sub{letter-spacing:4px;font-size:11px}
+.titlescr .t-menu{width:min(460px,100%)}
+.titlescr .t-menu button{background:rgba(8,14,32,.72);border-color:#3d6f8f}

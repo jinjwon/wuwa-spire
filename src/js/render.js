@@ -134,8 +134,7 @@ function toggleFS(){try{document.fullscreenElement?document.exitFullscreen():doc
 function titleHTML(){
   const sv=loadSave();
   const motes=Array.from({length:22},(_,i)=>`<i class="mote" style="left:${(i*47)%100}%;bottom:${(i*17)%60}%;animation-delay:${(i*.41)%7}s;background:${i%3?'#bfe6ff':'#ffe9a8'}"></i>`).join('');
-  return `<div class="titlescr">${battleBackground('coast')}${motes}
-    <div class="t-party">${ALL.map((id,i)=>`<div class="tp" style="--c:${CH[id].color};animation-delay:${i*.35}s;${artStyle(id)}" title="${CH[id].name}">${ARTS[id]&&(ARTS[id].portrait||ARTS[id].idle)?'':CH[id].ini}</div>`).join('')}</div>
+  return `<div class="titlescr">${battleBackground('title')}${motes}
     <div class="t-logo"><div class="t-sub">WUTHERING WAVES · FAN-MADE DECKBUILDER</div><h1>첨탑의 메아리</h1><div class="t-en">Echoes of the Spire</div></div>
     <div class="t-menu">
       ${sv?`<button class="main" onclick="continueRun()">이어하기<small>${ACTS[sv.act].name} · ${sv.floor}층 · ${sv.team.map(id=>CH[id].name).join(', ')}</small></button>`:''}
@@ -164,7 +163,7 @@ const EN_NAME={rov:'ROVER',aem:'AEMEATH',sk:'SHOREKEEPER',lyn:'LYNAE',mor:'MORNY
 let SEL_HERO='rov';
 function selectHTML(){
   const id=SEL_HERO,C=CH[id],a=artOf(id).idle,kit=[['변주',C.intro],['협주',C.outro],['해방',C.lib]];
-  return `<div class="selscr">${battleBackground('lahai')}
+  return `<div class="selscr">${battleBackground('title')}
     <div class="sel-top"><button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button>
       <div class="sel-ttl"><span class="eng">RESONATOR</span><h2>공명자 선택</h2></div>
       <div class="sel-opts"><div class="diffs">${DIFF.map((x,i)=>`<button class="diff ${SEL_DIFF===i?'on':''}" onclick="SEL_DIFF=${i};render()"><b>${x.n}</b><small>${x.d}</small></button>`).join('')}</div>
@@ -325,7 +324,8 @@ function intentHTML(e){
 }
 function intentTitle(e){const m=e.move;const t=[];if(m.d)t.push(`공격 ${enemyDmg(e,m)}${m.h>1?`×${m.h}`:''}`);if(m.b)t.push(`방어 ${m.b}`);if(m.s)t.push(`힘 +${m.s}`);if(m.w)t.push(`약화 ${m.w}`);if(m.add)t.push(`덱에 「${CD[m.add[0]].n}」 ${m.add[1]}장`);return `${m.n}: ${t.join(', ')}`}
 function battleBackground(region=regionArt()){
-  return `<div class="battle-art"><img src="assets/maps/${region}-battle.png" alt="" draggable="false"></div>`;
+  // 'title'은 타이틀·공명자 선택 공용 배경(assets/maps/title-bg.png)
+  return `<div class="battle-art"><img src="assets/maps/${region==='title'?'title-bg':region+'-battle'}.png" alt="" draggable="false"></div>`;
 }
 function enemyPos(n,i,boss,slot){
   if(slot!=null)return slot?[46,44]:[58,14];
