@@ -9,6 +9,12 @@ const CHECKS = {
     newGame('lyn',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
     const T=alive()[0];T.hp=T.maxHp=500;T.block=0;S.c.cur=S.c.active;dmgEnemy(T,5);flushFx();await new Promise(r=>setTimeout(r,250));
     return ok.every(Boolean)&&!!document.querySelector('#fx .pfx')})()`,
+  free_assets: `(async()=>{const ok=await Promise.all(Object.values(FXFILE).map(f=>new Promise(r=>{const i=new Image();i.onload=()=>r(i.naturalWidth===576&&i.naturalHeight===47);i.onerror=()=>r(false);i.src='assets/fx/slash_'+f+'.png'})));
+    const snd=await Promise.all(Object.values(SMP).flat().map(n=>fetch('assets/sfx/'+n+'.ogg').then(r=>r.ok).catch(()=>false)));
+    newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
+    const T=alive()[0];T.hp=T.maxHp=500;T.block=0;S.c.cur=S.c.active;dmgEnemy(T,5);flushFx();await new Promise(r=>setTimeout(r,250));
+    const s=document.querySelector('#fx .pslash'),w=s&&s.getBoundingClientRect().width/parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--k')||1);
+    return ok.every(Boolean)&&snd.every(Boolean)&&!!s&&[192,256].includes(Math.round(w))&&[s,document.querySelector('#fx .pfx')].every(e=>e&&/\\/assets\\/fx\\//.test(getComputedStyle(e).backgroundImage)&&!/\\/src\\/assets/.test(getComputedStyle(e).backgroundImage))})()`,
   wuwa_systems: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip','zig'],'battle');await new Promise(r=>setTimeout(r,400));
     const c=S.c;const [T,U]=c.enemies;T.hp=T.maxHp=500;U.hp=U.maxHp=500;T.block=U.block=0;T.fb=3;c.cur=c.active;applyElem(T,'용융');const boom=T.fb===0&&T.hp===488&&U.hp===496;
     S.echoes=['snip','fdread'];const s2=son2('용융')&&!son4('용융');
@@ -28,6 +34,13 @@ const CHECKS = {
   ascension: `(()=>{SEL_ASC=6;newGame('aem',0);const a=S.asc===6&&S.party.aem.maxHp<CH.aem.maxHp+14;SEL_ASC=0;return a})()`,
   pixel_scale: `(()=>{const g=v=>parseFloat(getComputedStyle(document.documentElement).getPropertyValue(v)),d=devicePixelRatio,k=g('--k'),b=g('--bk');
     return k>=1&&Number.isInteger(Math.round(k*d*1000)/1000)&&640*b>=innerWidth&&360*b>=innerHeight&&Number.isInteger(Math.round(b*d*1000)/1000)})()`,
+  // 타이틀 움직이는 배경: 소리 없는 반복 영상이 재생되고, 크기는 배경 규격(640×360)의 정수 배율
+  title_video: `(async()=>{S=null;goMenu('title');await new Promise(r=>setTimeout(r,1500));const v=document.querySelector('.titlescr .battle-art video');if(!v)return 'no video';
+    const r=v.getBoundingClientRect(),b=r.width/640;return v.muted&&v.loop&&!v.paused&&v.readyState>=2&&v.videoWidth===1280&&v.videoHeight===720&&Number.isInteger(Math.round(b*devicePixelRatio*1000)/1000)&&Math.abs(r.height-360*b)<1||JSON.stringify({m:v.muted,p:v.paused,rs:v.readyState,w:v.videoWidth,b})})()`,
+  // 가로 지도: 지도가 옆으로 길고, 보스가 가장 오른쪽, 첫 층이 왼쪽
+  map_horizontal: `(async()=>{newGame('rov',0);S.ancient=null;S.modal=null;S.screen='map';render();await new Promise(r=>setTimeout(r,300));
+    const m=document.querySelector('.map'),b=document.querySelector('.mboss').getBoundingClientRect(),ns=[...document.querySelectorAll('.mnode')].map(n=>n.getBoundingClientRect().left);
+    return m.scrollWidth>m.clientHeight*1.5&&b.left>Math.max(...ns)&&Math.min(...ns)<b.left})()`,
   mp_guard: `(async()=>{if(!window.mpHost)return false;const r=await window.mpHost.start();const ok1=Array.isArray(r.ips)&&(await fetch('http://127.0.0.1:7777/index.html')).ok;
     const bad=(await fetch('http://127.0.0.1:7777/main.js')).status===404&&(await fetch('http://127.0.0.1:7777/src/js/data.js')).ok&&(await fetch('http://127.0.0.1:7777/src/styles.css')).headers.get('content-type')==='text/css';newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';render();const g=S.gold;mpRun('S.gold=9999');return ok1&&bad&&S.gold===g})()`,
   merge_cards: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';enterNode(availNodes()[0]);await new Promise(r=>setTimeout(r,800));

@@ -52,8 +52,10 @@ h1,h2,h3{margin:0}
 .t-foot{position:absolute;bottom:14px;left:16px;right:16px;font-size:11px;color:var(--dim)}
 .backbtn{align-self:flex-start}
 .vfx{position:fixed;pointer-events:none;z-index:65}
-.vfx.pfx{width:var(--s);height:var(--s);transform:translate(-50%,-50%);background:var(--img) 0 0/600% 100% no-repeat;image-rendering:pixelated;animation:pfx .42s steps(6,jump-none) forwards}
+/* 시트 경로는 JS가 인라인 background-image로 준다(변수 안 url()은 이 CSS 파일 기준으로 풀려 src/assets를 찾는다) */
+.vfx.pfx{width:var(--s);height:var(--s);transform:translate(-50%,-50%);background:0 0/600% 100% no-repeat;image-rendering:pixelated;animation:pfx .42s steps(6,jump-none) forwards}
 @keyframes pfx{to{background-position:100% 0}}
+.vfx.pslash{width:calc(64px*var(--z)*var(--k,1));height:calc(47px*var(--z)*var(--k,1));transform:translate(-50%,-50%) scale(var(--fx,1),var(--fy,1));background:0 0/900% 100% no-repeat;image-rendering:pixelated;animation:pfx .36s steps(9,jump-none) both}
 .vfx.slash{width:var(--s);height:var(--s);transform:translate(-50%,-50%) rotate(var(--r))}
 .vfx.slash svg{width:100%;height:100%;overflow:visible;animation-delay:inherit}
 .vfx.slash path{fill:none;stroke-linecap:round;stroke-dasharray:100;stroke-dashoffset:100;animation:slashdraw .34s cubic-bezier(.2,.7,.3,1) forwards;animation-delay:inherit;filter:drop-shadow(0 0 4px rgba(255,255,255,.6))}
@@ -527,7 +529,7 @@ button.rw:hover{box-shadow:inset 0 0 0 1px var(--wu-acc)}
 .anc-art{width:120px;height:120px;margin:0 auto 6px;background:center/contain no-repeat;filter:drop-shadow(0 0 22px #e9d9a6);animation:hover 3s ease-in-out infinite}
 /* 도트 전투·지역·카드: 배경은 낮은 대비, 조작 정보는 선명하게 유지합니다. */
 .battle-art{position:absolute;inset:0;z-index:-1;pointer-events:none;background:#10182b}
-.battle-art img{width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated}
+.battle-art img,.battle-art video{width:100%;height:100%;object-fit:cover;object-position:center bottom;image-rendering:pixelated}
 .battle-art::after{content:'';position:absolute;inset:0;background:linear-gradient(#090f2422,#090f2410 45%,#090f2444)}
 .mapwrap{background:#101929;padding:0;border:2px solid #566775;clip-path:none;box-shadow:0 0 0 3px #080e1d}
 .route-art{position:absolute;inset:0;width:100%;height:100%;object-fit:fill;image-rendering:pixelated;pointer-events:none;opacity:.68}
@@ -804,7 +806,7 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .unit.enemy.boss.fly .fig:has(.sprite){animation:pxHover 2.4s steps(6,end) infinite}
 .cutin .img{background-size:640px 640px;background-position:center bottom;image-rendering:pixelated}
 /* 배경은 640×360 도트 격자. 화면을 덮는 가장 작은 정수 배율(--bk)로 키워 1080p 3배, 4K 6배에서 픽셀이 고르게 */
-.battle-art img{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
+.battle-art img,.battle-art video{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
 /* ===== 공명자 선택 (2026-11-12) — 명조 공명자 목록 화면 구성. 토큰만 사용(DESIGN.md) ===== */
 .selscr{position:relative;flex:1;min-height:calc(100vh - 24px);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:18px 26px;text-align:left}
 .selscr::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,12,15,.92) 0,rgba(11,12,15,.55) 45%,rgba(11,12,15,.9) 100%)}
@@ -837,3 +839,25 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 @media (max-height:760px){.sel-tile{min-height:44px}.sel-av{width:38px;height:38px}.sel-info{padding:14px 18px;gap:6px}.sel-info p{font-size:12px}.sel-name h3{font-size:24px}}
 @media (max-width:900px){.sel-body{grid-template-columns:1fr}.sel-list{flex-direction:row;flex-wrap:wrap}.sel-stage{min-height:300px}}
 @media(prefers-reduced-motion:reduce){.sel-hero{animation:none}.sel-tile.on{transform:none}}
+
+/* 타이틀(2026-11-24): 명조 로그인 화면처럼 로고는 왼쪽 위, 메뉴는 아래 가운데. 배경은 title-bg(가운데 호수·빛줄기가 보이게 둔다) */
+.titlescr{justify-content:flex-end;padding:28px 16px 64px}
+.titlescr .t-logo{position:absolute;top:22px;left:26px;text-align:left;padding:10px 22px 14px 4px;background:radial-gradient(ellipse at 30% 50%,rgba(6,10,24,.6) 0%,rgba(6,10,24,.3) 60%,transparent 80%)}
+.titlescr .t-logo h1{font-size:clamp(34px,5vw,64px);letter-spacing:6px;margin:6px 0 2px}
+.titlescr .t-sub{letter-spacing:4px;font-size:11px}
+.titlescr .t-menu{width:min(460px,100%)}
+.titlescr .t-menu button{background:rgba(8,14,32,.72);border-color:#3d6f8f}
+
+/* 효과 도트화(2026-11-24): 불꽃 튐은 네모 도트, 탄 궤적은 단색 선, 속성 임팩트는 화면 배율(--k)을 따라 정수배 */
+.vfx.spark{width:calc(4px*var(--k,1));height:calc(4px*var(--k,1));margin:calc(-2px*var(--k,1));border-radius:0}
+.vfx.tracer{height:calc(2px*var(--k,1));background:var(--c);border-radius:0}
+.vfx.pfx{width:calc(var(--s)*var(--k,1));height:calc(var(--s)*var(--k,1))}
+
+/* 가로 지도(2026-11-24): 지도는 가로 스크롤, 높이 고정. 배경은 그 구역 전투 배경(640×360)을 덮어 씀. 범례는 지도 아래 한 줄 */
+.mapscr{grid-template-columns:1fr}
+.mapscr .mapwrap{width:100%;overflow-x:auto;overflow-y:hidden;scrollbar-width:thin}
+.mapscr .map{height:clamp(380px,62vh,560px)}
+.mapscr .route-art{object-fit:cover;opacity:.6}
+.mapscr .mboss{transform:translate(-50%,-50%)}
+.mapscr .mboss .bimg{width:110px;height:110px}
+.mapscr .maplegend{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;clip-path:none}

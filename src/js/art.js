@@ -103,7 +103,7 @@ function flushFx(){
   aq.forEach(a=>setTimeout(()=>{
     const el=bodyOf(a.key);if(!el)return;
     el.classList.remove(...ACLS);void el.offsetWidth;el.classList.add(a.cls);
-    if(a.key.startsWith('u-')&&(a.cls==='atk'||a.cls==='ult'))[140,200,260].forEach((t,i)=>setTimeout(()=>ghost(el,.42-i*.1),a.cls==='ult'?t+340:t));
+    // 공격 잔상(반투명 복제 3장)은 뺐다: 움직임 시트 전체가 복제돼 화면에 흩어졌고, 도트 규칙(잔상 금지)과도 안 맞음
     const done=e=>{if(e.target!==el)return;el.classList.remove(a.cls);el.removeEventListener('animationend',done)};
     el.addEventListener('animationend',done);
     // 공격 스프라이트가 있으면 한 번 재생
@@ -121,32 +121,35 @@ function fxEl(html,cls,x,y,style,life){const d=document.createElement('div');d.c
 function sparks(x,y,c,n,spread){for(let i=0;i<n;i++){const a=Math.random()*Math.PI*2,r=spread*(.5+Math.random()*.7);fxEl('','spark',x,y,`--c:${c};--dx:${Math.cos(a)*r}px;--dy:${Math.sin(a)*r}px`,600)}}
 function runVfx(v){
   const t=centerOf(v.key);if(!t)return;const c=v.o.c||'#fff';const S0=Math.max(90,t.w*(v.o.big?1.3:1));
-  // 속성 도트 임팩트(scripts/make-vfx.cjs). 64px 시트를 정수배(2·3배)로만 키운다
-  if(FXFILE[v.o.el])fxEl('','pfx',t.x,t.y,`--img:url('assets/fx/${FXFILE[v.o.el]}.png');--s:${v.o.big?192:128}px`,480);
+  // 속성 도트 임팩트(scripts/make-vfx.cjs). 64px 시트를 1·2배 × 화면 배율(--k)로 키운다
+  if(FXFILE[v.o.el])fxEl('','pfx',t.x,t.y,`background-image:url('assets/fx/${FXFILE[v.o.el]}.png');--s:${v.o.big?128:64}px`,480);
   if(v.type==='sword'||v.type==='heavy'){
-    const n=v.type==='heavy'?1:(Math.random()<.5?1:2);const sz=v.type==='heavy'?S0*1.35:S0;
-    for(let i=0;i<n;i++){const r=(Math.random()*70-35)+(i?90:0);
-      fxEl(`<svg viewBox="0 0 100 100"><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="${c}" stroke-width="${v.type==='heavy'?13:9}"/><path pathLength="100" d="M8 78 Q45 40 92 18" stroke="#fff" stroke-width="3"/></svg>`,'slash',t.x,t.y,`--s:${sz}px;--r:${r}deg;animation-delay:${i*70}ms`,600)}
+    const n=v.type==='heavy'?1:(Math.random()<.5?1:2);
+    // 도트 칼베기(CC0 tbbk, make-vfx.cjs가 속성색으로 칠함). 도트라 회전 대신 뒤집기만, 크기는 정수 배율
+    const sf=FXFILE[v.o.el]||'spectro',z=v.type==='heavy'||v.o.big?4:3,fx=Math.random()<.5?-1:1;
+    for(let i=0;i<n;i++)fxEl('','pslash',t.x,t.y,`background-image:url('assets/fx/slash_${sf}.png');--z:${z};--fx:${i?-fx:fx};--fy:${i?-1:1};animation-delay:${i*70}ms`,420+i*70);
     if(v.type==='heavy')fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*1.3}px`,600);
-    sparks(t.x,t.y,c,v.o.big?14:9,S0*.55);
+    sparks(t.x,t.y,c,v.o.big?7:4,S0*.55);
   }else if(v.type==='shot'){
     const f=centerOf(v.o.from);
     if(f){const dx=t.x-f.x,dy=t.y-f.y;fxEl('','tracer',f.x+f.w*.3,f.y,`--c:${c};width:${Math.hypot(dx,dy)-f.w*.3}px;--a:${Math.atan2(dy,dx)}rad`,350)}
-    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.6}px`,450);sparks(t.x,t.y,c,7,S0*.4);
+    if(!FXFILE[v.o.el])fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.6}px`,450);sparks(t.x,t.y,c,4,S0*.4);
   }else if(v.type==='orb'){
-    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0}px`,600);fxEl('✦','star',t.x,t.y,`--c:${c}`,600);sparks(t.x,t.y,c,10,S0*.5);
+    if(!FXFILE[v.o.el])fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0}px`,600);sparks(t.x,t.y,c,5,S0*.5);
   }else if(v.type==='burst'){
-    fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.7}px`,500);sparks(t.x,t.y,c,6,S0*.35);
+    if(!FXFILE[v.o.el])fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*.7}px`,500);sparks(t.x,t.y,c,4,S0*.35);
   }else if(v.type==='claw'){
-    fxEl(`<svg viewBox="0 0 100 100">${[0,1,2].map(i=>`<path pathLength="100" d="M${22+i*20} 12 L${8+i*20} 88" stroke="${c}" stroke-width="7"/><path pathLength="100" d="M${22+i*20} 12 L${8+i*20} 88" stroke="#fff" stroke-width="2"/>`).join('')}</svg>`,'slash claw',t.x,t.y,`--s:${S0*(v.o.big?1.1:.85)}px;--r:${Math.random()*30-15}deg`,600);
-    sparks(t.x,t.y,c,v.o.big?10:6,S0*.4);
+    // 적 공격도 도트 칼베기 두 겹(적 속성색, 물리는 회절 시트). 예전 SVG 할퀴기 대체
+    const sf=FXFILE[v.o.el]||'spectro',z=v.o.big?4:3,fx=Math.random()<.5?-1:1;
+    for(let i=0;i<2;i++)fxEl('','pslash',t.x,t.y,`background-image:url('assets/fx/slash_${sf}.png');--z:${z};--fx:${i?-fx:fx};--fy:${i?-1:1};animation-delay:${i*60}ms`,420+i*60);
+    sparks(t.x,t.y,c,v.o.big?5:3,S0*.4);
   }else if(v.type==='shield'){
     fxEl(`<svg viewBox="0 0 100 100"><polygon points="50,4 92,27 92,73 50,96 8,73 8,27" fill="rgba(111,182,255,.18)" stroke="#8cc8ff" stroke-width="3"/></svg>`,'shield',t.x,t.y,`--s:${t.w*1.25}px`,650);
   }else if(v.type==='circle'){
     fxEl(`<svg viewBox="0 0 100 40"><ellipse cx="50" cy="20" rx="46" ry="15" fill="none" stroke="${c}" stroke-width="2.5" stroke-dasharray="6 5"/><ellipse cx="50" cy="20" rx="32" ry="10" fill="none" stroke="${c}" stroke-width="1.5"/></svg>`,'magic',t.x,t.b-4,`--s:${t.w*1.4}px`,800);
   }else if(v.type==='death'){
     fxEl('','ring',t.x,t.y,`--c:${c};--s:${S0*1.8}px`,700);fxEl('','ring',t.x,t.y,`--c:#fff;--s:${S0*1.1}px`,500);
-    for(let i=0;i<18;i++){const a=-Math.PI/2+(Math.random()-.5)*2.4,r=S0*(.5+Math.random()*.9);fxEl('','spark',t.x+(Math.random()-.5)*t.w*.5,t.y,`--c:${i%3?c:'#fff'};--dx:${Math.cos(a)*r*.6}px;--dy:${Math.sin(a)*r}px`,700)}
+    for(let i=0;i<10;i++){const a=-Math.PI/2+(Math.random()-.5)*2.4,r=S0*(.5+Math.random()*.9);fxEl('','spark',t.x+(Math.random()-.5)*t.w*.5,t.y,`--c:${i%3?c:'#fff'};--dx:${Math.cos(a)*r*.6}px;--dy:${Math.sin(a)*r}px`,700)}
   }else if(v.type==='heal'){
     for(let i=0;i<5;i++)fxEl('+','plus',t.x+(Math.random()-.5)*t.w*.7,t.y+(Math.random()-.2)*t.h*.4,`animation-delay:${i*80}ms`,1000);
   }

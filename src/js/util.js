@@ -74,7 +74,14 @@ function ytPlay(k){
 function setYt(){const k=bgmScene();const v=prompt(`「${k}」 장면에 틀 유튜브 링크(또는 영상 ID). 비우면 기본 곡으로 돌아가요.`,ytId(k));if(v==null)return;
   const m=v.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)||v.match(/^([\w-]{11})$/);OPT.yt=OPT.yt||{};if(m)OPT.yt[k]=m[1];else delete OPT.yt[k];saveOpt();BGM.key=null;playBgm()}
 addEventListener('pointerdown',()=>{if(BGM.el&&BGM.el.paused)BGM.el.play().catch(()=>{})});
-function sfx(k,delay){if(window.FAST||!OPT.sfx)return;const go=()=>{try{SFX[k]()}catch(e){}};delay?setTimeout(go,delay/OPT.speed):go()}
+/* 녹음 효과음(assets/sfx, CC0 출처는 assets/sfx/CREDITS.md). 불러오면 합성음 대신 재생하고, LAYER는 합성음 위에 겹친다 */
+const SMP={hit:['blade_01','blade_02','blade_03','knifeSlice','knifeSlice2'],crit:['blade_02'],critx:['blade_03'],hurt:['chop'],block:['metal_01'],death:['creature_die_01'],coin:['item_coins_01'],boom:['spell_fire_01'],card:['cloth1']};
+const LAYER={crit:1,critx:1,boom:1},SBUF={};
+addEventListener('pointerdown',()=>Object.values(SMP).flat().forEach(n=>{if(n in SBUF)return;SBUF[n]=null;
+  fetch(`assets/sfx/${n}.ogg`).then(r=>r.arrayBuffer()).then(b=>ac().decodeAudioData(b)).then(b=>SBUF[n]=b).catch(()=>{})}),{once:true});
+function smp(k){const l=SMP[k],b=l&&SBUF[l[Math.random()*l.length|0]];if(!b)return false;
+  const a=ac(),s=a.createBufferSource(),v=a.createGain();s.buffer=b;v.gain.value=.8*VOLV();s.connect(v).connect(a.destination);s.start();return true}
+function sfx(k,delay){if(window.FAST||!OPT.sfx)return;const go=()=>{try{if(!smp(k)||LAYER[k])SFX[k]()}catch(e){}};delay?setTimeout(go,delay/OPT.speed):go()}
 addEventListener('pointerdown',e=>{if(e.target.closest&&e.target.closest('button'))sfx('click')});
 /* 히트스톱: 맞는 순간 무대 애니메이션을 잠깐 멈춤 */
 function hitStop(ms){if(window.FAST)return;const st=document.getElementById('stage');if(!st)return;st.classList.add('stop');clearTimeout(hitStop.t);hitStop.t=setTimeout(()=>st.classList.remove('stop'),ms)}
