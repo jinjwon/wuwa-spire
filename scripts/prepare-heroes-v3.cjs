@@ -60,7 +60,27 @@ function outline(d,w,h){
   return d;
 }
 {const d=Buffer.alloc(40*40*4,255);taper(d,40,40,6);assert(!d[(20*40+39)*4+3]&&d[(20*40+20)*4+3]&&d[(39*40+20)*4+3],'taper self-check')}
-async function frame({data:buf,cx},scale){
+// 다듬기(캐릭터별 선택): 원본의 흰 테두리가 축소 뒤 윤곽에 흰 점으로 남거나, 옷 무늬가 한 점 잡티가 되는 경우
+// rim: 바깥과 닿은 밝은 픽셀을 윤곽 남색으로(끊긴 흰 점 윤곽 → 이어진 어두운 윤곽)
+// despeck: 머리(위 28%) 아래에서 상하좌우와 모두 다른 밝은 외톨이 점을 이웃 평균색으로(눈 하이라이트는 건드리지 않음)
+const POLISH={sk:{rim:true,despeck:true}};
+const lum=(d,q)=>d[q]*.3+d[q+1]*.59+d[q+2]*.11,near=(d,a,b)=>Math.abs(d[a]-d[b])+Math.abs(d[a+1]-d[b+1])+Math.abs(d[a+2]-d[b+2])<70;
+function polish(d,w,h,o){
+  if(o.despeck){const top=Math.round(h*.28),set=[];
+    for(let y=Math.max(1,top);y<h-1;y++)for(let x=1;x<w-1;x++){const q=(y*w+x)*4;if(!d[q+3])continue;
+      const n=[q-4,q+4,q-w*4,q+w*4];if(n.some(k=>!d[k+3]))continue;
+      if(lum(d,q)<150||n.some(k=>near(d,q,k)))continue;
+      if(n.every(k=>lum(d,k)<lum(d,q)-40))set.push([q,n.map(k=>[d[k],d[k+1],d[k+2]])])}
+    for(const [q,c] of set)for(let i=0;i<3;i++)d[q+i]=Math.round(c.reduce((a,v)=>a+v[i],0)/4)}
+  if(o.rim){const set=[];
+    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=y*w+x,q=p*4;if(!d[q+3]||lum(d,q)<150)continue;
+      if((x===0||!d[q-4+3])||(x===w-1||!d[q+4+3])||(y===0||!d[q-w*4+3])||(y===h-1||!d[q+w*4+3]))set.push(q)}
+    for(const q of set){d[q]=18;d[q+1]=20;d[q+2]=38}}
+  return d;
+}
+{const d=Buffer.alloc(9*9*4);for(let i=0;i<81;i++){d[i*4]=d[i*4+1]=d[i*4+2]=40;d[i*4+3]=255}const c=(4*9+4)*4;d[c]=d[c+1]=d[c+2]=250;
+  polish(d,9,9,{despeck:true});assert(d[c]<100,'despeck self-check')}
+async function frame({data:buf,cx},scale,id){
   const m=await sharp(buf).metadata();let w=Math.round(m.width*scale),h=Math.round(m.height*scale);
   // 블록 최빈색 축소 → 칸 중심을 프레임 중앙에 고정(몸이 흔들리지 않게), 밖은 자름 → 잘린 단면 깎기 → 잡티 제거 → 무디더 감색
   let img=await modeResize(buf,w,h,{lines:true});
@@ -68,6 +88,7 @@ async function frame({data:buf,cx},scale){
   if(X||Y||W<w){const r=await sharp(img.data,{raw:img.info}).extract({left:X,top:Y,width:W,height:H}).raw().toBuffer({resolveWithObject:true});w=W;h=H;img={data:r.data,info:r.info}}
   taper(img.data,w,h,Math.round(BODY*0.11));
   clean(img.data,w,h,110,6*(BODY/104)**2);
+  if(POLISH[id])polish(img.data,w,h,POLISH[id]);
   outline(img.data,w,h);
   const png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:OLD_MODE?32:64,dither:0}).toBuffer();
   return sharp({create:{width:CELL,height:CELL,channels:4,background:'#00000000'}}).composite([{input:png,left:Math.max(0,left),top:Math.max(0,top)}]).png({palette:true,colours:48,dither:0}).toBuffer();
@@ -78,7 +99,7 @@ async function hero(id,rects){
   const full=path.join(src,`hero_${id}_full.png`),FULL=!rects&&require('node:fs').existsSync(full),file=FULL?full:path.join(src,`hero_${id}.png`);
   const cells=[];for(let i=0;i<(FULL?16:8);i++)cells.push((await (rects?rectOf(...rects[i]):cellOf(file,i%4,i>>2,4,FULL?4:2))));
   const idleH=(await sharp(cells[0].data).metadata()).height,scale=(id==='aemMecha'?MECHA_BODY:BODY)/idleH; // 대기 자세 키 기준으로 전 프레임 동일 배율
-  const p=await Promise.all(cells.map(b=>frame(b,scale)));
+  const p=await Promise.all(cells.map(b=>frame(b,scale,id)));
   if(FULL){
     // 16칸: 대기 숨쉬기 2장(8fps, 1초). 동작은 8장 스트립 → 게임이 16fps로 재생(art.js playSprite). 공격 베기는 4번째 칸(약 190ms)
     const S=a=>a.map(i=>p[i]);await fs.writeFile(path.join(out,`${id}.png`),p[0]);await strip(`${id}_idle.png`,S([0,0,0,0,1,1,1,1]));
