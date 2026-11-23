@@ -14,30 +14,21 @@
 이 게임에 맞춘 화면(도트는 정수 배율 규칙을 지킨다):
 | 층 | 내용 | 만드는 법 |
 |---|---|---|
-| 1 배경 | 설산·와이어프레임·빛줄기·가운데 바위 언덕. 인물 없음 | `title_bg` 프롬프트 → 640×360 격자(`prepare-battle-bg.cjs`와 같은 처리) |
-| 2 떠 있는 바위 | 큰 바위 덩어리와 잔돌, 투명 배경. 천천히 위아래로 떠다니게 | `title_rocks` 프롬프트 |
-| 3 캐릭터 | 왼쪽 비탈: 에이메스 서 있음(뒤돌아봄). 오른쪽 비탈: 방랑자 앉음. 방랑자는 타이틀의 "방랑자 외형" 설정(남/여)을 따른다 | `title_pose_*` 프롬프트, 4칸 숨쉬기·바람 반복 |
+| 1 배경 | 설산·와이어프레임 능선·빛줄기와 바위·뒤집힌 격자·거울 호수·아래 눈 둑. 인물 없음 | `title_bg`(플로우) → `node scripts/prepare-battle-bg.cjs`가 `assets/maps/title-bg.png`(640×360)로 만든다 |
+| 2 떠 있는 바위 | (선택) 지금 배경 빛줄기에 바위가 이미 있다. 움직이게 하고 싶을 때만 만든다 | `title_rocks` 프롬프트 |
+| 3 캐릭터 | 아래 눈 둑 왼쪽: 에이메스 서 있음(뒤돌아봄). 오른쪽: 방랑자 앉음. 방랑자는 타이틀의 "방랑자 외형" 설정(남/여)을 따른다 | `title_pose_*` 프롬프트, 4칸 숨쉬기·바람 반복 |
 | 4 UI | 왼쪽 위 "첨탑의 메아리" 로고, 오른쪽 위 버전, 오른쪽 아이콘 줄(전체 화면·기록·도움말·외형·종료), 아래 가운데 이어하기/새 게임 상자와 "첨탑에 오르기" 시작 띠. 지금의 원형 파티 얼굴 줄은 뺀다 | 코드(그림 없음) |
 
 캐릭터 고르기 이유: 에이메스는 라하이로이(3.0 지역) 캐릭터이고 방랑자는 주인공이다(설정 기준표). 다른 캐릭터로 바꾸려면 아래 프롬프트 틀에서 외형 문장과 첨부만 바꾼다. 외형 문장은 [HERO_PROMPTS.md](HERO_PROMPTS.md)에 확정된 것만 쓴다(남성 방랑자는 확정 문장이 없어 첨부로만 맞춘다).
 
 ## 배경
 
-### title_bg.png · 메인 타이틀 배경
-- 첨부: 없음(공식 그림·로고는 첨부하지 않는다).
+### title_bg.png · 메인 타이틀 배경 (플로우)
+- 도구: 구글 플로우(나노바나나), 16:9로 바로 받는다. 첨부 없음. 짧게 쓴다: 긴 배치 지시(퍼센트 좌표·여러 빈자리)는 플로우가 무시했다(2026-11-23 결과).
+- 지금 쓰는 그림(2026-11-23, 사용자 선택): 양옆 설산과 와이어프레임 능선, 왼쪽 위에서 떨어지는 청록 빛줄기와 바위, 위쪽 뒤집힌 격자, 가운데 거울 호수, 아래 눈 둑. 바위 언덕은 없어서 캐릭터는 아래 눈 둑에 세운다.
+- 오른쪽 아래 모서리에 플로우 워터마크(별 모양)가 작게 있다. 지우지 않는다.
 ```
-OBJECTIVE: Title-screen background for a fan-made pixel-art deckbuilder: a vast, quiet frozen valley at dusk where two travelers will rest on a dark rock hill. Characters are added later as separate sprites, so draw none.
-COMPOSITION (must):
-- A large dark grey-black rocky hill fills the lower center, from about 25% to 80% of the width, rising to a rounded peak near the center at about 45% of the height. It has two flat-topped ledges for characters: a LEFT ledge at about 27% of the width and 62% of the height, and a RIGHT ledge at about 70% of the width and 66% of the height; keep both ledges plain and empty.
-- Snow-covered mountain slopes rise on the left and right edges; thin glowing cyan wireframe mesh lines wrap over their slopes like a 3D scan grid.
-- Behind the hill, a wide icy plain with frozen lakes and drifting snow streaks recedes to a low horizon.
-- A broad diagonal band of pale teal-green light crosses the sky from the upper left toward the upper right, with streaks of small rock specks along it.
-- Leave the sky area just above the hill peak EMPTY: a separate floating rock layer is placed there later.
-LAYOUT: keep the top-left 25% x 20% corner and the bottom-center strip (35% to 65% of the width, bottom 18%) dark and low in detail for the logo and the start button; keep the right edge strip (last 10% of the width) simple for a column of icons.
-PALETTE: slate blue and steel grey sky, cold white snow, near-black rock with blue-grey highlights, cyan wireframe lines, one teal-green light band. No warm colors.
-STYLE & CONSTRAINTS: Authentic 16-bit pixel art, as if drawn at 640x360 pixels and scaled up by whole numbers: uniform pixel grid, crisp clusters, at most 64 colors, no anti-aliasing, no dithering noise, no painterly brush texture, no blur, no smooth gradients; light is drawn as flat stepped bands of solid color. No characters, no creatures, no logo, no text, no letters, no UI, no frame, no watermark.
-OUTPUT: Landscape 1536x1024; keep the top 8% and bottom 8% free of important details because the image is cropped to 16:9.
-VALIDATION: two empty ledges on the rock hill at the stated places; wireframe mesh on both mountain slopes; diagonal teal light band; empty sky above the peak; logo corner and start-button strip are calm; no text or characters anywhere; uniform pixel grid. CLEAN LOCK (prevents noisy, muddy output): every art pixel is a clearly visible solid square of equal size; one clear subject and at most two supporting elements; large flat color areas with only 2-3 shade steps per material; no texture noise, no speckles, no scattered sparkles or glitter particles (a few single-pixel stars in a night sky are fine), no translucent overlapping layers, no ghosted, doubled or giant background faces, no afterimages, no lens flare, no bloom or glow halos; light and energy are a few bold solid pixel shapes with hard edges; background simplified into big chunky blocks, darker and lower in contrast than the subject; clear readable silhouette; use fewer colors than the limit allows.
+16-bit pixel art landscape, wide 16:9. A frozen mirror lake in a snowy mountain valley at night. Snowy peaks on the left and right edges with thin cyan wireframe lines along their ridges. One wide pale teal light beam falls diagonally from the upper left to the center of the horizon, with a few dark rocks floating along it. An upside-down cyan wireframe grid hangs at the top center. The lake mirrors everything. A flat snow bank runs across the bottom. Colors: navy, ice blue, white, cyan, one teal-green. Big flat color areas, hard pixel edges, no gradients, no glow. Calm, dark center. Nothing in the corners. No people, no text, no logo.
 ```
 
 ### title_rocks.png · 떠 있는 바위 층
@@ -89,7 +80,7 @@ VALIDATION: 4 cells show one pose with only tiny hair/cloth/breath changes; iden
 ```
 
 ## 검수 체크리스트
-- [ ] 배경: 바위 언덕의 두 턱이 비어 있고, 캐릭터를 얹었을 때 발(앉은 자리)이 턱에 맞는다
+- [ ] 배경: 아래 눈 둑이 평평해서 캐릭터 발(앉은 자리)을 얹을 수 있다
 - [ ] 배경: 로고 자리(왼쪽 위)와 시작 띠 자리(아래 가운데)가 어둡고 단순하다
 - [ ] 바위 층: 투명 배경, 테두리 번짐 없음, 배경과 색이 맞는다
 - [ ] 포즈: 4칸이 같은 자세이고 머리카락·옷자락·숨만 조금 움직인다
