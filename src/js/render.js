@@ -324,12 +324,13 @@ function intentHTML(e){
   return parts.join('');
 }
 function intentTitle(e){const m=e.move;const t=[];if(m.d)t.push(`공격 ${enemyDmg(e,m)}${m.h>1?`×${m.h}`:''}`);if(m.b)t.push(`방어 ${m.b}`);if(m.s)t.push(`힘 +${m.s}`);if(m.w)t.push(`약화 ${m.w}`);if(m.add)t.push(`덱에 「${CD[m.add[0]].n}」 ${m.add[1]}장`);return `${m.n}: ${t.join(', ')}`}
-// 타이틀 시간대: 새벽 5~8시, 낮 8~17시, 노을 17~20시, 밤 20~5시 (scripts/title-dayparts.cjs)
+// 타이틀 시간대: 새벽 5~8시, 낮 8~17시, 노을 17~20시, 밤 20~5시. 하루 주기 영상(title-cycle.mp4, 7초 반복)에서 그 시간대가 시작하는 초 (scripts/title-dayparts.cjs)
+const TITLE_T={day:1,dusk:2.8,night:5.7,dawn:6.6};
 function titlePart(h=new Date().getHours()){return h>=5&&h<8?'dawn':h>=8&&h<17?'day':h>=17&&h<20?'dusk':'night'}
 function battleBackground(region=regionArt()){
   // 'title'은 타이틀·공명자 선택 공용 배경(assets/maps/title-bg.png)
-  // 'title-video'는 메인 타이틀의 움직이는 배경. 지금 시각에 맞는 시간대 영상(assets/maps/title-<day|dusk|night|dawn>.mp4, 소리 없는 핑퐁 반복). 못 읽으면 그림으로 바꾼다
-  if(region==='title-video')return `<div class="battle-art"><video src="assets/maps/title-${titlePart()}.mp4" autoplay muted loop playsinline disablepictureinpicture onerror="this.outerHTML='<img src=&quot;assets/maps/title-bg.png&quot; alt=&quot;&quot; draggable=&quot;false&quot;>'"></video></div>`;
+  // 'title-video'는 메인 타이틀의 움직이는 배경: 640×360 도트로 다시 그린 하루 주기 영상을 지금 시간대 지점부터 끊김 없이 반복. 못 읽으면 그림으로 바꾼다
+  if(region==='title-video')return `<div class="battle-art"><video src="assets/maps/title-cycle.mp4" onloadedmetadata="this.currentTime=${TITLE_T[titlePart()]}" autoplay muted loop playsinline disablepictureinpicture onerror="this.outerHTML='<img src=&quot;assets/maps/title-bg.png&quot; alt=&quot;&quot; draggable=&quot;false&quot;>'"></video></div>`;
   return `<div class="battle-art"><img src="assets/maps/${region==='title'?'title-bg':region+'-battle'}.png" alt="" draggable="false"></div>`;
 }
 function enemyPos(n,i,boss,slot){

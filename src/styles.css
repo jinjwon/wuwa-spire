@@ -807,8 +807,7 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .cutin .img{background-size:640px 640px;background-position:center bottom;image-rendering:pixelated}
 /* 배경은 640×360 도트 격자. 화면을 덮는 가장 작은 정수 배율(--bk)로 키워 1080p 3배, 4K 6배에서 픽셀이 고르게 */
 .battle-art img,.battle-art video{position:absolute;left:50%;bottom:0;width:calc(640px*var(--bk,2));height:calc(360px*var(--bk,2));max-width:none;object-fit:fill;transform:translateX(-50%);image-rendering:pixelated}
-/* 타이틀 영상은 도트 격자가 아닌 부드러운 1280×720 영상이다. 도트 배경처럼 640×360×정수 배율로 키우면 화면보다 크게 확대되고, 최근접 확대는 픽셀이 들쭉날쭉 복제돼 깨진다 → 화면을 채우는 크기로 일반 확대 */
-.battle-art video{left:0;width:100%;height:100%;object-fit:cover;object-position:center bottom;transform:none;image-rendering:auto}
+/* 타이틀 영상도 640×360 도트 격자(1280×720에 2배로 저장)라 배경 그림과 같은 정수 배율 최근접 확대 */
 /* ===== 공명자 선택 (2026-11-12) — 명조 공명자 목록 화면 구성. 토큰만 사용(DESIGN.md) ===== */
 .selscr{position:relative;flex:1;min-height:calc(100vh - 24px);overflow:hidden;isolation:isolate;display:flex;flex-direction:column;gap:12px;padding:18px 26px;text-align:left}
 .selscr::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(11,12,15,.92) 0,rgba(11,12,15,.55) 45%,rgba(11,12,15,.9) 100%)}
