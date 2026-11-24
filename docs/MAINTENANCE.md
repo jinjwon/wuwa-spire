@@ -46,7 +46,7 @@ node scripts/selfcheck.cjs mp_guard   # 하나만
 
 ## 브랜치
 
-오래 쓰는 브랜치 3개만 둔다. 작업 종류에 맞는 브랜치에서 일한다.
+오래 쓰는 브랜치 3개만 둔다. 업무별로 나눈다: 이미지 수정은 `art`, 개발 수정은 `dev`, 통합 내용은 `main`. 작업 종류에 맞는 브랜치에서 일하고 그 브랜치에 커밋·push한다.
 
 | 브랜치 | 용도 | 주로 고치는 곳 |
 |---|---|---|
@@ -58,10 +58,10 @@ node scripts/selfcheck.cjs mp_guard   # 하나만
 
 1. 시작할 때 `main`의 최신 내용을 가져온다: `npm run branches -- sync` (= art·dev 각각 `git merge main` 후 push).
 2. 작업 단위가 끝나면 자가 점검을 돌리고 `docs/STATUS.md`를 고친 뒤 커밋한다.
-3. 사용자 확인을 받고 `main`에 병합하고 push한다: `npm run branches -- ship`. `art`와 `dev`는 지우지 않고 계속 쓴다(GitHub 규칙으로 세 브랜치는 강제 push·삭제 금지).
+3. `art`·`dev`를 `main`에 합치는 일은 통합 업무다. 사용자가 통합을 요청할 때만 한다: `npm run branches -- ship`. 그 밖의 작업 보고에서는 병합 여부를 말하지 않는다. `art`와 `dev`는 지우지 않고 계속 쓴다(GitHub 규칙으로 세 브랜치는 강제 push·삭제 금지).
 4. 새 공명자처럼 그림과 코드가 함께 필요한 일은 `art`에서 그림을 끝내 `main`에 합친 다음, `dev`가 `main`을 가져와 연결한다.
 5. `art`와 `dev`를 서로 직접 병합하지 않는다. 항상 `main`을 거친다.
-6. 오래 합치지 않으면 충돌이 커진다. 작업 단위마다 합친다.
+6. 오래 합치지 않으면 충돌이 커진다. 통합 요청이 오면 그때 한꺼번에 합친다.
 7. 배포는 `main`에서 `npm run branches -- release 0.12.0`(버전 올림 → 커밋 → `v버전` 태그 push). 태그가 올라가면 GitHub Actions가 설치 파일을 만들고, [scripts/release-notes.sh](../scripts/release-notes.sh)가 커밋 말머리(`feat:`·`fix:`·`art:`·`docs:`·`chore:`)로 묶은 변경 내역을 Releases 본문에 넣는다.
 8. 잠깐 쓰는 브랜치(예: `chore/…`)는 main에 합친 뒤 바로 지운다. `npm run branches`의 '정리 후보'에 남은 게 없어야 한다.
 
