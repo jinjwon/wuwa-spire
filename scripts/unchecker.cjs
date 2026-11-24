@@ -1,8 +1,10 @@
 // 생성 그림에 박힌 체크무늬(흰·연회색 칸) 또는 단색 초록(#00FF00) 배경을 투명으로 바꾼다. 테두리에서 시작해, 채도가 낮고 밝은 픽셀만 따라 번진다(윤곽선에서 멈춤).
-// 사용: node scripts/unchecker.cjs <입력.png> <출력.png> [strict]
+// 사용: node scripts/unchecker.cjs <입력.png> <출력.png> [strict] [box:x0,y0,x1,y1 ...]
+// box: 이펙트에 둘러싸여 바깥 번짐이 닿지 않은 체크무늬 조각용. 그 상자 안에서만 '채도 낮고 밝은'(차이 ≤45, ≥150) 픽셀을 투명 쪽에서 번져 지운다.
+//   윤곽선으로 닫힌 흰 부분(나비 몸통 등)은 투명과 닿지 않아 남는다. 예: 파수인 공격 칸 나비 주변(2026-11-24)
 // strict: 완전 무채색(차이 ≤4)·아주 밝은(≥228) 칸만 배경으로 본다. 흰 장갑·은색 판이 배경과 이어진 그림(메카 등)에서 몸이 지워지지 않게 한다
 const sharp=require('sharp'),assert=require('node:assert/strict');
-const [,,src,dst,mode]=process.argv,STRICT=mode==='strict';assert(src&&dst,'사용: node scripts/unchecker.cjs <입력.png> <출력.png>');
+const [,,src,dst,...opt]=process.argv,STRICT=opt.includes('strict'),BOXES=opt.filter(o=>o.startsWith('box:')).map(o=>o.slice(4).split(',').map(Number));assert(src&&dst,'사용: node scripts/unchecker.cjs <입력.png> <출력.png>');
 (async()=>{
   const {data:d,info:{width:W,height:H}}=await sharp(src).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   // 초록 배경(#00FF00, 프롬프트의 투명 대안)이면 체크무늬 대신 초록을 지운다: 모서리 4곳이 모두 초록이면 켜짐
@@ -23,6 +25,10 @@ const [,,src,dst,mode]=process.argv,STRICT=mode==='strict';assert(src&&dst,'사�
     while(q.length){const p=q.pop();comp.push(p);const v=d[p*4];if(v>=242)hi++;else lo++;const x=p%W,y=(p-x)/W;
       for(const o of [x>0?p-1:-1,x<W-1?p+1:-1,y>0?p-W:-1,y<H-1?p+W:-1])if(o>=0&&!seen[o]&&bg(o*4)){seen[o]=1;q.push(o)}}
     if(comp.length>=60&&hi>comp.length*.15&&lo>comp.length*.15)for(const p of comp){d[p*4+3]=0;n++}}
+  for(const [x0,y0,x1,y1] of BOXES){const soft=i=>{const mn=Math.min(d[i],d[i+1],d[i+2]),mx=Math.max(d[i],d[i+1],d[i+2]);return d[i+3]>0&&mn>=150&&mx-mn<=45},q=[];
+    const inb=(x,y)=>x>=x0&&x<=x1&&y>=y0&&y<=y1,tr=p=>!d[p*4+3];
+    for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const p=y*W+x;if(soft(p*4)&&[p-1,p+1,p-W,p+W].some(tr))q.push(p)}
+    while(q.length){const p=q.pop();if(!soft(p*4))continue;d[p*4+3]=0;n++;const x=p%W,y=(p-x)/W;for(const [xx,yy] of [[x-1,y],[x+1,y],[x,y-1],[x,y+1]])if(inb(xx,yy))q.push(yy*W+xx)}}
   // 테두리 벗기기: 체크무늬와 윤곽선이 섞인 밝은 회색 픽셀이 몸 둘레에 남는다(메카 원본은 가장자리의 44%).
   // 투명과 닿은 밝은 무채색 픽셀을 한 겹씩 지우고, 원본의 어두운 윤곽선에 닿으면 멈춘다(최대 PEEL겹)
   const PEEL=6,light=i=>{const mn=Math.min(d[i],d[i+1],d[i+2]),mx=Math.max(d[i],d[i+1],d[i+2]);return mn>=165&&mx-mn<=22};
