@@ -35,14 +35,17 @@ async function rectOf(file,x0,y0,x1,y1,margin=0){
   const {data,info}=await sharp(file).extract({left:L,top:T,width:R-L,height:B-T}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
   clean(data,info.width,info.height,140,400,45000);
   if(margin)keepCore(data,info.width,info.height,x0*m.width-L,y0*m.height-T,x1*m.width-L,y1*m.height-T);
+  const W=info.width,H=info.height,a=(x,y)=>data[(y*W+x)*4+3]>0,any=(n,f)=>{for(let i=0;i<n;i++)if(f(i))return true;return false};
+  const cut={l:any(H,y=>a(0,y)),r:any(H,y=>a(W-1,y)),t:any(W,x=>a(x,0))}; // 읽기 영역 경계에 닿은 변 = 잘린 변
   const r=await sharp(await sharp(data,{raw:info}).png().toBuffer()).trim({threshold:1}).toBuffer({resolveWithObject:true});
-  return {data:r.data,cx:((x0+x1)/2*m.width-L)+(r.info.trimOffsetLeft||0)};
+  return {data:r.data,cx:((x0+x1)/2*m.width-L)+(r.info.trimOffsetLeft||0),cut};
 }
 const {modeResize}=require('./lib/pixel.cjs');
 // 칸 경계에서 일자로 잘린 이펙트 단면을 물결 모양으로 깎는다. 8px 이상 연속으로 경계에 닿은 구간만(칼끝 한 점은 그대로). 아래쪽(발)은 제외
-function taper(d,w,h,B){
-  const sides=[[h,i=>[0,i],(i,k)=>[k,i]],[h,i=>[w-1,i],(i,k)=>[w-1-k,i]],[w,i=>[i,0],(i,k)=>[i,k]]];
-  for(const [n,at,inward] of sides){
+// cut: 실제로 잘린 변만({l,r,t}). 다듬은(trim) 그림은 늘 상자 가장자리에 닿으므로 변을 가리지 않으면 멀쩡한 칼날·이펙트까지 깎는다(2026-11-24 확인: 12명 전원 프레임당 수백 px)
+function taper(d,w,h,B,cut){
+  const sides=[[cut.l,h,i=>[0,i],(i,k)=>[k,i]],[cut.r,h,i=>[w-1,i],(i,k)=>[w-1-k,i]],[cut.t,w,i=>[i,0],(i,k)=>[i,k]]];
+  for(const [on0,n,at,inward] of sides){if(!on0)continue;
     const on=i=>{const [x,y]=at(i);return d[(y*w+x)*4+3]>0};
     for(let i=0;i<n;){if(!on(i)){i++;continue}let j=i;while(j<n&&on(j))j++;
       if(j-i>=8){const m=Math.round(B/2);for(let t=Math.max(0,i-m);t<Math.min(n,j+m);t++){
@@ -59,7 +62,8 @@ function outline(d,w,h){
   for(const p of add){d[p*4]=18;d[p*4+1]=20;d[p*4+2]=38;d[p*4+3]=255}
   return d;
 }
-{const d=Buffer.alloc(40*40*4,255);taper(d,40,40,6);assert(!d[(20*40+39)*4+3]&&d[(20*40+20)*4+3]&&d[(39*40+20)*4+3],'taper self-check')}
+{const d=Buffer.alloc(40*40*4,255);taper(d,40,40,6,{r:1});assert(!d[(20*40+39)*4+3]&&d[(20*40+0)*4+3]&&d[(20*40+20)*4+3]&&d[(39*40+20)*4+3],'taper self-check')}
+{const d=Buffer.alloc(40*40*4,255);taper(d,40,40,6,{});assert(d.every(v=>v===255),'taper: 잘리지 않은 변은 깎지 않음')}
 // 다듬기(캐릭터별 선택): 원본의 흰 테두리가 축소 뒤 윤곽에 흰 점으로 남거나, 옷 무늬가 한 점 잡티가 되는 경우
 // rim: 바깥과 닿은 밝은 픽셀을 윤곽 남색으로(끊긴 흰 점 윤곽 → 이어진 어두운 윤곽)
 // despeck: 머리(위 28%) 아래에서 상하좌우와 모두 다른 밝은 외톨이 점을 이웃 평균색으로(눈 하이라이트는 건드리지 않음)
@@ -97,13 +101,13 @@ function polish(d,w,h,o){
 {const d=Buffer.alloc(9*9*4);for(let i=0;i<81;i++){d[i*4]=d[i*4+1]=d[i*4+2]=40;d[i*4+3]=255}const c=(4*9+4)*4;d[c]=d[c+1]=d[c+2]=250;
   polish(d,9,9,{despeck:true});assert(d[c]<100,'despeck self-check')}
 {const d=Buffer.from([200,100,100,255]);polish(d,1,1,{tone:[{hue:[300,40],minS:.1,dh:0,sat:1,val:1}]});assert.deepEqual([...d],[200,100,100,255],'tone 항등 self-check')}
-async function frame({data:buf,cx},scale,id){
+async function frame({data:buf,cx,cut={}},scale,id){
   const m=await sharp(buf).metadata();let w=Math.round(m.width*scale),h=Math.round(m.height*scale);
   // 블록 최빈색 축소 → 칸 중심을 프레임 중앙에 고정(몸이 흔들리지 않게), 밖은 자름 → 잘린 단면 깎기 → 잡티 제거 → 무디더 감색
-  let img=await modeResize(buf,w,h,{lines:true});
+  let img=await modeResize(buf,w,h,{lines:true});const w0=w;
   const left=Math.round(CELL/2-cx*scale),top=FOOT-h,X=Math.max(0,-left),Y=Math.max(0,-top),W=Math.min(w,CELL-left)-X,H=h-Y;
   if(X||Y||W<w){const r=await sharp(img.data,{raw:img.info}).extract({left:X,top:Y,width:W,height:H}).raw().toBuffer({resolveWithObject:true});w=W;h=H;img={data:r.data,info:r.info}}
-  taper(img.data,w,h,Math.round(BODY*0.11));
+  taper(img.data,w,h,Math.round(BODY*0.11),{l:cut.l||X>0,r:cut.r||X+W<w0,t:cut.t||Y>0}); // 원본에서 잘렸거나 프레임에 맞추느라 잘린 변
   clean(img.data,w,h,110,6*(BODY/104)**2);
   if(POLISH[id])polish(img.data,w,h,POLISH[id]);
   outline(img.data,w,h);
