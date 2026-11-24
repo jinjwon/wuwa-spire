@@ -49,12 +49,13 @@ VALIDATION: only rocks on a transparent background; colors match Attachment 1; h
 - 도구: 구글 플로우(Veo) 이미지→영상. 시작 프레임과 끝 프레임에 **같은 타이틀 배경 그림**을 넣으면 처음과 끝이 이어져 끊김 없이 반복된다. 16:9, 8초.
 - 소리: 프롬프트에서 무음을 요청한다. 그래도 소리가 붙어 나오면 게임에서는 `muted`로 재생하고, 파일에서도 소리 트랙을 뺀다(`ffmpeg -i in.mp4 -an -c:v copy out.mp4`).
 - 주의: 영상 모델은 도트를 뭉개기 쉽다. 결과가 흐리면 움직임 수를 줄여(빛줄기·눈발만) 다시 만든다. 한국에서는 보이는 워터마크가 붙는다(지우지 않는다).
-- 결과: `art/source-v2/title_bg.mp4`(원본, 6.5MB) → `swift scripts/title-video.swift art/source-v2/title_bg.mp4 assets/maps/title-bg.mp4` → 1280×720 소리 없는 핑퐁(앞→뒤) 반복 영상(약 12초, 3.8MB). ffmpeg 없이 macOS AVFoundation만 쓴다. 처음과 끝이 같아서 `loop`해도 튀지 않는다. 게임 연결은 `dev` 일.
+- (교체됨, 2026-11-24 아래 시간대 영상) 예전 결과: `art/source-v2/title_bg.mp4`(원본, 6.5MB) → `swift scripts/title-video.swift art/source-v2/title_bg.mp4 assets/maps/title-bg.mp4` → 1280×720 소리 없는 핑퐁(앞→뒤) 반복 영상(약 12초, 3.8MB). ffmpeg 없이 macOS AVFoundation만 쓴다. 처음과 끝이 같아서 `loop`해도 튀지 않는다. 게임 연결은 `dev` 일.
 
 ### 받은 영상
 | 날짜 | 파일 | 내용 | 메모 |
 |---|---|---|---|
 | 2026-11-24 | `title_bg.mp4` (플로우, 1920×1080, 6초) | 별하늘·초록 빛줄기·떠 있는 바위·청록 와이어 격자 위 바위 언덕. **인물 2명이 박혀 있음**(왼쪽 검은 긴 양갈래 여자 서 있음, 오른쪽 검은 머리 남자 앉음, 누구인지 미확인) | 지금 `title_bg.png`와 다른 장면. 카메라가 조금 움직이고 끝≠처음이라 핑퐁으로 이었다. 사용자 결정으로 그대로 타이틀에 씀 → 포즈 도트(`title_pose_*`)는 이 화면에선 안 얹는다 |
+| 2026-11-24 | `title_daycycle.mp4` (1280×720, 8초, 24fps, 소리 있음) | 같은 두 인물(미확인)이 바위 언덕에 있고 하루가 한 바퀴 돈다: 낮 → 노을 → 밤(오로라) → 새벽. **위쪽 가운데에 공식 로고 글자 「鳴潮」가 박혀 있음** | 사용. `node scripts/title-dayparts.cjs`가 글자를 지우고(고정 픽셀 + 밤 프레임 밝은 글자 픽셀 마스크, 주변 색 보간) 시간대별 4개 영상 `assets/maps/title-<day\|dusk\|night\|dawn>.mp4`로 만든다. 게임은 지금 시각으로 고른다(새벽 5~8, 낮 8~17, 노을 17~20, 밤 20~5). 원본은 로고 때문에 커밋 안 함. 글자 자리는 옅은 빛 번짐처럼 남는다 |
 
 ### title_bg.mp4 · 타이틀 움직이는 배경 (플로우)
 ```
