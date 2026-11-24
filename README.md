@@ -7,6 +7,7 @@
 [![최신 버전](https://img.shields.io/github/v/release/jinjwon/wuwa-spire?label=%EC%B5%9C%EC%8B%A0%20%EB%B2%84%EC%A0%84&color=c9a24a)](../../releases/latest)
 ![Windows](https://img.shields.io/badge/Windows-지원-4a5aa8)
 ![macOS](https://img.shields.io/badge/macOS-지원-4a5aa8)
+[![빌드](https://img.shields.io/github/actions/workflow/status/jinjwon/wuwa-spire/build.yml?label=%EB%B9%8C%EB%93%9C)](../../actions/workflows/build.yml)
 
 <img src="docs/img/title.jpg" width="820" alt="타이틀 화면">
 
@@ -95,6 +96,7 @@
 - **적** — 잔상이 일반·정예로, 명식(레비아탄 · 알레프-원의 창조물)이 보스로 등장
 - **자동 저장** — 지도에 있을 때마다 저장돼서 타이틀 **이어하기**로 계속. 끝난 판은 타이틀 **게임 기록**에서 승률·최고 기록 확인
 - **난이도** — 보통(적 체력·피해 110%) · 어려움(125%/120%) · 악몽(140%/135%)
+- **움직이는 타이틀** — 별하늘과 빛줄기가 흐르는 도트 영상 배경(소리 없이 끊김 없이 반복)
 - **선명한 도트** — 1080p부터 4K까지 캐릭터·배경을 정수 배율로 키워 픽셀이 고르게 보여요(전투 배경 640×360 도트)
 
 <img src="docs/img/map.jpg" width="820" alt="지도 화면">
@@ -115,11 +117,42 @@ npm run dist:win     # 윈도우 빌드
 
 브라우저로 `index.html`을 열어도 플레이할 수 있어요.
 
-**배포**: `package.json`의 `version`을 올리고 같은 번호로 태그를 올리면 GitHub Actions가 Releases에 설치 파일을 올려요.
+**브랜치**: 오래 쓰는 브랜치 3개만 둬요. 작업은 맞는 브랜치에서 하고, 합칠 때는 항상 `main`을 거쳐요(`art` ↔ `dev` 직접 병합 금지).
 
-```bash
-git tag v0.10.0 && git push origin v0.10.0
+| 브랜치 | 용도 |
+|---|---|
+| `main` | 배포되는 기준. 공통 코드·문서·구조 |
+| `art` | 그림·도트·프롬프트·에셋 도구 |
+| `dev` | 기능·게임 규칙·오류 수정 |
+
+```mermaid
+gitGraph
+  commit id: "v0.10.0" tag: "v0.10.0"
+  branch art
+  branch dev
+  checkout art
+  commit id: "art: 타이틀 영상"
+  checkout dev
+  commit id: "feat: 가로 지도"
+  checkout main
+  merge art
+  merge dev
+  commit id: "release" tag: "v0.11.0"
+  checkout art
+  merge main id: "sync art"
+  checkout dev
+  merge main id: "sync dev"
 ```
+
+| 하고 싶은 것 | 명령 |
+|---|---|
+| 세 브랜치 상태 한눈에(앞/뒤, push 안 한 것, 정리 후보) | `npm run branches` |
+| 작업 시작 전: art·dev에 main 가져오기 | `npm run branches -- sync` |
+| 작업 끝: art·dev를 main에 합치고 push | `npm run branches -- ship` |
+| 배포: 버전 올리고 태그 push → 설치 파일·변경 내역 자동 등록 | `npm run branches -- release 0.12.0` |
+| 릴리스 노트 미리보기 | `npm run release-notes -- v0.11.0` |
+
+커밋 제목은 `feat:`(기능) · `fix:`(수정) · `art:`(그림) · `docs:`(문서) · `chore:`(정리)로 시작해요. 릴리스 노트가 이 말머리로 묶여요. `main`·`art`·`dev`는 강제 push와 삭제가 막혀 있어요.
 
 **자가 점검**: `npx electron . --remote-debugging-port=9334` 실행 중 `node scripts/selfcheck.cjs` (VS Code 터미널에서는 앞에 `env -u ELECTRON_RUN_AS_NODE`). `mp_guard`는 7777 포트를 다른 프로그램이 쓰고 있으면 실패해요
 

@@ -60,3 +60,4 @@ PixelLab 프롬프트를 웹 화면 스크린샷에 맞춰 수정: Create from T
 2026-11-24: 에이메스 도트 색을 원작에 맞춤 — 치마 자락을 남색→하늘색 그라데이션으로(`prepare-heroes-v3.cjs`의 `POLISH.aem`). 카멜리아·카르티시아는 의상 색이 미확인이라 공식 이미지를 받은 뒤 고친다.
 2026-11-24 (dev): 타이틀·공명자 선택 화면에 새 타이틀 배경, 타이틀 로고 왼쪽 위·메뉴 아래 가운데. 타격 효과 도트화(적 공격 도트 칼베기, 해방·처치 속성 임팩트, 네모 불꽃, 공격 잔상 복제 제거). 지도를 가로 스크롤로 전환(왼쪽 시작 → 오른쪽 보스, 배경은 구역 전투 배경, 마우스 휠로 가로 이동). 자가 점검 `map_horizontal` 추가.
 2026-11-24: 타이틀 움직이는 배경 영상(플로우, 인물 2명 포함)을 받았다. 사용자 결정으로 그대로 쓴다. `scripts/title-video.swift`로 소리를 빼고 1280×720 핑퐁 반복 영상 `assets/maps/title-bg.mp4`를 만들었다(원본 `art/source-v2/title_bg.mp4`). 영상 속 두 인물이 누구인지는 미확인. 게임 연결은 `dev`에서 했다(`battleBackground('title-video')`, 자가 점검 `title_video`). 공명자 선택 화면은 그대로 그림 배경.
+2026-11-24: README 정리(새 타이틀 스크린샷, 빌드 배지, 브랜치 그림·명령표). 브랜치 도구 `npm run branches`(상태·sync·ship·release)와 릴리스 노트 자동화(`release-notes.sh`, 태그 push 때 Releases 본문)를 넣었다. GitHub에서 main·art·dev 강제 push·삭제 금지 규칙, 다 합쳐진 `chore/remove-local-paths` 삭제.

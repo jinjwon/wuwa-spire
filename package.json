@@ -10,7 +10,9 @@
     "board": "node scripts/art-board.cjs && open art/board.html",
     "icon": "electron build/make-icon.js",
     "dist:mac": "electron-builder --mac --publish never",
-    "dist:win": "electron-builder --win --publish never"
+    "dist:win": "electron-builder --win --publish never",
+    "branches": "bash scripts/branches.sh",
+    "release-notes": "bash scripts/release-notes.sh"
   },
   "devDependencies": {
     "electron": "^33.2.1",
