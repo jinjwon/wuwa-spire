@@ -40,7 +40,7 @@ async function rectOf(file,x0,y0,x1,y1,margin=0){
   const r=await sharp(await sharp(data,{raw:info}).png().toBuffer()).trim({threshold:1}).toBuffer({resolveWithObject:true});
   return {data:r.data,cx:((x0+x1)/2*m.width-L)+(r.info.trimOffsetLeft||0),cut};
 }
-const {modeResize}=require('./lib/pixel.cjs');
+const {modeResize,limitColors}=require('./lib/pixel.cjs');
 // 칸 경계에서 일자로 잘린 이펙트 단면을 물결 모양으로 깎는다. 8px 이상 연속으로 경계에 닿은 구간만(칼끝 한 점은 그대로). 아래쪽(발)은 제외
 // cut: 실제로 잘린 변만({l,r,t}). 다듬은(trim) 그림은 늘 상자 가장자리에 닿으므로 변을 가리지 않으면 멀쩡한 칼날·이펙트까지 깎는다(2026-11-24 확인: 12명 전원 프레임당 수백 px)
 function taper(d,w,h,B,cut){
@@ -111,8 +111,8 @@ async function frame({data:buf,cx,cut={}},scale,id){
   clean(img.data,w,h,110,6*(BODY/104)**2);
   if(POLISH[id])polish(img.data,w,h,POLISH[id]);
   outline(img.data,w,h);
-  const png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:OLD_MODE?32:64,dither:0}).toBuffer();
-  return sharp({create:{width:CELL,height:CELL,channels:4,background:'#00000000'}}).composite([{input:png,left:Math.max(0,left),top:Math.max(0,top)}]).png({palette:true,colours:48,dither:0}).toBuffer();
+  limitColors(img.data,OLD_MODE?32:48);const png=await sharp(img.data,{raw:img.info}).png({palette:true,colours:256,dither:0}).toBuffer(); // 48색(colours:48은 sharp가 16색으로 깎음, lib/pixel.cjs)
+  return sharp({create:{width:CELL,height:CELL,channels:4,background:'#00000000'}}).composite([{input:png,left:Math.max(0,left),top:Math.max(0,top)}]).png({palette:true,colours:256,dither:0}).toBuffer();
 }
 const strip=(name,fr)=>sharp({create:{width:CELL*fr.length,height:CELL,channels:4,background:'#00000000'}}).composite(fr.map((input,i)=>({input,left:CELL*i,top:0}))).png().toFile(path.join(out,name));
 async function hero(id,rects){
@@ -139,7 +139,7 @@ async function cards(id,ids,cols=3,rows=3){
   const file=path.join(src,`cards_${id}.png`);
   for(const [i,cid] of ids.entries()){const m=await sharp(file).metadata(),w=m.width/cols,h=m.height/rows;
     await sharp(file).extract({left:Math.round((i%cols)*w)+6,top:Math.round(Math.floor(i/cols)*h)+6,width:Math.round(w)-12,height:Math.round(h)-12})
-      .resize(144,96,{fit:'cover',kernel:'lanczos3'}).png({palette:true,colours:64,dither:0}).toFile(path.join(out,`cards/${cid}.png`))}
+      .resize(144,96,{fit:'cover',kernel:'lanczos3'}).ensureAlpha().raw().toBuffer({resolveWithObject:true}).then(r=>sharp(limitColors(r.data,64),{raw:r.info}).png({palette:true,colours:256,dither:0}).toFile(path.join(out,`cards/${cid}.png`)))}
 }
 const HEROES={yin:null,car:'car',aem:null,aemMecha:null,mor:null,lyn:null,hiy:'hiy',sk:null,rov:null,rovM:null,chi:null,cam:null};
 // 기존 7명: 대기·공격 4프레임 = art/source 원본, 방어·피격·시전·해방 = source-v2 heroesA/B (prepare-sprites / prepare-art-v2와 같은 좌표)

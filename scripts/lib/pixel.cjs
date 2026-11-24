@@ -14,4 +14,20 @@ async function modeResize(buf,w,h,{lines=false}={}){
     const j=(y*w+x)*4;o[j]=b[1]/b[0];o[j+1]=b[2]/b[0];o[j+2]=b[3]/b[0];o[j+3]=255}
   return {data:o,info:{width:w,height:h,channels:4}};
 }
-module.exports={modeResize};
+// 색 수 줄이기(median cut, 개수 가중). sharp 0.33의 png({colours})는 색 수가 아니라 비트 깊이만 정해서 48·64색을 4비트=16색으로 깎는다.
+// 그래서 여기서 n색으로 줄이고, 저장은 png({palette:true,colours:256})(8비트, 256색 이하는 그대로 보존)로 한다
+function limitColors(d,n){
+  const cnt=new Map();for(let i=0;i<d.length;i+=4)if(d[i+3]){const k=d[i]<<16|d[i+1]<<8|d[i+2];cnt.set(k,(cnt.get(k)||0)+1)}
+  if(cnt.size<=n)return d;
+  let boxes=[[...cnt.entries()]];const ch=(k,c)=>k>>(16-8*c)&255;
+  while(boxes.length<n){let bi=-1,br=-1,bc=0;
+    boxes.forEach((b,i)=>{if(b.length<2)return;for(let c=0;c<3;c++){let lo=255,hi=0;for(const [k] of b){const v=ch(k,c);if(v<lo)lo=v;if(v>hi)hi=v}const r=(hi-lo)*Math.sqrt(b.reduce((a,e)=>a+e[1],0));if(r>br){br=r;bi=i;bc=c}}});
+    if(bi<0)break;const b=boxes[bi].sort((x,y)=>ch(x[0],bc)-ch(y[0],bc)),tot=b.reduce((a,e)=>a+e[1],0);let acc=0,m=0;while(m<b.length-1&&acc+b[m][1]<=tot/2)acc+=b[m++][1];m=Math.max(1,m);
+    boxes.splice(bi,1,b.slice(0,m),b.slice(m))}
+  const map=new Map();for(const b of boxes){const t=b.reduce((a,e)=>a+e[1],0),avg=[0,1,2].map(c=>Math.round(b.reduce((a,e)=>a+ch(e[0],c)*e[1],0)/t));for(const [k] of b)map.set(k,avg)}
+  for(let i=0;i<d.length;i+=4)if(d[i+3]){const c=map.get(d[i]<<16|d[i+1]<<8|d[i+2]);d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2]}
+  return d;
+}
+{const assert=require('node:assert/strict'),d=Buffer.alloc(256*4);for(let i=0;i<256;i++){d[i*4]=i;d[i*4+1]=255-i;d[i*4+2]=(i*7)&255;d[i*4+3]=255}
+  limitColors(d,48);const u=new Set();for(let i=0;i<d.length;i+=4)u.add(d.readUInt32BE(i));assert(u.size<=48&&u.size>=40,'limitColors self-check '+u.size)}
+module.exports={modeResize,limitColors};

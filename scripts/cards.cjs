@@ -65,7 +65,8 @@ async function importGen(){const sharp=require('sharp'),gen=path.join(root,'art/
     const dst=path.join(CARDS,id+'.png'),b=path.join(bak,id+'.png');
     if(!fs.existsSync(b)){fs.mkdirSync(bak,{recursive:true});fs.copyFileSync(dst,b)}
     // 3:2 중앙 자르기 → 144×96 축소 → 48색 팔레트로 도트 질감 통일
-    await sharp(path.join(gen,f)).resize(144,96,{fit:'cover',position:'attention'}).png({palette:true,colors:48,dither:0}).toFile(dst);
+    const r=await sharp(path.join(gen,f)).resize(144,96,{fit:'cover',position:'attention'}).ensureAlpha().raw().toBuffer({resolveWithObject:true});
+    await sharp(require('./lib/pixel.cjs').limitColors(r.data,48),{raw:r.info}).png({palette:true,colours:256,dither:0}).toFile(dst); // colors:48은 sharp가 16색으로 깎음
     const meta=await sharp(dst).metadata();assert(meta.width===144&&meta.height===96);n++;console.log('적용',id)}
   console.log(`완료 ${n}장. 원본 백업: art/backup-cards/`)}
 
