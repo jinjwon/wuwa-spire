@@ -37,6 +37,21 @@ const CHECKS = {
   // 타이틀 움직이는 배경: 소리 없는 반복 영상이 재생되고, 크기는 배경 규격(640×360)의 정수 배율
   title_video: `(async()=>{S=null;goMenu('title');await new Promise(r=>setTimeout(r,1500));const v=document.querySelector('.titlescr .battle-art video');if(!v)return 'no video';
     const r=v.getBoundingClientRect(),b=r.width/640;if(![[6,'dawn'],[12,'day'],[18,'dusk'],[23,'night'],[2,'night']].every(([h,k])=>titlePart(h)===k)||!v.src.endsWith('title-cycle.mp4')||!String(v.getAttribute('onloadedmetadata')).includes('='+TITLE_T[titlePart()]))return 'part '+v.src;return getComputedStyle(v).imageRendering==='pixelated'&&v.muted&&v.loop&&(!v.paused||document.visibilityState==='hidden')&&v.readyState>=2&&v.videoWidth===1280&&v.videoHeight===720&&Number.isInteger(Math.round(b*devicePixelRatio*1000)/1000)&&Math.abs(r.height-360*b)<1||JSON.stringify({m:v.muted,p:v.paused,rs:v.readyState,w:v.videoWidth,b})})()`,
+  // 피해 분해·판 결산: 배율 2개 이상이면 분해 연출, 초과 피해·최고 한 방·카드 사용 횟수를 모아 기록과 결산 화면에 남김
+  damage_tally: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;S.screen='map';startCombat(['snip'],'battle');await new Promise(r=>setTimeout(r,400));
+    const c=S.c,T=alive()[0];T.hp=T.maxHp=40;T.block=0;T.vuln=1;T.broken=1;c.cur=c.active;hit(T,10,{});await new Promise(r=>setTimeout(r,250));const tl=!!document.querySelector('.tally');
+    const st=ST();const ok1=T.hp===18&&st.best.d===22&&st.best.en===EN.snip.n;T.hp=5;dmgEnemy(T,30);const ok2=st.over===25&&T.dead;
+    const x=mk('aem_a');c.hand.push(x);c.energy=9;const U=spawn('snip');U.slot=0;setIntent(U);c.enemies.push(U);c.rebuild=true;playCard(x.uid,U);const ok3=st.cards.aem_a===1;
+    const L0=loadRecords();try{localStorage.setItem(REC_KEY,JSON.stringify([{t:1,r:'lose',d:0,team:['aem'],act:0,floor:1,kills:0,deck:10,echoes:0,best:1}]))}catch(e){}
+    S._rec=0;addRecord('lose');const top=loadRecords()[0];try{localStorage.setItem(REC_KEY,JSON.stringify(L0))}catch(e){}
+    S.screen='over';S.c=null;render();const rc=document.querySelector('.recap .newbest')&&document.querySelector('.recap .rbest b').textContent==='30';
+    return tl&&ok1&&ok2&&ok3&&top.best===30&&S._newBest&&!!rc})()`,
+  // 보상 공개: 카드는 뒷면으로 시작, 뒤집어야 고를 수 있고 희귀는 금빛. 보급 상자는 룰렛이 뜬다
+  reward_reveal: `(async()=>{newGame('aem',0);S.ancient=null;S.modal=null;const rid=REWARD_POOL.find(k=>CD[k].r),cid=REWARD_POOL.find(k=>!CD[k].r);
+    S.reward={gold:10,cards:[mk(rid),mk(cid)],open:1};S.screen='reward';render();const b0=document.querySelectorAll('.rcard .cback').length===2&&!document.querySelector('.rcard .card');
+    document.querySelector('.rcard .cback').click();await new Promise(r=>setTimeout(r,100));const up=document.querySelector('.rcard.up.rare .card')&&document.querySelectorAll('.rcard .cback').length===1;
+    S.echoes=[];S.screen='map';S.pos=null;S.map[8].forEach(n=>n.type='treasure');S.pos={r:7,i:S.map[7].findIndex(n=>n.next.length)};const k=availNodes()[0];enterNode(k);await new Promise(r=>setTimeout(r,200));
+    return b0&&!!up&&!!document.querySelector('.tide')&&S.echoes.length===1})()`,
   // 가로 지도: 지도가 옆으로 길고, 보스가 가장 오른쪽, 첫 층이 왼쪽
   map_horizontal: `(async()=>{newGame('rov',0);S.ancient=null;S.modal=null;S.screen='map';render();await new Promise(r=>setTimeout(r,300));
     const m=document.querySelector('.map'),b=document.querySelector('.mboss').getBoundingClientRect(),ns=[...document.querySelectorAll('.mnode')].map(n=>n.getBoundingClientRect().left);

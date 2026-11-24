@@ -194,7 +194,7 @@ function recordsHTML(){
     <div class="rec-res"><span>${ic}</span><b>${lb}</b>${x===best?'<em>최고 기록</em>':''}</div>
     <div class="rec-main"><b>${x.act+1}구역 · ${x.floor}층</b><small>${ACTS[x.act]?ACTS[x.act].name.replace(/^\d구역 · /,''):''}</small></div>
     <div class="rec-team">${x.team.map(id=>`<span><i class="hp-av" style="--c:${CH[id].color};${artStyle(id)}"></i><small>${CH[id].name}</small></span>`).join('')}</div>
-    <div class="rec-stat"><span>처치 <b>${x.kills}</b></span><span>덱 <b>${x.deck}</b></span><span>에코 <b>${x.echoes}</b></span></div>
+    <div class="rec-stat"><span>처치 <b>${x.kills}</b></span><span>덱 <b>${x.deck}</b></span><span>에코 <b>${x.echoes}</b></span>${x.best?`<span>최고 한 방 <b>${x.best}</b></span>`:''}</div>
     <div class="rec-meta"><span class="rec-diff d${x.d}">${(DIFF[x.d]||DIFF[0]).n}</span><small>${recDate(x.t)}</small></div></div>`};
   return `<div class="title help records">
     <div class="rec-head"><button class="btn backbtn" onclick="goMenu('title')">← 타이틀</button><h2>게임 기록</h2>

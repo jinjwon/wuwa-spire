@@ -152,9 +152,12 @@ function rewardHTML(){
   if(r.cards.length)rows.push(`<button class="rw" onclick="S.reward.open=!S.reward.open;render()"><i>🂠</i><span>카드 보상<small>3장 중 1장을 덱에 추가</small></span></button>`);
   return `<div class="screen"><div class="box wbox" style="max-width:${open?900:520}px"><small class="eng">REWARD</small><h2>${r.title||'전투 승리'}</h2>
     <div class="rws">${rows.join('')}</div>
-    ${open&&r.cards.length?`<div class="cards" style="margin-top:14px">${r.cards.map(c=>{const n=S.deck.filter(x=>x.id===c.id).length;return `<div class="shopitem">${cardHTML(c,{click:`takeReward(${c.uid})`})}<span class="dim" style="font-size:12px">덱에 ${n}장 보유</span></div>`}).join('')}</div>`:''}
+    ${open&&r.cards.length?`<div class="cards" style="margin-top:14px">${r.cards.map(c=>{const n=S.deck.filter(x=>x.id===c.id).length;const up=window.FAST||(r.shown||[]).includes(c.uid);return `<div class="shopitem rcard ${up?'up':''} ${CD[c.id].r?'rare':''}">${up?cardHTML(c,{click:`takeReward(${c.uid})`}):`<button class="cback" aria-label="카드 뒤집기" onclick="revealCard(${c.uid})"><i>🂠</i><small>뒤집기</small></button>`}<span class="dim" style="font-size:12px">${up?`덱에 ${n}장 보유`:'&nbsp;'}</span></div>`}).join('')}</div>`:''}
     <div style="margin-top:16px;text-align:right"><button class="btn primary" onclick="S.reward.cards=[];afterReward()">${r.cards.length?'카드 건너뛰고 계속':'계속'}</button></div></div></div>`;
 }
+// 보상 카드 뒤집기(Hades·Vampire Survivors식 공개): 희귀 카드는 금빛과 잭팟 소리
+function revealCard(uid){const r=S.reward;(r.shown=r.shown||[]).push(uid);const c=r.cards.find(x=>x.uid===uid);const rare=c&&CD[c.id].r;
+  sfx(rare?'jackpot':'card');if(rare){flash('#ffd75e');banner('✦ 희귀 카드 ✦')}render()}
 function eventHTML(){
   const e=S.ev;
   return `<div class="screen"><div class="box"><div style="font-size:40px;text-align:center">${e.s}</div><h2 style="text-align:center">${e.t}</h2>
@@ -188,12 +191,17 @@ function shopHTML(){
     <div style="text-align:center;margin-top:16px"><button class="btn primary" onclick="S.screen='map';render()">떠나기</button></div></div></div>`;
 }
 function msgHTML(){return `<div class="screen"><div class="box" style="text-align:center"><h2>${S.msg.title}</h2><p>${S.msg.body}</p><button class="btn primary" onclick="S.screen='map';render()">계속</button></div></div>`}
+// 판 결산: 이번 판의 최고 한 방과 운이 터진 순간들. 지난 판들보다 큰 한 방이면 경신 표시
+function recapHTML(){const st=ST(),tc=topCard();const row=(l,v)=>`<div><small>${l}</small><b>${v}</b></div>`;
+  return `<div class="recap">${S._newBest?'<em class="newbest">★ 최고 한 방 경신 ★</em>':''}
+  <div class="rbest"><small>최고 한 방</small><b>${st.best?st.best.d:0}</b><span>${st.best?`${st.best.card?`「${st.best.card}」 → `:''}${st.best.en}`:'—'}</span></div>
+  <div class="rgrid">${row('최대 초과 피해',st.over)}${row('치명타',st.crits+'회')}${row('조합 발동',st.recipes+'회')}${row('황금 조수',st.jp+'회')}${row('가장 많이 쓴 카드',tc?`${tc.n} ×${tc.x}`:'—')}</div></div>`}
 function overHTML(){return `<div class="screen"><div class="box" style="text-align:center"><h2 style="color:var(--red)">모든 공명자가 쓰러졌습니다</h2>
-  <p>${ACTS[S.act].name} · 층 ${S.floor} · 처치한 잔상 ${S.stats.kills}</p><p class="dim">잔향은 사라지지 않습니다. 다시 탑에 오르세요.</p>
+  <p>${ACTS[S.act].name} · 층 ${S.floor} · 처치한 잔상 ${S.stats.kills}</p>${recapHTML()}<p class="dim">잔향은 사라지지 않습니다. 다시 탑에 오르세요.</p>
   <button class="btn gold" onclick="goMenu('select')">다시 도전</button> <button class="btn" onclick="goMenu('title')">타이틀</button></div></div>`}
 function winHTML(){return `<div class="screen"><div class="box" style="text-align:center"><div style="font-size:46px">✹</div><h2 style="color:var(--gold)">첨탑 정복!</h2>
   <p>알레프-원의 창조물이 무너지고, 탑 꼭대기에 고요한 별빛이 내려앉습니다.</p>
-  <p>층 ${S.floor} · 처치한 잔상 ${S.stats.kills} · 에코 ${S.echoes.length}개 · 덱 ${S.deck.length}장</p>
+  <p>층 ${S.floor} · 처치한 잔상 ${S.stats.kills} · 에코 ${S.echoes.length}개 · 덱 ${S.deck.length}장</p>${recapHTML()}
   <button class="btn gold" onclick="goMenu('select')">다시 오르기</button> <button class="btn" onclick="goMenu('title')">타이틀</button></div></div>`}
 function modalHTML(){
   const m=S.modal;

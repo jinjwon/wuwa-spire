@@ -862,3 +862,33 @@ body.incombat .seqbar{top:64px}body.incombat .stlog{top:70px}
 .mapscr .mboss{transform:translate(-50%,-50%)}
 .mapscr .mboss .bimg{width:110px;height:110px}
 .mapscr .maplegend{position:static;flex-direction:row;flex-wrap:wrap;justify-content:center;clip-path:none}
+/* 피해 분해 연출(tally)·초과 피해·판 결산(recap) */
+.tally{position:fixed;left:50%;top:24%;transform:translateX(-50%);z-index:57;pointer-events:none;display:flex;align-items:center;gap:8px;padding:8px 18px;background:var(--wu-panel);box-shadow:inset 0 0 0 1px var(--wu-line);clip-path:var(--wu-cut-s);font-weight:900;animation:tidein .2s forwards}
+.tally .tu{display:flex;flex-direction:column;align-items:center;color:#ffd75e;font-size:20px;line-height:1;animation:tu .18s ease-out}
+.tally .tu small{font-size:10px;font-weight:700;color:var(--wu-sub);margin-top:2px}
+.tally .tu.dn{color:#8ab4ff}
+.tally .tv{font-size:34px;color:#fff;min-width:2ch;text-align:right;font-variant-numeric:tabular-nums}
+.tally .tv.bump{animation:tvbump .18s ease-out}
+.tally.done .tv{color:#ffe9a8;text-shadow:0 0 14px #ff9a00;font-size:42px}
+.tally.done{box-shadow:inset 0 0 0 1px var(--wu-acc),0 0 24px rgba(255,180,60,.35)}
+@keyframes tu{from{transform:translateY(-10px) scale(1.4);opacity:0}to{transform:none;opacity:1}}
+@keyframes tvbump{from{transform:scale(1.35)}to{transform:none}}
+.pop.over{color:#ffb36b;font-size:15px;font-weight:900;text-shadow:0 0 8px #ff6a00,0 2px 0 #000}
+.recap{margin:14px auto;max-width:520px;padding:14px 18px;background:var(--wu-panel2);box-shadow:inset 0 0 0 1px var(--wu-line);clip-path:var(--wu-cut-s);text-align:center}
+.recap .newbest{display:block;font-style:normal;font-weight:900;color:#ffd75e;letter-spacing:1px;margin-bottom:6px;animation:popcrit 1.2s ease-out}
+.recap .rbest small{display:block;color:var(--wu-sub);font-size:12px}
+.recap .rbest b{display:block;font-size:44px;line-height:1.1;color:#ffe9a8}
+.recap .rbest span{font-size:13px;color:var(--wu-sub)}
+.recap .rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
+.recap .rgrid div{display:flex;flex-direction:column;gap:2px}
+.recap .rgrid small{color:var(--wu-sub);font-size:11px}
+.recap .rgrid b{font-size:15px}
+@media (prefers-reduced-motion:reduce){.tally,.tally .tu,.tally .tv.bump,.recap .newbest{animation:none!important}}
+.tally .tb{font-size:22px;color:var(--wu-sub)}.tally .ta{font-style:normal;color:var(--wu-sub);font-size:18px}
+/* 보상 카드 뒷면·공개 */
+.rcard .cback{width:150px;height:210px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;background:repeating-linear-gradient(45deg,var(--wu-panel2) 0 8px,var(--wu-panel) 8px 16px);border:none;box-shadow:inset 0 0 0 1px var(--wu-line);clip-path:var(--wu-cut-s);color:var(--wu-acc);cursor:pointer;font:inherit}
+.rcard .cback i{font-style:normal;font-size:44px}.rcard .cback:hover{box-shadow:inset 0 0 0 2px var(--wu-acc)}
+.rcard.up .card{animation:cflip .35s ease-out}
+.rcard.up.rare .card{box-shadow:0 0 22px rgba(255,215,94,.7)}
+@keyframes cflip{from{transform:rotateY(90deg)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.rcard.up .card{animation:none!important}}

@@ -81,6 +81,6 @@ function enterNode(key){
   else if(t==='shop')openShop();
   else if(t==='recruit')openRecruit();
   else if(t==='treasure'){const pool=TREASURE_ECHO.filter(e=>!has(e));const e=pool.length?pick(pool):null;const g=rnd(30,50);S.gold+=g;gainEcho(e);
-    S.screen='msg';S.msg={title:'보급 상자',body:`낡은 보급 상자를 열었습니다.<br>조개 화폐 <b>+${g}</b>${e?`<br>에코 <b>${ECHO[e].n}</b> 획득 — ${ECHO[e].tx}`:''}`};render()}
+    S.screen='msg';S.msg={title:'보급 상자',body:`낡은 보급 상자를 열었습니다.<br>조개 화폐 <b>+${g}</b>${e?`<br>에코 <b>${ECHO[e].n}</b> 획득 — ${ECHO[e].tx}`:''}`};render();if(e)reel(TREASURE_ECHO.map(k=>ECHO[k].i),ECHO[e].i,'보급 상자',ECHO[e].n,ECHO[e].tx)}
 }
 

@@ -69,7 +69,7 @@ const TIDES=[
   {k:'gold',w:3,n:'황금 조수',i:'★',tx:'잭팟! 에너지 +1, 카드 +2, 치명타 +50%.',f:c=>{c.energy++;c.tideDraw=2;c.luck=.5},jp:1},
 ];
 function rollTide(){const c=S.c;c.luck=0;c.tideDraw=0;if(!LUCK()||c.turn<(has('e_tide')?1:2))return null;
-  let r=Math.random()*100;let t=TIDES.find(x=>(r-=x.w)<0)||TIDES[0];if(t.k==='calm'&&has('e_clover')){r=Math.random()*100;t=TIDES.find(x=>(r-=x.w)<0)||TIDES[0]}t.f&&t.f(c);c.tide=t.k;return t}
+  let r=Math.random()*100;let t=TIDES.find(x=>(r-=x.w)<0)||TIDES[0];if(t.k==='calm'&&has('e_clover')){r=Math.random()*100;t=TIDES.find(x=>(r-=x.w)<0)||TIDES[0]}t.f&&t.f(c);c.tide=t.k;if(t.jp)ST().jp++;return t}
 function showTide(t){if(!t||window.FAST)return;document.querySelectorAll('.tide').forEach(x=>x.remove());
   const b=document.createElement('div');b.className='tide';b.innerHTML=`<div class="reel"><b>${TIDES[0].i}</b></div><div class="tt"><small>조수 룰렛</small><span>…</span></div>`;document.body.appendChild(b);
   const reel=b.querySelector('.reel b');let n=0;const spin=setInterval(()=>{reel.textContent=TIDES[n++%TIDES.length].i;sfx('tick')},55);
@@ -89,7 +89,7 @@ const RECIPES=[
 const TSYM={공격:'공',스킬:'스',파워:'파'};
 function comboCheck(c,d,owner){if(!TSYM[d.t])return;c.seq=[...(c.seq||[]),{t:d.t,o:owner}].slice(-3);if(c.seq.length<3)return;
   const r=RECIPES.find(r=>r.k.every((t,i)=>c.seq[i].t===t));if(!r)return;const duo=new Set(c.seq.map(x=>x.o)).size>1;
-  c.seq=[];FXDELAY=200;HITSEQ=0;c.cur=owner;r.f(duo?1.5:1);FXDELAY=0;log(`조합 — ${r.n}${duo?' (합주 ×1.5)':''}`);
+  c.seq=[];ST().recipes++;FXDELAY=200;HITSEQ=0;c.cur=owner;r.f(duo?1.5:1);FXDELAY=0;log(`조합 — ${r.n}${duo?' (합주 ×1.5)':''}`);
   if(!window.FAST){sfx('jackpot');banner(`${duo?'합주 · ':''}${r.n}!`);flash(duo?'#ffd75e':'#7fd8ff')}}
 // 번뜩임(카오스 제로 나이트메어식): 턴 시작에 손패 한 장이 빛나고, 그 카드를 쓰면 효과 3개 중 하나를 골라 덱의 카드를 영구히 바꾼다 (전투당 1회, 카드당 1회)
 const EPI={
@@ -107,6 +107,12 @@ function pickEpiphany(k){const m=S.modal,c=S.c,card=c.hand.find(x=>x.uid===m.uid
   card.ep=k;const dk=S.deck.find(x=>x.uid===card.uid);if(dk)dk.ep=k;
   log(`번뜩임 — 「${CD[card.id].n}」 ${EPI[k].n}`);if(!window.FAST){sfx('merge');banner(`✧ 번뜩임 · ${EPI[k].n}`);flash('#e9d9a6')}
   playCard(m.uid,m.T)}
+// 짧은 룰렛 공개(조수 룰렛과 같은 모양): 아이콘이 돌다가 결과에서 멈춘다
+function reel(icons,final,label,name,tx){if(window.FAST)return;document.querySelectorAll('.tide').forEach(x=>x.remove());
+  const b=document.createElement('div');b.className='tide';b.innerHTML=`<div class="reel"><b>${icons[0]}</b></div><div class="tt"><small>${label}</small><span>…</span></div>`;document.body.appendChild(b);
+  const r=b.querySelector('.reel b');let n=0;const spin=setInterval(()=>{r.textContent=icons[n++%icons.length];sfx('tick')},55);
+  setTimeout(()=>{clearInterval(spin);r.textContent=final;b.classList.add('land','ok');b.querySelector('.tt').innerHTML=`<small>${label}</small><span>${name}</span><em>${tx}</em>`;sfx('jackpot')},900/OPT.speed);
+  setTimeout(()=>b.classList.add('out'),2800/OPT.speed);setTimeout(()=>b.remove(),3300/OPT.speed)}
 function combo(c){if(window.FAST||c.cards<3)return;try{tone(500+90*Math.min(c.cards,10),.08,'triangle',.08)}catch(e){}
   const b=document.createElement('div');b.className='combo';b.innerHTML=`<b>${c.cards}</b> COMBO`;document.body.appendChild(b);setTimeout(()=>b.remove(),700)}
 function flash(col){if(window.FAST)return;const f=document.createElement('div');f.className='flash';f.style.setProperty('--fc',col);document.body.appendChild(f);setTimeout(()=>f.remove(),420)}
@@ -243,7 +249,7 @@ function playCard(uid,T){
   const atk=d.t==='공격';anim('u-'+owner,atk?'atk':d.v?.b?'block':'cast');FXDELAY=atk?170:60;HITSEQ=0;
   if(!atk)vfx('circle','u-'+owner,{c:CH[owner].color});
   if(atk&&c.calc){c.calcNow=c.calc;c.calc=0}
-  c.curCard=card;if(atk)c.atkN=(c.atkN||0)+1;
+  c.curCard=card;if(atk)c.atkN=(c.atkN||0)+1;{const k=ST().cards;k[card.id]=(k[card.id]||0)+1}
   if(card.ench==='echo'&&!card.echoed){card.echoed=1;c.hand.push({...card,uid:UID++,ench:null})}
   d.p(vals(card),T,card);if(card.ep&&EPI[card.ep].f)EPI[card.ep].f(owner,T);if(atk&&T&&!T.dead&&alive().includes(T))applyElem(T,CH[owner].el);FXDELAY=0;c.calcNow=0;c.curCard=null;
   if(atk&&c.freeBrush&&S.team.includes('lyn'))paint(c.freeBrush);
@@ -294,10 +300,21 @@ function hit(T,base,o={}){
   if(!o.raw)d+=(WPN(c.cur,'w_blade')?2:0)+(c.cur==='aem'&&c.mecha?3:0)+(has('fdread')?1:0)+(has('dreamless')?2:0)+((c.cur==='aem'||c.cur==='mor')&&has('snip')?2:0)+(c.cur==='cam'?c.bloom:0)+(c.cur==='lyn'?Math.floor(c.paint/2):0)+c.calcNow;
   if(!o.raw&&CH[c.cur]&&son2(CH[c.cur].el))d+=2;
   d+=T.ur||0;if(!o.raw&&has('e_whet')&&c.atkN===1&&c.curCard)d+=5;
-  let m=1;if(c.amp>0)m*=1.3;if(c.weak>0)m*=.75;if(T.vuln>0)m*=1.5;if(T.broken>0)m*=1.5;
-  const cr=!o.raw&&rollCrit();if(cr){m*=has('e_dice')?2.25:1.75;if(has('e_vamp'))heal(c.active,2);const dl=FXDELAY+HITSEQ*110;pop(T,'치명타!','crit');sfx('critx',dl);if(!window.FAST)setTimeout(()=>{flash('#fff3c4');shakeStage(true);hitStop(140)},dl/OPT.speed)}
-  dmgEnemy(T,Math.max(0,Math.floor(d*m)));
+  let m=1;const ups=[];const mul=(x,n)=>{m*=x;ups.push([x,n])};if(c.amp>0)mul(1.3,'증폭');if(c.weak>0)mul(.75,'약화');if(T.vuln>0)mul(1.5,'취약');if(T.broken>0)mul(1.5,'공진 파괴');
+  const cr=!o.raw&&rollCrit();if(cr){mul(has('e_dice')?2.25:1.75,'치명');ST().crits++;if(has('e_vamp'))heal(c.active,2);const dl=FXDELAY+HITSEQ*110;pop(T,'치명타!','crit');sfx('critx',dl);if(!window.FAST)setTimeout(()=>{flash('#fff3c4');shakeStage(true);hitStop(140)},dl/OPT.speed)}
+  const fin=Math.max(0,Math.floor(d*m));if(ups.filter(u=>u[0]>1).length>=2)tally(d,ups,fin,FXDELAY+HITSEQ*110);
+  dmgEnemy(T,fin);
 }
+/* 피해 분해(발라트로식 점수 계산 연출): 배율이 2개 이상 겹친 한 방은 기본 피해에 배율이 한 단계씩 붙고, 붙을 때마다 음이 오른다 */
+function tally(base,ups,fin,dl){if(window.FAST)return;const sp=OPT.speed,step=170,tone=(...a)=>OPT.sfx&&window.tone(...a);
+  setTimeout(()=>{document.querySelectorAll('.tally').forEach(x=>x.remove());const b=document.createElement('div');b.className='tally';
+    b.innerHTML=`<span class="tb">${base}</span><i class="ta">→</i><b class="tv">${base}</b>`;document.body.appendChild(b);const tv=b.querySelector('.tv'),ta=b.querySelector('.ta');let v=base;
+    ups.forEach(([x,n],i)=>setTimeout(()=>{v*=x;const u=document.createElement('span');u.className='tu'+(x<1?' dn':'');u.innerHTML=`×${x}<small>${n}</small>`;ta.before(u);
+      tv.textContent=Math.floor(v);tv.classList.remove('bump');void tv.offsetWidth;tv.classList.add('bump');try{tone(440*Math.pow(1.19,i+1),.12,'triangle',.12)}catch(e){}},(i+1)*step/sp));
+    setTimeout(()=>{tv.textContent=fin;b.classList.add('done');try{tone(440*Math.pow(1.19,ups.length+2),.25,'square',.08)}catch(e){}},(ups.length+1)*step/sp);
+    setTimeout(()=>b.remove(),((ups.length+1)*step+1100)/sp)},dl/sp)}
+// 판 결산 통계: 예전 저장에는 칸이 없으니 여기서 채운다
+function ST(){const s=S.stats=S.stats||{kills:0};s.crits=s.crits||0;s.jp=s.jp||0;s.recipes=s.recipes||0;s.over=s.over||0;s.cards=s.cards||{};s.best=s.best||null;return s}
 /* 독창 시스템 ②: 진동(공진) 게이지가 가득 차면 공진 파괴 — 다음 행동 1회 건너뜀 + 받는 피해 +50% */
 function addVib(T,n){
   if(!T||T.dead||T.broken>0)return;T.vib+=n;
@@ -306,13 +323,15 @@ function addVib(T,n){
 function dmgEnemy(T,d,pierce,style){
   let left=d;if(!pierce){const ab=Math.min(T.block,left);T.block-=ab;left-=ab;if(ab&&!T.block){pop(T,'방어 파괴!','brk');vfx('shield','e'+T.uid,{})}else if(ab&&!left)pop(T,'막음','blk')}
   const dl=FXDELAY+HITSEQ*110;HITSEQ++;const own=S.c.cur;
-  T.hp-=left;pop(T,`-${d}`,'dmg');anim('e'+T.uid,'hit',dl);
+  T.hp-=left;pop(T,`-${d}`,'dmg');const st=ST();if(!st.best||d>st.best.d)st.best={d,card:c_card(),en:EN[T.id].n};
+  if(T.hp<0&&!T.dead){const ov=-T.hp;if(ov>st.over)st.over=ov;if(ov>=5)pop(T,`초과 +${ov}`,'over')}anim('e'+T.uid,'hit',dl);
   sfx(d>=18?'crit':'hit',dl);if(!window.FAST)setTimeout(()=>hitStop(d>=18?110:55),dl/OPT.speed);
   vfx(style||(pierce?'burst':(WEAPON[own]||'sword')),'e'+T.uid,{c:pierce?EL.회절:CH[own].color,el:pierce?'회절':CH[own].el,from:'u-'+own,big:d>=18},dl);
   if(T.hp<=0){T.hp=0;T.dead=true;if(WPN(own,'w_thorn'))heal(own,6);sfx('death',dl+120);S.stats.kills++;log(`${EN[T.id].n} 처치!`);vfx('death','e'+T.uid,{c:EL[EN[T.id].el],el:EN[T.id].el,big:1},dl+120);if(has('chirp'))heal(S.c.active,3);if(has('hecate'))S.c.energy++;onAffixDeath(T,dl);echoHook('kill',T)}
   enemyHook(T,!pierce&&style!=='burst');
   if(!pierce&&style!=='burst')addVib(T,1+(WPN(own,'w_heavy')?1:0));
 }
+const c_card=()=>S.c&&S.c.curCard?CD[S.c.curCard.id].n:null;
 function onAffixDeath(T,dl){const c=S.c;const a=T.affix;if(!a)return;
   if(a==='gold'){S.gold+=35;c.goldBonus=(c.goldBonus||0)+35;pop(T,'+35 화폐','gold');sfx('coin',dl+150);sfx('coin',dl+300)}
   if(a==='giant'){gainLib(c.active,2);pop('p-'+c.active,'해방 +2','info')}
@@ -441,8 +460,11 @@ function hurtParty(d,e){
 // 게임 기록: 판이 끝날 때(패배·승리·포기) 한 줄씩 저장, 최근 50판 유지
 const REC_KEY='wuwa-records';
 function loadRecords(){try{return JSON.parse(localStorage.getItem(REC_KEY))||[]}catch(e){return []}}
-function addRecord(r){if(!S||S._rec)return;S._rec=1;const L=loadRecords();
-  L.unshift({t:Date.now(),r,d:S.diff,team:[...S.team],act:S.act,floor:S.floor,kills:S.stats.kills,deck:S.deck.length,echoes:S.echoes.length});
+function topCard(){const k=ST().cards,id=Object.keys(k).sort((a,b)=>k[b]-k[a])[0];return id?{n:CD[id].n,x:k[id]}:null}
+function addRecord(r){if(!S||S._rec)return;S._rec=1;const L=loadRecords();const st=ST();
+  const prev=Math.max(0,...L.map(x=>x.best||0));S._newBest=!!st.best&&L.length>0&&st.best.d>prev;
+  L.unshift({t:Date.now(),r,d:S.diff,team:[...S.team],act:S.act,floor:S.floor,kills:st.kills,deck:S.deck.length,echoes:S.echoes.length,best:st.best?st.best.d:0,crits:st.crits,jp:st.jp});
+  if(S._newBest&&r!=='quit'){sfx('jackpot',600)}
   try{localStorage.setItem(REC_KEY,JSON.stringify(L.slice(0,50)))}catch(e){}}
 function lose(){sfx('lose');S.c.busy=false;S.screen='over';addRecord('lose');clearSave();render()}
 function winCombat(){
