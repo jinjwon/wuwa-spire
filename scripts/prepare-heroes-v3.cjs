@@ -65,10 +65,19 @@ function outline(d,w,h){
 // despeck: 머리(위 28%) 아래에서 상하좌우와 모두 다른 밝은 외톨이 점을 이웃 평균색으로(눈 하이라이트는 건드리지 않음)
 // grad: 원작 색 맞춤. 몸 높이 y0 아래의 파란 계열(채도 있는) 픽셀을 아래로 갈수록 to 색 쪽으로 섞는다
 //   에이메스: 설정 기준표 '남색→하늘색 별빛 그라데이션 자락'(공식 원화 확인) — 도트는 자락 전체가 진한 남색이었다
-const POLISH={sk:{rim:true,despeck:true},aem:{grad:{hue:[200,255],y0:.42,to:[95,180,255],max:.75}}};
+// tone: 새 시트를 지금 도트 색에 맞춤. hue 범위(넘어가면 0°를 지남)·채도 minS 이상 픽셀의 색상을 dh만큼 돌리고 채도×sat, 명도×val
+//   에이메스(2026-11-24 새 16칸): 머리가 연한 복숭아색(색상 354°, 채도 .35) → 지금 도트 장밋빛(343°, .51)
+//   메카(2026-11-24 새 디자인): 남색 음영이 짙음(채도 .40, 명도 .40) → 지금 도트 은백색(.21, .55)
+const POLISH={sk:{rim:true,despeck:true},
+  aem:{tone:[{hue:[300,40],minS:.28,dh:-11,sat:1.45,val:1.07}],grad:{hue:[200,255],y0:.42,to:[95,180,255],max:.75}},
+  aemMecha:{tone:[{hue:[185,265],minS:.12,dh:0,sat:.55,val:1.35}]}};
 const lum=(d,q)=>d[q]*.3+d[q+1]*.59+d[q+2]*.11,near=(d,a,b)=>Math.abs(d[a]-d[b])+Math.abs(d[a+1]-d[b+1])+Math.abs(d[a+2]-d[b+2])<70;
 function hsv(r,g,b){const M=Math.max(r,g,b),m=Math.min(r,g,b),c=M-m;let hh=0;if(c){hh=M===r?((g-b)/c)%6:M===g?(b-r)/c+2:(r-g)/c+4;hh*=60;if(hh<0)hh+=360}return [hh,M?c/M:0,M/255]}
+function rgb(hh,s,v){const c=v*s,x=c*(1-Math.abs((hh/60)%2-1)),m=v-c,k=Math.floor(hh/60)%6;const [r,g,b]=[[c,x,0],[x,c,0],[0,c,x],[0,x,c],[x,0,c],[c,0,x]][k];return [(r+m)*255,(g+m)*255,(b+m)*255].map(Math.round)}
 function polish(d,w,h,o){
+  for(const t of o.tone||[])for(let q=0;q<d.length;q+=4){if(!d[q+3])continue;const [hh,sat,v]=hsv(d[q],d[q+1],d[q+2]);
+    if(sat<t.minS||v<.12||!(t.hue[0]<=t.hue[1]?hh>=t.hue[0]&&hh<t.hue[1]:hh>=t.hue[0]||hh<t.hue[1]))continue;
+    const c=rgb((hh+t.dh+360)%360,Math.min(1,sat*t.sat),Math.min(1,v*t.val));d[q]=c[0];d[q+1]=c[1];d[q+2]=c[2]}
   if(o.grad){const g=o.grad,y0=Math.round(h*g.y0);
     for(let y=y0;y<h;y++){const t=Math.min(1,(y-y0)/(h-y0))*g.max;for(let x=0;x<w;x++){const q=(y*w+x)*4;if(!d[q+3])continue;
       const [hh,sat,v]=hsv(d[q],d[q+1],d[q+2]);if(hh<g.hue[0]||hh>g.hue[1]||sat<.3||v<.12)continue;
@@ -87,6 +96,7 @@ function polish(d,w,h,o){
 }
 {const d=Buffer.alloc(9*9*4);for(let i=0;i<81;i++){d[i*4]=d[i*4+1]=d[i*4+2]=40;d[i*4+3]=255}const c=(4*9+4)*4;d[c]=d[c+1]=d[c+2]=250;
   polish(d,9,9,{despeck:true});assert(d[c]<100,'despeck self-check')}
+{const d=Buffer.from([200,100,100,255]);polish(d,1,1,{tone:[{hue:[300,40],minS:.1,dh:0,sat:1,val:1}]});assert.deepEqual([...d],[200,100,100,255],'tone 항등 self-check')}
 async function frame({data:buf,cx},scale,id){
   const m=await sharp(buf).metadata();let w=Math.round(m.width*scale),h=Math.round(m.height*scale);
   // 블록 최빈색 축소 → 칸 중심을 프레임 중앙에 고정(몸이 흔들리지 않게), 밖은 자름 → 잘린 단면 깎기 → 잡티 제거 → 무디더 감색

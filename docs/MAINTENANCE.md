@@ -25,7 +25,7 @@
 |---|---|
 | `main.js`, `preload.js` | 데스크톱 앱(Electron) 창과 멀티 서버. 서버는 `index.html`, `src/`, `assets/`만 내보낸다 |
 | `scripts/selfcheck.cjs` | 게임 자가 점검 |
-| `scripts/prepare-heroes-v3.cjs`, `cards.cjs`, `make-vfx.cjs`, `prepare-battle-bg.cjs`, `art-board.cjs`, `unchecker.cjs`(체크무늬 배경 제거), `motion-prompts.cjs`(추가 모션 프롬프트 생성), `pixellab-prompts.cjs`(PixelLab 프롬프트·참조 이미지 생성), `title-video.swift`(타이틀 영상 → 소리 없는 핑퐁 반복, macOS), `branches.sh`(브랜치 상태·동기화·배포), `release-notes.sh`(릴리스 노트) | 지금 쓰는 에셋 처리 도구 ([절차](art/ART_PIPELINE.md)) |
+| `scripts/prepare-heroes-v3.cjs`, `cards.cjs`, `make-vfx.cjs`, `prepare-battle-bg.cjs`, `art-board.cjs`, `unchecker.cjs`(체크무늬 배경 제거, 흰 장갑·은색 몸이면 `strict`), `motion-prompts.cjs`(추가 모션 프롬프트 생성), `pixellab-prompts.cjs`(PixelLab 프롬프트·참조 이미지 생성), `title-video.swift`(타이틀 영상 → 소리 없는 핑퐁 반복, macOS), `branches.sh`(브랜치 상태·동기화·배포), `release-notes.sh`(릴리스 노트) | 지금 쓰는 에셋 처리 도구 ([절차](art/ART_PIPELINE.md)) |
 | `scripts/prepare-sprites.cjs`, `prepare-art-v2.cjs`, `build-art-review.cjs`, `check-sprites.cjs` | 초기 제작 도구. 앞의 둘은 덮어쓰기 방지로 막혀 있다 |
 | `build/` | 앱 아이콘과 맥 서명 |
 

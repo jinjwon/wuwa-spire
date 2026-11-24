@@ -1,10 +1,11 @@
 // 생성 그림에 박힌 체크무늬(흰·연회색 칸) 배경을 투명으로 바꾼다. 테두리에서 시작해, 채도가 낮고 밝은 픽셀만 따라 번진다(윤곽선에서 멈춤).
-// 사용: node scripts/unchecker.cjs <입력.png> <출력.png>
+// 사용: node scripts/unchecker.cjs <입력.png> <출력.png> [strict]
+// strict: 완전 무채색(차이 ≤4)·아주 밝은(≥228) 칸만 배경으로 본다. 흰 장갑·은색 판이 배경과 이어진 그림(메카 등)에서 몸이 지워지지 않게 한다
 const sharp=require('sharp'),assert=require('node:assert/strict');
-const [,,src,dst]=process.argv;assert(src&&dst,'사용: node scripts/unchecker.cjs <입력.png> <출력.png>');
+const [,,src,dst,mode]=process.argv,STRICT=mode==='strict';assert(src&&dst,'사용: node scripts/unchecker.cjs <입력.png> <출력.png>');
 (async()=>{
   const {data:d,info:{width:W,height:H}}=await sharp(src).ensureAlpha().raw().toBuffer({resolveWithObject:true});
-  const bg=i=>{const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);return d[i+3]<16||(mn>=200&&mx-mn<=18)};
+  const bg=i=>{const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);return d[i+3]<16||(STRICT?mn>=228&&mx-mn<=4:mn>=200&&mx-mn<=18)};
   const seen=new Uint8Array(W*H),q=[];
   for(let x=0;x<W;x++)q.push(x,(H-1)*W+x);for(let y=0;y<H;y++)q.push(y*W,y*W+W-1);
   let n=0;while(q.length){const p=q.pop();if(seen[p])continue;seen[p]=1;if(!bg(p*4))continue;d[p*4+3]=0;n++;
