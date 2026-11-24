@@ -8,7 +8,7 @@
 | 캐릭터 서사·무기·소속·세계관 용어 | [lore/CHARACTER_BIBLE.md](lore/CHARACTER_BIBLE.md) |
 | 도트 규격·제작 절차·검수 항목 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md) |
 | 이미지 생성 프롬프트 | [art/HERO_PROMPTS.md](art/HERO_PROMPTS.md) |
-| 프롬프트 복사, 후보 그림 비교·선택 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md)의 프롬프트 보드 (`npm run board`) |
+| 지금 에셋 보기, 프롬프트 복사, 후보 그림 비교·선택 | [art/ART_PIPELINE.md](art/ART_PIPELINE.md)의 에셋 보드 (`npm run board`) |
 | 생성한 시트 수정·적 재제작 프롬프트 | [art/REVISION_PROMPTS.md](art/REVISION_PROMPTS.md) |
 | 전투 배경 프롬프트 | [art/BG_PROMPTS.md](art/BG_PROMPTS.md) |
 | 메인 타이틀 기획·프롬프트(배경·바위·캐릭터 포즈) | [art/TITLE_PROMPTS.md](art/TITLE_PROMPTS.md) |

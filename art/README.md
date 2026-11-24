@@ -51,8 +51,8 @@ node scripts/check-sprites.cjs
 - 검은 해안·숲·테티스 지하·라하이 로이의 환경을 팬게임용으로 재해석했습니다. 원작 지형의 정확한 복제는 아닙니다.
 - 공식 환경 자료: [검은 해안](https://wutheringwaves.kurogames.com/jp/main/news/detail/1358), [라하이 로이](https://wutheringwaves.kurogames.com/es/main/news/detail/3980). 참고 이미지는 references/에 보존했습니다.
 - 원본·프롬프트·분할 좌표: source-v2/jobs.json. 출력 목록: manifest-v2.json.
-- review.html: 캐릭터·동작·지역 선택과 카드 갤러리. cards-contact-sheet.png: 카드 전체표. combat-preview-v2.png·map-preview-v2.png: 실제 게임 캡처.
+- 캐릭터·동작·지역 선택과 카드 갤러리는 에셋 보드(`npm run board`, 예전 review.html)로 옮겼습니다. cards-contact-sheet.png: 카드 전체표. combat-preview-v2.png·map-preview-v2.png: 실제 게임 캡처.
 
-재생성: `node scripts/prepare-art-v2.cjs`, `node scripts/build-art-review.cjs`.
+재생성: `node scripts/prepare-art-v2.cjs`(막혀 있음), 보드는 `npm run board`.
 검증: `node scripts/check-sprites.cjs` — 37외형, 동작별 파일, 카드 70종 로컬 로딩, 4지역 배경·지도, 남녀 전환, 메카 전환 중 동작 복귀, 방어 카드 동작, 경로 선택, 마지막 프레임, 모션 줄이기, 브라우저 오류.
 설치 파일 재빌드와 장시간 전체 플레이는 수행하지 않았습니다.

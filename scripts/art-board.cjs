@@ -1,4 +1,5 @@
-// 프롬프트 보드: 프롬프트 문서를 한 화면에 모으고, 현재 그림과 후보 그림을 나란히 보여 준다.
+// 에셋 보드: 지금 게임에 들어간 그림(assets/)을 캐릭터별로 보고, 필요할 때 그 캐릭터의 프롬프트를 연다.
+// 탭: 에셋(기본, 예전 art/review.html을 합침) · GPT 시트 · PixelLab. 후보 그림은 지금 그림과 나란히 비교해 고른다.
 //   node scripts/art-board.cjs                    → art/board.html 을 만든다 (후보를 넣은 뒤 다시 실행)
 //   node scripts/art-board.cjs apply <키> <파일>  → art/candidates/<키>/<파일> 을 원본 자리에 넣는다
 // 후보 그림은 art/candidates/<키>/ 에 아무 이름으로 넣는다. 키는 보드의 각 항목에 적혀 있다.
@@ -54,14 +55,34 @@ function build(){
     const s=slot(it.key);it.cur=exists(s.cur)?s.cur:null;
     const dir=path.join(CAND,it.key);it.cands=fs.existsSync(dir)?fs.readdirSync(dir).filter(f=>IMG.test(f)).sort():[];
   }
+  const assets=collectAssets(groups);
   const prompts=groups.flatMap(g=>g.items).reduce((n,it)=>n+it.prompts.length,0);
   assert(prompts>0,'프롬프트를 하나도 찾지 못했어요');
   const rel=p=>path.relative(ART,path.join(root,p)).split(path.sep).join('/');
   const data=JSON.stringify(groups.map(g=>({...g,items:g.items.map(it=>({...it,cur:it.cur&&rel(it.cur),face:it.face&&rel(it.face)}))}))).replace(/</g,'\\u003c');
-  fs.writeFileSync(path.join(ART,'board.html'),PAGE.replace('__DATA__',()=>data));
+  const adata=JSON.stringify(assets).replace(/</g,'\\u003c');
+  fs.writeFileSync(path.join(ART,'board.html'),PAGE.replace('__DATA__',()=>data).replace('__ASSETS__',()=>adata));
   const cands=groups.flatMap(g=>g.items).reduce((n,it)=>n+(it.cands||[]).length,0);
-  console.log(`작성: art/board.html (프롬프트 ${prompts}개, 후보 그림 ${cands}장)`);
+  console.log(`작성: art/board.html (외형 ${assets.chars.length}개, 카드 ${assets.cards.length}장, 프롬프트 ${prompts}개, 후보 그림 ${cands}장)`);
 }
+
+// 에셋 탭 데이터: assets/의 *_idle.png마다 캐릭터 하나. 이름은 data.js, 설정은 설정 기준표, 프롬프트는 키로 찾는다
+function collectAssets(groups){
+  const A=path.join(root,'assets'),has=f=>fs.existsSync(path.join(A,f));
+  const names=Object.fromEntries([...fs.readFileSync(path.join(root,'src/js/data.js'),'utf8').matchAll(/^  (\w+):\{(?:name|n):'([^']+)'/gm)].map(m=>[m[1],m[2]]));
+  Object.assign(names,{rov:'방랑자 · 여성',rovM:'방랑자 · 남성',aemMecha:'에이메스 · 메카스카우트'});
+  const rows=fs.readFileSync(path.join(root,'docs/lore/CHARACTER_BIBLE.md'),'utf8').split('\n').filter(l=>/^\| /.test(l)&&!/^\|---/.test(l)).map(l=>l.split('|').slice(1,-1).map(c=>c.trim()));
+  const items=groups.filter(g=>g.ai==='GPT').flatMap(g=>g.items).filter(it=>it.key&&it.prompts.length);
+  const chars=fs.readdirSync(A).filter(f=>f.endsWith('_idle.png')).map(f=>f.slice(0,-9)).sort((a,b)=>a.startsWith('enemy_')-b.startsWith('enemy_')||a.localeCompare(b)).map(id=>{
+    const bare=id.replace(/^enemy_/,''),name=names[bare]||bare,base=name.split(/[ ·(]/)[0],enemy=id!==bare;
+    const lore=!enemy&&rows.find(r=>r.length===7&&r[0].startsWith(base)),look=!enemy&&rows.find(r=>r.length===4&&r[0]===({aemMecha:'에이메스 메카',rov:'방랑자(여)'}[id]||base));
+    const states=Object.fromEntries([['idle',`${id}_idle.png`],['attack',has(`${id}_attack.png`)?`${id}_attack.png`:`motion/${id}_attack.png`],...['guard','hit','cast','ultimate'].map(s=>[s,`motion/${id}_${s}.png`])].filter(([,f])=>has(f)));
+    const key=new RegExp(`^(hero|enemy_full|cards)_${bare}(_full|_extra)?$`);
+    return{id,name,enemy,states,lore:lore?{el:lore[1],weapon:lore[2],group:lore[3],story:lore[4]}:null,look:look?{text:look[1],diff:look[2],src:look[3]}:null,
+      prompts:items.filter(it=>key.test(it.key)).map(it=>({title:it.title.replace(/`/g,''),key:it.key,text:it.prompts[0],cands:(it.cands||[]).length}))}});
+  const cards=fs.readdirSync(path.join(A,'cards')).map(f=>f.slice(0,-4)).filter(id=>names[id]).map(id=>({name:names[id],file:`cards/${id}.png`}));
+  assert(chars.length>20&&cards.length>=70&&chars.some(c=>c.id==='aem'),'에셋 목록을 읽지 못했어요');
+  return{chars,cards}}
 
 async function apply(key,file){
   assert(key&&file,'사용: node scripts/art-board.cjs apply <키> <파일>');
@@ -74,7 +95,7 @@ async function apply(key,file){
 }
 
 const PAGE=`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>프롬프트 보드</title>
+<title>에셋 보드</title>
 <style>
 :root{--bg:#0b0c0f;--panel:#1c1e24;--line:rgba(255,255,255,.16);--ink:#eceae4;--sub:#9b9a94;--acc:#e6d3a3}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.6 system-ui,sans-serif;padding:0 16px 96px}
@@ -114,14 +135,22 @@ body.tab-pl .gpt-only{display:none!important}.intro{border:1px solid #4fb3a9;bac
 .pl .say{color:var(--acc);font-size:13px;margin-top:6px}.pl .noimg{color:#7fd8c8}
 .pl .ref{display:flex;gap:12px;align-items:center}.pl .ref img{width:calc(var(--rs)*3px);image-rendering:pixelated;background:#2b3044;padding:6px}
 .pl details{margin-top:4px}.pl summary{cursor:pointer;color:var(--acc)}.pl .anim{margin:8px 0}.pl .anim textarea{min-height:0;height:3.4em}
+.asset{background:var(--panel);border:1px solid var(--line);padding:12px;margin:10px 0;display:grid;grid-template-columns:auto 1fr;gap:14px}
+.actor{width:320px;height:320px;overflow:hidden;background:#141821 center/cover}.actor img{height:100%;display:block;image-rendering:pixelated}
+.actor img.anim{width:calc(var(--n,4)*100%);animation:pose calc(var(--n,4)*.125s) steps(var(--n,4),jump-none) infinite}.actor img.e{height:256px;margin-top:64px}
+@keyframes pose{to{transform:translateX(calc((1/var(--n,4) - 1)*100%))}}
+.asset dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:2px 10px}.asset dt{color:var(--sub)}.asset dd{margin:0}.asset select{background:#0f1013;color:var(--ink);border:1px solid var(--line);padding:6px}
+.gal{display:flex;flex-wrap:wrap;gap:8px}.gal figure{cursor:default}.gal img{height:96px}
+body:not(.tab-asset) #assets,body.tab-asset #main,body.tab-asset #nav,body.tab-asset #filters{display:none}
+@media (max-width:700px){.asset{grid-template-columns:1fr}}
 #bar{position:fixed;left:0;right:0;bottom:0;background:#15161a;border-top:1px solid var(--acc);padding:10px 16px;display:none;gap:10px;align-items:center;flex-wrap:wrap}
 #bar code{flex:1;min-width:200px;overflow-wrap:anywhere;color:var(--acc)}
 </style>
-<header><b>프롬프트 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><div id="tabs" role="tablist" aria-label="AI별 탭"></div><span id="nav"></span><div id="filters"></div></header>
-<main id="main"></main>
+<header><b>에셋 보드</b><input id="q" placeholder="찾기: 이름, 키(aem, hero_mor), 내용" aria-label="찾기"><div id="tabs" role="tablist" aria-label="AI별 탭"></div><span id="nav"></span><div id="filters"></div></header>
+<section id="assets"></section><main id="main"></main>
 <div id="bar"><span>고른 그림 적용 명령</span><code id="cmd"></code><button id="cp">복사</button></div>
 <script>
-const G=__DATA__;
+const G=__DATA__,AS=__ASSETS__;
 const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{v==null?localStorage.removeItem(k):localStorage.setItem(k,v)}catch(e){}}};
 const el=(t,p={},...c)=>{const e=Object.assign(document.createElement(t),p);e.append(...c);return e};
 const copy=(text,btn)=>navigator.clipboard.writeText(text).then(()=>{const o=btn.textContent;btn.textContent='복사됨';setTimeout(()=>btn.textContent=o,900)});
@@ -186,17 +215,37 @@ function plCard(it,g){
     step(9,'결과 받기',null,say('8방향 중 '+it.pl.dir+(it.pl.dir==='East'?'(오른쪽을 보는 그림)':'(왼쪽을 보는 그림)')+'을 씁니다'),
       it.pl.ref?el('div',{className:'ref',style:'--rs:'+it.pl[plan]/ (plan==='free'?1:2)},el('img',{src:it.pl.ref,alt:'지금 도트',loading:'lazy'}),el('div',{className:'hint',textContent:'지금 게임 도트. 결과를 이것과 비교만 하세요(업로드하지 않음).'})):el('div',{className:'hint',textContent:'비교용 그림이 없어요: node scripts/pixellab-prompts.cjs 를 먼저 실행'})),
     step(10,'동작 붙이기',null,anims))}
+// 에셋 탭: 캐릭터마다 지금 도트 재생 + 설정 + 그 캐릭터 프롬프트(접힘)
+{const box=document.getElementById('assets'),LB={idle:'대기',attack:'공격',guard:'방어',hit:'피격',cast:'시전',ultimate:'공명 해방'};
+  const bg=el('select',{},...[['coast','검은 해안'],['forest','무음 지대'],['spire','별빛 첨탑'],['lahai','라하이로이']].map(([v,t])=>new Option(t,v)));
+  bg.onchange=()=>document.querySelectorAll('.actor').forEach(a=>a.style.backgroundImage="url('../assets/maps/"+bg.value+"-battle.png')");
+  box.append(el('div',{className:'row'},el('span',{className:'hint',textContent:'공명자 '+AS.chars.filter(c=>!c.enemy).length+' · 적 '+AS.chars.filter(c=>c.enemy).length+' · 카드 '+AS.cards.length+'  배경'}),bg));
+  for(const c of AS.chars){
+    const img=el('img',{alt:c.name+' 동작'}),mot=el('select',{},...Object.keys(c.states).map(s=>new Option(LB[s],s)));
+    const show=()=>{img.className='';img.onload=()=>{const n=img.naturalWidth/img.naturalHeight;img.style.setProperty('--n',n);img.className=(n>1?'anim':'')+(c.enemy?' e':'')};img.src='../assets/'+c.states[mot.value]};
+    mot.onchange=show;mot.value=c.states.attack?'attack':'idle';show();
+    const dl=el('dl');const add=(k,v)=>dl.append(el('dt',{textContent:k}),el('dd',{textContent:v}));
+    if(!c.enemy){add('속성·무기',c.lore?c.lore.el+' · '+c.lore.weapon:'미확인');if(c.lore)add('소속',c.lore.group),add('서사',c.lore.story);
+      add('외형',c.look?c.look.text:'미확인 (설정 기준표 외형 표에 없음)');if(c.look)add('지금 도트',c.look.diff),add('근거',c.look.src)}
+    const pr=el('details',{},el('summary',{textContent:'프롬프트 보기 ('+c.prompts.length+'개)'}),...c.prompts.map(p=>{const b=el('button',{textContent:'복사'});b.onclick=()=>copy(p.text,b);
+      const go=el('button',{className:'ghost',textContent:'후보 비교 '+p.cands+'장 →'});go.onclick=()=>{q.value=p.key;tabs.children[1].click();apply()};
+      return el('div',{},el('div',{className:'hint',textContent:p.title+'  키: '+p.key}),el('textarea',{value:p.text,readOnly:true}),el('div',{className:'row'},b,go))}));
+    const card=el('section',{className:'asset'},el('div',{className:'actor'},img),el('div',{},el('h4',{},c.name+'  ',el('code',{textContent:c.id})),el('div',{className:'row'},'동작 ',mot),dl,c.prompts.length?pr:el('div',{className:'hint',textContent:'이 캐릭터 키로 된 프롬프트가 없어요'})));
+    card.dataset.text=(c.id+' '+c.name+' '+(c.lore?c.lore.el:'')).toLowerCase();box.append(card)}
+  box.append(el('details',{},el('summary',{textContent:'카드 일러스트 '+AS.cards.length+'장'}),el('div',{className:'gal'},...AS.cards.map(k=>el('figure',{},el('img',{src:'../assets/'+k.file,alt:'',loading:'lazy'}),el('figcaption',{textContent:k.name}))))),
+    el('details',{},el('summary',{textContent:'지역 배경과 지도'}),el('div',{className:'gal'},...['coast','forest','spire','lahai'].flatMap(r=>['battle','route'].map(t=>el('figure',{},el('img',{src:'../assets/maps/'+r+'-'+t+'.png',alt:'',loading:'lazy',style:'height:180px'}),el('figcaption',{textContent:r+' '+t})))))));
+  bg.onchange()}
 // PixelLab 묶음 머리에 요금제 고르기
 document.querySelectorAll('.grp').forEach(grp=>{if(!grp.querySelector('.pl'))return;const cur=store.get('board:pl:plan')==='paid'?'paid':'free';
   const sw=el('div',{className:'row'},el('b',{textContent:'요금제'}),...[['free','무료 체험 (64px까지)'],['paid','Tier 1 이상 (크게)']].map(([k,t])=>{const b=el('button',{className:'chip',type:'button',textContent:t});b.setAttribute('aria-pressed',k===cur);b.onclick=()=>{store.set('board:pl:plan',k==='free'?null:k);location.reload()};return b}));
   grp.querySelector('h2').after(sw)});
 // 필터: AI·종류·상태 칩 + 찾기. 고른 값은 이 브라우저에 기억한다
-const F={ai:store.get('board:f:tab')==='PixelLab'?'PixelLab':'GPT',kind:store.get('board:f:kind')||'전체',state:store.get('board:f:state')||'전체'};
+const F={ai:['GPT','PixelLab'].includes(store.get('board:view'))?store.get('board:view'):'ASSET',kind:store.get('board:f:kind')||'전체',state:store.get('board:f:state')||'전체'};
 const OPTS={kind:['전체','공명자','적','이펙트','카드','배경','공통'],state:['전체','후보 있음','그림 있음','그림 없음']};
 const LABEL={kind:'종류',state:'상태'},fbox=document.getElementById('filters'),q=document.getElementById('q');
-const tabs=document.getElementById('tabs');[['GPT','GPT 시트','카드·배경·이펙트·16칸 시트'],['PixelLab','PixelLab 캐릭터','공명자·적 캐릭터 만들기']].forEach(([k,t,sub])=>{
+const tabs=document.getElementById('tabs');[['ASSET','에셋','지금 게임 그림 · 프롬프트 보기'],['GPT','GPT 시트','카드·배경·이펙트·16칸 시트'],['PixelLab','PixelLab 캐릭터','공명자·적 캐릭터 만들기']].forEach(([k,t,sub])=>{
   const b=el('button',{type:'button',role:'tab'},t,el('small',{textContent:sub}));b.setAttribute('aria-selected',F.ai===k);
-  b.onclick=()=>{F.ai=k;store.set('board:f:tab',k==='GPT'?null:k);tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));apply();scrollTo(0,0)};tabs.append(b)});
+  b.onclick=()=>{F.ai=k;store.set('board:view',k==='ASSET'?null:k);tabs.querySelectorAll('button').forEach(x=>x.setAttribute('aria-selected',x===b));apply();scrollTo(0,0)};tabs.append(b)});
 for(const k of Object.keys(OPTS)){const fs=el('fieldset',{className:k==='state'?'gpt-only':''},el('legend',{textContent:LABEL[k]}));
   OPTS[k].forEach(v=>{const b=el('button',{className:'chip'+(k==='kind'&&!['전체','공명자','적'].includes(v)?' gpt-only':''),type:'button',textContent:v});b.setAttribute('aria-pressed',F[k]===v);
     b.onclick=()=>{F[k]=v;store.set('board:f:'+k,v==='전체'?null:v);fs.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed',x===b));apply()};fs.append(b)});fbox.append(fs)}
@@ -207,7 +256,8 @@ const count=el('span',{id:'count'});fbox.append(cmp,count);
 function apply(){const t=q.value.trim().toLowerCase();let n=0;
   document.querySelectorAll('.item').forEach(b=>{const ok=(!t||b.dataset.text.includes(t))&&['ai','kind','state'].every(k=>F[k]==='전체'||b.dataset[k]===F[k]);b.style.display=ok?'':'none';n+=ok});
   document.querySelectorAll('.grp').forEach(g=>g.style.display=g.dataset.ai===F.ai&&g.querySelector('.item:not([style*="none"])')?'':'none');
-  document.querySelectorAll('.nv').forEach(a=>a.style.display=a.dataset.ai===F.ai?'':'none');document.body.classList.toggle('tab-pl',F.ai==='PixelLab');
+  document.querySelectorAll('.nv').forEach(a=>a.style.display=a.dataset.ai===F.ai?'':'none');document.body.classList.toggle('tab-pl',F.ai==='PixelLab');document.body.classList.toggle('tab-asset',F.ai==='ASSET');
+  document.querySelectorAll('.asset').forEach(b=>b.style.display=!t||b.dataset.text.includes(t)?'':'none');
   document.body.classList.toggle('filtering',!!t||F.kind!=='전체'||F.state!=='전체');count.textContent=n+'개 표시'}
 q.oninput=apply;apply();
 </script></html>

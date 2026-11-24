@@ -15,7 +15,7 @@
 - 게임 규칙을 바꾸면 `scripts/selfcheck.cjs`에 점검을 추가한다.
 - 사용자가 교체를 요청한 그림은 적용한다. 그 밖의 새 그림은 `art/candidates/<키>/`에 넣고 사용자가 `npm run board`에서 고른다.
 - 업로드 그림은 먼저 누구·어느 자리인지 확인한다. 요청과 다르면(예: 린네라고 했는데 에이메스) 적용하지 말고 묻는다. 박힌 체크무늬 배경은 지우고 쓴다(`node scripts/unchecker.cjs`).
-- 시트 프롬프트 작성과 업로드 시트 반영은 프로젝트 스킬 `wuwa-sheet-prompts`를 따른다. 프롬프트는 md 대신 프롬프트 보드(`npm run board`, HTML)로 보여 준다.
+- 시트 프롬프트 작성과 업로드 시트 반영은 프로젝트 스킬 `wuwa-sheet-prompts`를 따른다. 프롬프트는 md 대신 에셋 보드(`npm run board`, HTML)로 보여 준다.
 - 도트는 정수 배율로만 보여 준다. 크기는 `calc(<px>*var(--k,1))`로 쓰고, 공명자 프레임 320px·몸 208px, 배경 640×360 규격을 바꾸지 않는다([ART_PIPELINE.md](docs/art/ART_PIPELINE.md)).
 - 공명자 재처리 뒤 프레임이 테두리에 닿지 않는지 확인한다. `CARDS=1` 없이 돌리고, 붙였으면 `node scripts/cards.cjs import`로 단품 카드를 되살린다.
 
