@@ -1,7 +1,8 @@
 // docs/art/MOTION_PROMPTS.md를 만든다. 문서를 직접 고치지 말고 이 파일을 고쳐 다시 돌린다. 사용: node scripts/motion-prompts.cjs
 const fs=require('fs'),root=require('path').resolve(__dirname,'..');
 const hero=fs.readFileSync(root+'/docs/art/HERO_PROMPTS.md','utf8');
-const HEROES=[];{const re=/### hero_(\w+)_full\.png · ([^\n]+)\n```\n([^\n]*)/g;let m;while(m=re.exec(hero)){
+// 제목과 프롬프트 블록 사이의 안내 줄은 건너뛴다
+const HEROES=[];{const re=/### hero_(\w+)_full\.png · ([^\n]+)\n(?:[^`\n][^\n]*\n)*```\n([^\n]*)/g;let m;while(m=re.exec(hero)){
   const intro=m[3].slice(0,m[3].indexOf(' Create ONE')),who=m[3].match(/sprite sheet of (.*?) with 16 frames/)[1];
   const rules=m[3].slice(m[3].indexOf('STRICT RULES'));HEROES.push({id:m[1],ko:m[2],intro,who,rules})}}
 if(HEROES.length!==12)throw new Error('heroes '+HEROES.length);
@@ -48,7 +49,7 @@ const {CLEAN}=require('./lib/clean-lock.cjs');
 const PIXEL='PIXEL: authentic 16-bit pixel art on a uniform pixel grid, crisp 1-pixel dark outline, at most 48 colors, no anti-aliasing, no dithering noise, no painterly texture. '+CLEAN;
 const BG='BACKGROUND: true alpha transparency; if real transparency is impossible, fill the whole background with one flat pure green #00FF00 instead (never a checkerboard, never white or grey); no checkerboard, no background, no floor shadow; effects are solid hard-edged pixel shapes with no soft glow, outer glow, haze, blur or specks.';
 const enemyPrompt=([id,en,,g,el,atk,cast])=>`OBJECTIVE: One 16-frame animation sprite sheet of the Wuthering Waves enemy ${en} for a side-view pixel-art card battler.
-REFERENCES: Attachment 1 = the only design source (shape, colors, silhouette). Copy it; do not add parts that are not visible in it. Where it is unclear, keep the shape simple instead of inventing detail.
+REFERENCES: Attachment 1 = official Wuthering Waves image of this enemy (in-game screenshot or official wiki art), the only design source (shape, colors, silhouette). Copy it; do not add parts that are not visible in it. Where it is unclear, keep the shape simple instead of inventing detail. Attachment 2 = the enemy's current pixel sprite: use it ONLY for pixel density and scale, never for design.
 REQUIREMENTS (must): Cells in row-major order. Row 1: 1 IDLE calm stance; 2 IDLE BREATH same as cell 1 with the body 1-2 pixels lower; 3 IDLE SWAY small secondary motion, then back toward cell 1; 4 WIND-UP weight shifting back to the right. Row 2: 5 ANTICIPATION fully drawn back; 6 ATTACK ${atk}, moving LEFT; 7 IMPACT full extension with a short hard-edged impact effect; 8 RECOVERY returning toward idle. Row 3: 9 CAST RISING; 10 CAST ${cast}; 11 CAST RELEASE a compact burst; 12 GUARD braced defensive pose. Row 4: 13 HIT recoiling to the RIGHT, no gore; 14 HIT RETURN halfway back to idle; 15 DEFEAT collapsing; 16 DEFEAT FADE the body breaking into a few large hard-edged pixel fragments, half already gone. Element effects: ${EL[el]}, at most 3 flat colors.
 PREFERENCES (optional): secondary motion of tail, wings, fins or cloth only where the design has them.
 CONSTRAINTS: SCALE: the enemy has the SAME size in all 16 cells, about ${SIZE[g]}% of the cell height, on the same ground line near the cell bottom (flying enemies keep the same height); never shrink it to fit effects. MARGIN: body and effects stay at least 10% away from every cell edge, because each cell is cut out mechanically. IDENTITY: design and colors identical in all 16 cells. MOTION: neighboring cells change smoothly like frames of one animation. ${PIXEL} ${BG} ${EDGE} All poses face LEFT.
@@ -106,16 +107,16 @@ ${Object.entries(DONE).map(([k,v])=>`| \`${k}\` | ${v} |`).join('\n')}
 
 ## A. 적 16칸 동작 시트
 - 크기: **정사각 1024×1024**, 4열×4행 16칸, 칸 256px. 모든 동작은 왼쪽을 본다.
-- 첨부: 그 적의 지금 도트 \`assets/enemy_<id>.png\` 1장.
+- 첨부: 1. 명조 공식 자료(그 적의 인게임 캡처·공식 위키 이미지, 외형 기준, 커밋하지 않음) 2. 그 적의 지금 도트 \`assets/enemy_<id>.png\`(도트 밀도·크기만).
 - 크기 비율: 경파급·거랑급 칸 높이의 60%, 노도급·해일급 70%, 명식(보스) 80%.
 - 공격·시전 장면은 \`src/js/data.js\`의 기술 이름을 따랐다. 적 외형은 지금 도트를 기준으로 하고 공식 모습과는 대조하지 않았다(미확인).
 - 저장: 보드 키 \`enemy_full_<id>\` → \`art/source-v2/enemy_full_<id>.png\`.
 
 `;
-for(const e of ENEMIES.filter(e=>!DONE['enemy_full_'+e[0]]))md+=`### enemy_full_${e[0]}.png · ${e[2]}\n${e[3]} · ${e[4]} · 첨부 \`assets/enemy_${e[0]}.png\`\n\`\`\`\n${enemyPrompt(e)}\n\`\`\`\n\n`;
+for(const e of ENEMIES.filter(e=>!DONE['enemy_full_'+e[0]]))md+=`### enemy_full_${e[0]}.png · ${e[2]}\n${e[3]} · ${e[4]} · 첨부 1 명조 공식 자료 · 첨부 2 \`assets/enemy_${e[0]}.png\`\n\`\`\`\n${enemyPrompt(e)}\n\`\`\`\n\n`;
 md+=`## B. 공명자 추가 동작 시트
 - 크기: **세로 1024×1536**, 4열×4행 16칸. 첫 행 쓰러짐, 둘째 행 교체 등장, 셋째 행 회피, 넷째 행 승리.
-- 첨부: 1. 공식 이미지 2. 그 캐릭터의 지금 시트 \`art/source-v2/hero_<id>.png\`(16칸 시트가 있으면 \`hero_<id>_full.png\`가 더 좋다). 음림은 기본 시트가 먼저 나와야 한다.
+- 첨부: 1. 명조 공식 이미지(외형 기준) 2. 그 캐릭터의 지금 시트 \`art/source-v2/hero_<id>.png\`(16칸 시트가 있으면 \`hero_<id>_full.png\`가 더 좋다, 도트 밀도·크기만) 3. 비율 가이드 \`art/guides/hero-16-guide.png\`. 음림은 기본 시트가 먼저 나와야 한다.
 - 저장: 보드 키 \`hero_<id>_extra\` → \`art/source-v2/hero_<id>_extra.png\`.
 
 `;
