@@ -18,13 +18,16 @@ const [,,src,dst,...opt]=process.argv,STRICT=opt.includes('strict'),BOXES=opt.fi
   const bg=i=>{const r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);return d[i+3]<16||(STRICT?mn>=228&&mx-mn<=4:mn>=200&&mx-mn<=18)};
   const seen=new Uint8Array(W*H),q=[];
   for(let x=0;x<W;x++)q.push(x,(H-1)*W+x);for(let y=0;y<H;y++)q.push(y*W,y*W+W-1);
-  let n=0;while(q.length){const p=q.pop();if(seen[p])continue;seen[p]=1;if(!bg(p*4))continue;d[p*4+3]=0;n++;
+  const G=new Uint32Array(256);let n=0;while(q.length){const p=q.pop();if(seen[p])continue;seen[p]=1;if(!bg(p*4))continue;if(d[p*4+3]>=16)G[d[p*4]]++;d[p*4+3]=0;n++;
     const x=p%W,y=(p-x)/W;if(x>0)q.push(p-1);if(x<W-1)q.push(p+1);if(y>0)q.push(p-W);if(y<H-1)q.push(p+W)}
-  // 다리 사이처럼 막힌 곳에 갇힌 체크무늬: 밝은 칸과 회색 칸이 둘 다 섞인 덩어리(60px 이상)만 지운다. 작은 흰 하이라이트는 남김
-  for(let s=0;s<W*H;s++){if(seen[s]||!bg(s*4))continue;const comp=[];let hi=0,lo=0;q.push(s);seen[s]=1;
-    while(q.length){const p=q.pop();comp.push(p);const v=d[p*4];if(v>=242)hi++;else lo++;const x=p%W,y=(p-x)/W;
+  // 다리 사이처럼 막힌 곳에 갇힌 체크무늬: 바깥 배경에서 찾은 체크무늬 두 색(±6)으로만 이뤄지고, 두 색이 다 섞인 덩어리(60px 이상)만 지운다.
+  // 음영 있는 흰 옷(가슴·다리·부츠)은 색이 여러 단계라 걸리지 않는다(에이메스 가슴 구멍, 2026-11-24). 바깥이 이미 투명(체크무늬 없음)이면 건너뜀
+  const pk=[];{const g=[...G.keys()].sort((a,b)=>G[b]-G[a]);for(const v of g){if(G[v]<W*H*.005)break;if(pk.every(u=>Math.abs(u-v)>10))pk.push(v);if(pk.length===2)break}}
+  const near=v=>pk.findIndex(u=>Math.abs(u-v)<=6);
+  for(let s=0;s<W*H;s++){if(pk.length<2)break;if(seen[s]||!bg(s*4))continue;const comp=[];let hi=0,lo=0,off=0;q.push(s);seen[s]=1;
+    while(q.length){const p=q.pop();comp.push(p);const k=near(d[p*4]);if(k<0)off++;else if(pk[k]===Math.max(...pk))hi++;else lo++;const x=p%W,y=(p-x)/W;
       for(const o of [x>0?p-1:-1,x<W-1?p+1:-1,y>0?p-W:-1,y<H-1?p+W:-1])if(o>=0&&!seen[o]&&bg(o*4)){seen[o]=1;q.push(o)}}
-    if(comp.length>=60&&hi>comp.length*.15&&lo>comp.length*.15)for(const p of comp){d[p*4+3]=0;n++}}
+    if(comp.length>=60&&off<comp.length*.1&&hi>comp.length*.15&&lo>comp.length*.15)for(const p of comp){d[p*4+3]=0;n++}}
   for(const [x0,y0,x1,y1] of BOXES){const soft=i=>{const mn=Math.min(d[i],d[i+1],d[i+2]),mx=Math.max(d[i],d[i+1],d[i+2]);return d[i+3]>0&&mn>=150&&mx-mn<=45},q=[];
     const inb=(x,y)=>x>=x0&&x<=x1&&y>=y0&&y<=y1,tr=p=>!d[p*4+3];
     for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const p=y*W+x;if(soft(p*4)&&[p-1,p+1,p-W,p+W].some(tr))q.push(p)}
