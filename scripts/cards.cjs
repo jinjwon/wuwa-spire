@@ -12,7 +12,7 @@ const LOOK={
 
   sk:'Shorekeeper: shoulder-length sky-blue hair with dark blue tips, pink-purple eyes, white translucent hood with navy and yellow butterfly ornaments, navy starry veil, short white dress with frilled collar, silver straps and bracelets, bare legs, glowing butterflies around her',
   lyn:'Lynae: long wavy blonde hair, headphones, white shirt, black jacket and short black skirt, mint and teal neon spray-paint graffiti effects',
-  mor:'Mornye: long silver-white hair covering one eye, one visible red eye, long white coat over indigo-navy inner outfit, celestial orbit diagrams and planets, large white blade',
+  mor:'Mornye: very long silver-lavender hair with bangs covering her right eye, one visible pink-red eye, a thin halo ring of small dots above her head, open long white lab coat, black high-neck inner top with a violet translucent crystal tie, glossy white tights, white high-heeled boots, large crystalline broadblade; white, silver and lavender palette with violet accents, not navy; no floating planets or orbs',
   chi:'Chisa: long straight black hair with one red ribbon, short black jacket over a sailor top with red scarf, black pleated skirt, scissor-shaped greatsword, crimson thread-like slash effects',
   cam:'Camellya: white twin-tail hair with black streaks, dark grey eyes with red diamond pupils, dark red flower on her head, red and black dress decorated with camellia flowers, crimson petals and thorny vines, sword',
   hiy:'Hiyuki: white high ponytail with a red ribbon, red and white shrine maiden outfit with cherry blossom pattern, sword, ice and snow effects',

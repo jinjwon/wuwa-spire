@@ -15,7 +15,7 @@ function slot(key){
   if(/^fx_\w+$/.test(key))return{cur:`art/fx-src/${key}.png`,dst:`art/fx-src/${key}.png`,next:'dev에서 make-vfx.cjs 연결 필요 (docs/art/MOTION_PROMPTS.md)'};
   if(/^title_\w+$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 타이틀 화면(titleHTML) 연결 필요 (docs/art/TITLE_PROMPTS.md)'};
   if(/^battle_(elite|boss)\d$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 prepare-battle-bg.cjs 목록·전투 종류별 배경 연결 필요 (docs/art/BG_PROMPTS.md)'};
-  if(/^(enemy_full_\w+|hero_\w+_extra)$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 자르기·재생 코드 연결 필요 (docs/art/MOTION_PROMPTS.md)'};
+  if(/^(enemy_full_\w+|hero_\w+_(extra|kit))$/.test(key))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,next:'dev에서 자르기·재생 코드 연결 필요 (docs/art/MOTION_PROMPTS.md)'};
   if(/^(hero|cards|enemies|enemy_sheet|battle)_?\w*$/.test(key)&&!exists(`assets/cards/${key}.png`))return{cur:`art/source-v2/${key}.png`,dst:`art/source-v2/${key}.png`,
     next:key.startsWith('battle_')?'node scripts/prepare-battle-bg.cjs':key.startsWith('cards_')||key.startsWith('enem')?'docs/art/ART_PIPELINE.md 의 절차대로 처리':'node scripts/prepare-heroes-v3.cjs preview  (확인 후 write)'};
   return{cur:`assets/cards/${key}.png`,dst:`art/card-gen/${key}.png`,next:'node scripts/cards.cjs import'};
@@ -77,7 +77,7 @@ function collectAssets(groups){
     const bare=id.replace(/^enemy_/,''),name=names[bare]||bare,base=name.split(/[ ·(]/)[0],enemy=id!==bare;
     const lore=!enemy&&rows.find(r=>r.length===7&&r[0].startsWith(base)),look=!enemy&&rows.find(r=>r.length===4&&r[0]===({aemMecha:'에이메스 메카',rov:'방랑자(여)'}[id]||base));
     const states=Object.fromEntries([['idle',`${id}_idle.png`],['attack',has(`${id}_attack.png`)?`${id}_attack.png`:`motion/${id}_attack.png`],...['guard','hit','cast','ultimate'].map(s=>[s,`motion/${id}_${s}.png`])].filter(([,f])=>has(f)));
-    const key=new RegExp(`^(hero|enemy_full|cards)_${bare}(_full|_extra)?$`);
+    const key=new RegExp(`^(hero|enemy_full|cards)_${bare}(_full|_extra|_kit)?$`);
     return{id,name,enemy,states,lore:lore?{el:lore[1],weapon:lore[2],group:lore[3],story:lore[4]}:null,look:look?{text:look[1],diff:look[2],src:look[3]}:null,
       prompts:items.filter(it=>key.test(it.key)).map(it=>({title:it.title.replace(/`/g,''),key:it.key,text:it.prompts[0],cands:(it.cands||[]).length}))}});
   const cards=fs.readdirSync(path.join(A,'cards')).map(f=>f.slice(0,-4)).filter(id=>names[id]).map(id=>({name:names[id],file:`cards/${id}.png`}));

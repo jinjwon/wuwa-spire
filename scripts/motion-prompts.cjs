@@ -63,6 +63,14 @@ CONSTRAINTS: ${h.rules.replace(/^STRICT RULES, FOLLOW ALL: /,'').replace('feet o
 OUTPUT: one portrait 1024x1536 PNG, exactly 4 columns x 4 rows of 16 equal tall cells.
 VALIDATION (check before finishing): 16 cells in a 4x4 grid; same character size in every cell (cells 3-4 lying on the same ground line); faces right; no afterimage or glow; no checkerboard or semi-transparent edge pixels; face, hair, outfit and weapon match the attachments.`;
 
+// 기술 시트(위키 공명자 기술 6종 중 기본 시트에 없는 것): 변주 스킬(등장 공격)·협주 스킬(퇴장)·강공격(공명 회로)·공명 스킬. 2026-11-25
+const kitPrompt=h=>`OBJECTIVE: One 16-frame skill animation sprite sheet of ${h.who} with the Wuthering Waves combat moves missing from the main sheet (Intro Skill, Outro Skill, Heavy Attack, Resonance Skill), for a side-view pixel-art card battler.
+REFERENCES: ${h.intro}
+REQUIREMENTS (must): Use only the weapon shown in the attachments; if the character fights with a rectifier or bare hands, show each strike as a cast from the hand instead of a swing. Cells in row-major order. Row 1 INTRO SKILL (entering battle with an attack): 1 LEAP-IN airborne, entering from the left, weapon ready; 2 DIVE descending toward the right; 3 INTRO STRIKE landing hit with a short hard-edged impact; 4 INTRO SETTLE rising into the idle stance. Row 2 OUTRO SKILL (leaving battle): 5 OUTRO ACTION a last attack or cast toward the right with a small hard-edged effect; 6 OUTRO TURN the effect stays at the right, body turning away to the left; 7 OUTRO LEAP jumping back toward the left, still fully inside the cell; 8 OUTRO EXIT crouched mid-jump, half turned, still fully inside the cell. Row 3 HEAVY ATTACK (Forte): 9 CHARGE low stance, weapon or hand drawn back; 10 CHARGE PEAK a compact solid energy shape at the weapon or hand; 11 HEAVY RELEASE big step forward with one wide hard-edged arc or blast; 12 HEAVY RECOVER weapon or hand lowering. Row 4 RESONANCE SKILL (signature move): 13 SKILL START; 14 SKILL ACTION; 15 SKILL IMPACT with a compact hard-edged effect; 16 SKILL RETURN to the idle stance. Cells contain only the character: no symbols, text or marks.
+CONSTRAINTS: ${h.rules.replace(/^STRICT RULES, FOLLOW ALL: /,'').replace('feet on the same line near the cell bottom.','feet on the same line near the cell bottom; only cells 1-2 and 7-8 are airborne, keeping the same body size.')} ${EDGE}
+OUTPUT: one portrait 1024x1536 PNG, exactly 4 columns x 4 rows of 16 equal tall cells.
+VALIDATION (check before finishing): portrait 1024x1536, 16 cells in a 4x4 grid; same character size in every cell; faces right; only the weapon from the attachments; no afterimage or glow; no checkerboard or semi-transparent edge pixels; face, hair, outfit and colors match Attachment 1.`;
+
 const FXRULES=`CONSTRAINTS: GREYSCALE: exactly three flat tones and nothing else: pure white #FFFFFF for the hottest core, light grey #B0B0B0 for the main body, dark grey #505050 for a 1-pixel outline; no other colors or gradients, because the game recolors each tone to the element palette. PIXEL: drawn as if at 64x64 pixels per cell and scaled up exactly 4 times, so every pixel is a crisp 4x4 block on a uniform grid; no anti-aliasing, dithering or painterly texture. MARGIN: every shape stays at least 10% away from every cell edge and is centered in its cell. MOTION: neighboring frames of one effect change smoothly. BACKGROUND: true alpha transparency; if real transparency is impossible, fill the whole background with one flat pure green #00FF00 instead (never a checkerboard, never white or grey); no checkerboard, background or characters; no soft glow, outer glow, haze, blur or scattered specks. ${CLEAN}
 OUTPUT: one square 1024x1024 PNG, exactly 4 columns x 4 rows of 16 equal square cells, row-major order, no gaps, labels, numbers or grid lines.
 VALIDATION (check before finishing): 16 cells in a 4x4 grid; only the three listed grey tones on transparency; every shape centered and away from cell edges; frames of each effect read as one smooth animation.`;
@@ -121,6 +129,14 @@ md+=`## B. 공명자 추가 동작 시트
 
 `;
 for(const h of HEROES.filter(h=>!DONE['hero_'+h.id+'_extra']))md+=`### hero_${h.id}_extra.png · ${h.ko}\n\`\`\`\n${extraPrompt(h)}\n\`\`\`\n\n`;
+md+=`## B2. 공명자 기술 시트 (변주·협주·강공격·공명 스킬)
+위키(명조 공식 자료) 기준 공명자 기술은 6종: 일반 공격·공명 스킬·공명 회로(강공격)·공명 해방·변주 스킬(교체 등장 공격)·협주 스킬(교체 퇴장). 기본 16칸에는 일반 공격·시전·해방만 있어 나머지를 이 시트로 받는다. 기술 이름과 연출은 위키 캐릭터 문서·갤러리의 Resonance Liberation·Idle 애니메이션을 참고한다(공식 이미지는 커밋하지 않음).
+- 크기: **세로 1024×1536**, 4열×4행 16칸. 행 순서: 변주 스킬 · 협주 스킬 · 강공격 · 공명 스킬.
+- 첨부: 1. 명조 공식 이미지(위키 갤러리 Full Sprite, 외형 기준) 2. 그 캐릭터의 지금 시트(16칸 시트가 있으면 \`hero_<id>_full.png\`, 도트 밀도·크기만) 3. 비율 가이드 \`art/guides/hero-16-guide.png\`.
+- 저장: 보드 키 \`hero_<id>_kit\` → \`art/source-v2/hero_<id>_kit.png\`. 게임 연결(교체 연출·강공격 재생)은 \`dev\`.
+
+`;
+for(const h of HEROES.filter(h=>!DONE['hero_'+h.id+'_kit']))md+=`### hero_${h.id}_kit.png · ${h.ko}\n\`\`\`\n${kitPrompt(h)}\n\`\`\`\n\n`;
 md+=`## C·D. 이펙트 시트 (흑백 → 코드로 속성색)
 - 크기: **정사각 1024×1024**, 4열×4행 16칸. 한 칸은 64px 도트를 4배로 그린 것으로 본다.
 - 색: 흰색·밝은 회색·어두운 회색 세 단계만 쓴다. 게임이 속성 팔레트(하이라이트·중간·윤곽)로 바꿔 칠하므로 한 장으로 6속성을 다 쓴다. 칼베기(\`art/fx-src/\`)와 같은 방식이다.

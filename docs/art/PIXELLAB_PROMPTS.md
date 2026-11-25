@@ -464,7 +464,7 @@ Character Type **Humanoid** · Sprite Size 무료 64 / 유료 160 · 방향 East
 
 외형(Character Description)
 ```
-Mornye: long silver-white hair covering one eye, one visible red eye, long white coat over indigo-navy inner outfit, celestial orbit diagrams and planets, large white blade. Adult woman with realistic slim 7-head proportions, small head, long legs, natural-size eyes. Pixel art sprite with a crisp dark outline.
+Mornye: very long silver-lavender hair with bangs covering her right eye, one visible pink-red eye, a thin halo ring of small dots above her head, open long white lab coat, black high-neck inner top with a violet translucent crystal tie and a violet translucent starry lower panel, glossy white tights, white high-heeled boots, gold bracelet, large broadblade exactly as in Attachment 1; overall palette white, silver and lavender with violet accents, not navy; no floating planets, orbs or orbit diagrams. Adult woman with realistic slim 7-head proportions, small head, long legs, natural-size eyes. Pixel art sprite with a crisp dark outline.
 ```
 
 동작 대기(`idle`) · 4프레임(제안) · 방향 East(오른쪽)

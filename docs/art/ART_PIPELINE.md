@@ -66,3 +66,8 @@
 | GPT 이미지 | 첨부 그림을 따라 캐릭터 외형 유지 | 정보가 많으면 자글자글해지고 뭉개짐(반짝이·반투명 겹침·잔상·배경 큰 얼굴) | 모든 GPT 프롬프트 끝에 `CLEAN LOCK` 문장(`scripts/lib/clean-lock.cjs`). 문서 고친 뒤 `node scripts/lib/clean-lock.cjs`, 카드·모션은 생성 스크립트가 자동으로 넣음 |
 | 구글 플로우(나노바나나) | 자글거림이 적고 배경을 여러 장 뽑기 쉬움 | 캐릭터 완성도가 낮음. 한국에서는 보이는 워터마크가 자동으로 붙음(구글 도움말 인용 기사, 원문 미확인) | 배경 위주로 쓰고, 모서리에 중요한 것을 두지 않음. 워터마크는 지우지 않음 |
 | PixelLab | 처음부터 도트 격자 | 옆모습 참고 그림을 못 넣음 | [PIXELLAB_PROMPTS.md](PIXELLAB_PROMPTS.md) |
+
+## 공식 자료와 시트 종류 (2026-11-25)
+- 외형 기준: 위키 갤러리 `https://wutheringwaves.fandom.com/wiki/<영문 이름>/Gallery`의 Full Sprite. 동작 참고: 같은 갤러리의 Idle Animation·Resonance Liberation. 기술 이름: 캐릭터 문서의 기술 6종. 받은 공식 이미지는 커밋하지 않는다.
+- 공명자 시트는 3종: `hero_<id>_full`(기본), `hero_<id>_extra`(쓰러짐·교체 등장·회피·승리), `hero_<id>_kit`(변주·협주·강공격·공명 스킬). 프롬프트는 `scripts/motion-prompts.cjs`가 만든다.
+- 받은 시트 검수: 크기·방향(16칸 세로 1024×1536), 윤곽 둘레 색 번짐, Full Sprite와 외형 대조.
