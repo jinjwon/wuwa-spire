@@ -13,3 +13,6 @@ art/board.html
 art/pixellab-ref/
 art/candidates/
 art/source-v2/title_daycycle.mp4
+
+# 공식 이미지(지역 그림 등)는 커밋하지 않는다
+art/references/
